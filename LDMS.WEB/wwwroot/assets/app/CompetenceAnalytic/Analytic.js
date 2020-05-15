@@ -374,8 +374,7 @@ function ExportCompetenceScore(analytic_id) {
         }
     });
     //var chartSelector = jThis.data("chartCompetence");
-    //var chart = $(chartSelector).highcharts();
-
+    //var chart = $(chartSelector).highcharts(); 
     //if (Highcharts.exporting.supports("image/jpeg")) {
     //    chart.exportChartLocal({
     //        type: "image/jpeg"
