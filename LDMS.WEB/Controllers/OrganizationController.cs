@@ -94,12 +94,19 @@ namespace LDMS.WEB.Controllers
             }
         }
         [HttpGet]
-        [Route("Organization/DownloadEmployees")]
+        [Route("Organization/Download")]
         public ActionResult Download(string fileName)
         {
             string filepath = Path.Combine(_filePath, fileName);
             byte[] fileByteArray = System.IO.File.ReadAllBytes(filepath);
-            System.IO.File.Delete(filepath);
+            try
+            {
+                System.IO.File.Delete(filepath);
+            }
+            catch
+            {
+
+            }
             return File(fileByteArray, "application/vnd.ms-excel", fileName);
         }
         [AuthorizeRole(UserRole.All)]

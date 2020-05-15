@@ -194,6 +194,7 @@
 })(jQuery);
 
 function ExportEmployees() {
+    MessageController.BlockUI({ boxed: true, target: '#dtListEmployee' });
     $.ajax({
         type: "GET",
         url: '/Organization/ExportEmployees',
@@ -202,17 +203,15 @@ function ExportEmployees() {
             'sectionId': $("#selectSection").val(),
             'keyword': $("#txtKeyword").val()
         },
-        success: function (response) {
-            debugger;
+        success: function (response) { 
             data = response.Data;
             if (data != "") {
-                //use window.location.href for redirect to download action for download the file
-                window.location.href = "/Organization/DownloadEmployees/?fileName=" + data;
+                window.location.href = "/Organization/Download/?fileName=" + data;
             }
-            //var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
-            //Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
+            MessageController.UnblockUI('#dtListEmployee'); 
         },
         failure: function (response) {
+            MessageController.UnblockUI('#dtListEmployee');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
             } else {
@@ -220,6 +219,7 @@ function ExportEmployees() {
             }
         },
         error: function (response) {
+            MessageController.UnblockUI('#dtListEmployee');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
             } else {
@@ -228,6 +228,7 @@ function ExportEmployees() {
         }
     });
 }
+
 function LoadSection() {
     MessageController.BlockUI({ boxed: true, target: '#dtSectionRows' });
     $.ajax({
@@ -577,6 +578,7 @@ function uploadFiles() {
         contentType: false,
         processData: false,
         success: function (response) { 
+            LoadEmployees();
             if ($.fn.dataTable.isDataTable('#dtImportExcel')) {
                 var table = $('#dtImportExcel').DataTable();
                 table.destroy();
@@ -629,8 +631,16 @@ function uploadFiles() {
             //    $("#btnAllowImport").attr("disabled", "disabled");
             //} else {
             //    $("#btnAllowImport").removeAttr("disabled");
-            //}
+            //} 
             MessageController.UnblockUI('#import-excel-modal');
+            var isDupicatTopicName = response.Data.any((item) => {
+                return item.IsValid == false;
+            });
+            if (isDupicatTopicName == true) {
+                MessageController.Error("Import faild. some data has invalid infomation", "Import Failed.");
+            } else {
+                MessageController.Success("Import Success.", "Import Success.");
+            }
         },
         failure: function (response) {
             MessageController.UnblockUI('#import-excel-modal');

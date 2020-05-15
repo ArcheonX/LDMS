@@ -272,10 +272,10 @@ namespace LDMS.Services
                 {
                     var ms = fileUpload.OpenReadStream();
 
-                    var jobGrades = (await All<ViewModels.LDMS_M_JobGrade>("JobGrade")).ToDictionary(e => e.JobGradeID);
-                    var jobTitles = (await All<ViewModels.LDMS_M_JobTitle>("JobTitle")).ToDictionary(e => e.JobTitleID);
-                    var allUsers = (await ReadAllEmployee()).ToDictionary(e => e.EmployeeID);
-                    var sections = (await All<ViewModels.LDMS_M_Section>("Section")).Where(e => e.ID_Department == departmentId).ToDictionary(e => e.SectionID);
+                    var jobGrades = (await All<ViewModels.LDMS_M_JobGrade>("JobGrade")).ToDictionary(e => e.JobGradeID.ToLower());
+                    var jobTitles = (await All<ViewModels.LDMS_M_JobTitle>("JobTitle")).ToDictionary(e => e.JobTitleID.ToLower());
+                    var allUsers = (await ReadAllEmployee()).ToDictionary(e => e.EmployeeID.ToLower());
+                    var sections = (await All<ViewModels.LDMS_M_Section>("Section")).Where(e => e.ID_Department == departmentId).ToDictionary(e => e.SectionID.ToLower());
                     DataTable dt = ConvertStreamToDatatable(ms, "Section");
                     var list = new List<ViewModels.ImportSectionModel>();
                     foreach (DataRow row in dt.Rows)
@@ -284,36 +284,36 @@ namespace LDMS.Services
                         string[] empName = row["Employee Name".ToLower()].ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         ViewModels.ImportSectionModel model = new ViewModels.ImportSectionModel()
                         {
-                            EmployeeID = row["Employee ID".ToLower()].ToString(),
+                            EmployeeID = row["Employee ID".ToLower()].ToString().Trim(),
                             EmployeeName = empName.Length > 0 ? empName[0] : "",
                             EmployeeSurname = empName.Length > 1 ? empName[1] : "",
-                            JobGrade = row["Job Grade".ToLower()].ToString(),
-                            JobTitle = row["Job Title".ToLower()].ToString(),
-                            Section = row["Section".ToLower()].ToString(),
+                            JobGrade = row["Job Grade".ToLower()].ToString().Trim(),
+                            JobTitle = row["Job Title".ToLower()].ToString().Trim(),
+                            Section = row["Section".ToLower()].ToString().Trim(),
                             IsValid = true,
                             Remark = "",
                         };
-                        if (!jobGrades.ContainsKey(model.JobGrade))
+                        if (!jobGrades.ContainsKey(model.JobGrade.ToLower()))
                         {
                             stringBuilder.AppendLine(string.Format("Invalid Job Grade '{0}'", model.JobGrade));
                             model.IsValid = false;
                         }
                         else
                         {
-                            model.ID_JobGrade = jobGrades.GetValueOrDefault(model.JobGrade).ID_JobGrade;
+                            model.ID_JobGrade = jobGrades.GetValueOrDefault(model.JobGrade.ToLower()).ID_JobGrade;
                         }
 
-                        if (!jobTitles.ContainsKey(model.JobTitle))
+                        if (!jobTitles.ContainsKey(model.JobTitle.ToLower()))
                         {
                             stringBuilder.AppendLine(string.Format("Invalid Job Title '{0}'", model.JobTitle));
                             model.IsValid = false;
                         }
                         else
                         {
-                            model.ID_JobTitle = jobTitles.GetValueOrDefault(model.JobTitle).ID_JobTitle;
+                            model.ID_JobTitle = jobTitles.GetValueOrDefault(model.JobTitle.ToLower()).ID_JobTitle;
                         }
 
-                        if (!string.IsNullOrEmpty(model.Section))
+                        if (!string.IsNullOrEmpty(model.Section.ToLower()))
                         {
                             if (!sections.ContainsKey(model.Section))
                             {
@@ -322,10 +322,10 @@ namespace LDMS.Services
                             }
                             else
                             {
-                                model.ID_Section = sections.GetValueOrDefault(model.Section).ID_Section;
+                                model.ID_Section = sections.GetValueOrDefault(model.Section.ToLower()).ID_Section;
                             }
                         }
-                        if (!allUsers.ContainsKey(model.EmployeeID))
+                        if (!allUsers.ContainsKey(model.EmployeeID.ToLower()))
                         {
                             stringBuilder.AppendLine(string.Format("Invalid Employee ID '{0}'", model.EmployeeID));
                             model.IsValid = false;
@@ -344,7 +344,7 @@ namespace LDMS.Services
                         {
                             foreach (var item in list)
                             {
-                                var user = allUsers.GetValueOrDefault(item.EmployeeID);
+                                var user = allUsers.GetValueOrDefault(item.EmployeeID.ToLower());
                                 if (user != null)
                                 {
                                     user.ID_JobGrade = item.ID_JobGrade;
@@ -352,6 +352,7 @@ namespace LDMS.Services
                                     user.ID_Section = item.ID_Section;
                                     user.Name = item.EmployeeName;
                                     user.Surname = item.EmployeeSurname;
+                                    user.EmployeeID = item.EmployeeID;
                                     var res = await UpdateUser(user);
                                     if (!res.IsOk)
                                     {
@@ -365,6 +366,8 @@ namespace LDMS.Services
                             }
                             transaction.Commit();
                         }
+
+                        return new ServiceResult(list);
                     }
                 }
                 else
