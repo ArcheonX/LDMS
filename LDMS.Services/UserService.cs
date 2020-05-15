@@ -1,8 +1,8 @@
-﻿using Dapper;
+﻿using ClosedXML.Excel;
+using Dapper;
 using LDMS.Core;
 using LDMS.Daos;
-using LDMS.Identity;
-using LDMS.ViewModels;
+using LDMS.Identity; 
 using LDMS.ViewModels.Menu;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -25,12 +25,18 @@ namespace LDMS.Services
         protected IHttpContextAccessor HttpContextAccessor { get; private set; }
         private readonly LDAPAuthenticationService _ldAPAuthenticationService;
         private readonly LocalAuthenticationService _localAuthenticationService;
-        public UserService(ILogger<UserService> logger, LDAPAuthenticationService ldAPAuthenticationService, LocalAuthenticationService localAuthenticationService, ILDMSConnection iLDMSConnection, IHttpContextAccessor httpContextAccessor) : base(iLDMSConnection, httpContextAccessor)
+        private readonly MasterService MasterService;
+        public UserService(ILogger<UserService> logger, 
+            LDAPAuthenticationService ldAPAuthenticationService, 
+            LocalAuthenticationService localAuthenticationService,
+            MasterService masterService,
+            ILDMSConnection iLDMSConnection, IHttpContextAccessor httpContextAccessor) : base(iLDMSConnection, httpContextAccessor)
         {
             HttpContextAccessor = httpContextAccessor; 
             _logger = logger;
             _ldAPAuthenticationService = ldAPAuthenticationService;
             _localAuthenticationService = localAuthenticationService;
+            MasterService = masterService;
         }
 
         public async Task<ServiceResult> GetAll()
@@ -45,6 +51,120 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
+
+        public async Task<ServiceResult> SearchOrganizationEmployee(int departmentId, int sectionId, string keyword)
+        {
+            try
+            {
+                var grades = (await MasterService.GetAllJobGrades()).Data as List<ViewModels.LDMS_M_JobGrade>;
+                var titles = (await MasterService.GetAllJobTitles()).Data as List<ViewModels.LDMS_M_JobTitle>;
+                var sections = (await MasterService.GetAllSections(departmentId)).Data as List<ViewModels.LDMS_M_Section>;
+                var users = (await GetAllEmployeeByDepartmentId(departmentId)).Data as List<ViewModels.LDMS_M_User>;
+                var employees = users.Select(emp => new ViewModels.EmployeeSectionView(emp)
+                {
+                    JobGrade = grades.FirstOrDefault(e => e.ID_JobGrade == emp.ID_JobGrade)?.JobGradeName_EN,
+                    JobTitle = titles.FirstOrDefault(e => e.ID_JobTitle == emp.ID_JobTitle)?.JobTitleName_EN,
+                    LDMS_M_Sections = sections
+                }).ToList();
+                if (sectionId > 0)
+                {
+                    employees = employees.Where(e => e.ID_Section == sectionId).ToList();
+                }
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    employees = employees.Where(e =>
+                    (e.Name != null && e.Name.ToLower().StartsWith(keyword.ToLower()))
+                    || (e.Surname != null && e.Surname.ToLower().StartsWith(keyword.ToLower()))
+                    || (e.Email != null && e.Email.ToLower().StartsWith(keyword.ToLower()))
+                    || (e.EmployeeID != null && e.EmployeeID.ToLower().StartsWith(keyword.ToLower()))
+                    ).ToList();
+                }
+                int index = 1;
+                employees.ForEach(item =>
+                {
+                    item.RowIndex = index;
+                    index++;
+                });
+                return new ServiceResult(employees);
+            }
+            catch (Exception x)
+            {
+                _logger.LogError(x.Message);
+                return new ServiceResult(x);
+            }
+        }
+        public async Task<ServiceResult> ExportOrganizationEmployee(int departmentId, int sectionId, string keyword)
+        {
+            try
+            {
+                var result = (await SearchOrganizationEmployee(departmentId, sectionId, keyword));
+                if (!result.IsOk) return result;
+                var list = result.Data as List<ViewModels.EmployeeSectionView>;
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Section");
+                    var currentRow = 1;
+                    worksheet.Cell(currentRow, 1).Value = "Employee ID";
+                    worksheet.Cell(currentRow, 2).Value = "Employee Name";
+                    worksheet.Cell(currentRow, 3).Value = "Job Grade";
+                    worksheet.Cell(currentRow, 4).Value = "Job Title";
+                    worksheet.Cell(currentRow, 5).Value = "Section";
+                    foreach (var user in list)
+                    {
+                        currentRow++;
+                        worksheet.Cell(currentRow, 1).Value = user.EmployeeID;
+                        worksheet.Cell(currentRow, 2).Value = user.FullName;
+                        worksheet.Cell(currentRow, 3).Value = user.JobGrade;
+                        worksheet.Cell(currentRow, 4).Value = user.JobTitle;
+                        worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
+                    }
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var content = stream.ToArray();
+                        string fileName = String.Format("Section.xls");
+                        Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                        {
+                            FileDownloadName = fileName
+                        };
+                        return new ServiceResult(fileContentResult);
+                    }
+                }
+                //DataSet ds = new DataSet();
+                //DataTable dt = new DataTable("Section");
+                //dt.Columns.Add("Employee ID");
+                //dt.Columns.Add("Employee Name");
+                //dt.Columns.Add("Job Grade");
+                //dt.Columns.Add("Job Title");
+                //dt.Columns.Add("Section");
+                //foreach (var item in list)
+                //{
+                //    var row = dt.NewRow();
+                //    row["Employee ID"] = item.EmployeeID;
+                //    row["Employee Name"] = item.FullName;
+                //    row["Job Grade"] = item.JobGrade;
+                //    row["Job Title"] = item.JobTitle;
+                //    row["Section"] = item.LDMS_M_Section.SectionID;
+                //    dt.Rows.Add(row);
+                //}
+                //ds.Tables.Add(dt);
+                //var buffer = ds.ToExcelDynamicReport("", "");
+                //string fileName = String.Format("Section.xls");
+                //Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                //{
+                //    FileDownloadName = fileName
+                //};
+                //return new ServiceResult(fileContentResult);
+            }
+            catch (Exception x)
+            {
+                _logger.LogError(x.Message);
+                return new ServiceResult(x);
+            }
+        }
+
+
         public async Task<ServiceResult> GetAll( string employeeId = null, string employeeName = null,
             List<int> departments = null,
             List<int> sectionIds = null,
@@ -62,15 +182,15 @@ namespace LDMS.Services
             }
         }
 
-        private async Task<List<LDMS_M_User>> ReadAllEmployee( string employeeId = null, string employeeName = null,
+        private async Task<List<ViewModels.LDMS_M_User>> ReadAllEmployee( string employeeId = null, string employeeName = null,
             List<int> departments = null,
             List<int> sectionIds = null,
             List<int> jobgrades = null,
             List<int> jobtitles = null)
         {
-            var roles = await All<LDMS_M_Role>("Role");
-            var jobGrades = await All<LDMS_M_JobGrade>("JobGrade");
-            var jobTitles = await All<LDMS_M_JobTitle>("JobTitle");
+            var roles = await All<ViewModels.LDMS_M_Role>("Role");
+            var jobGrades = await All<ViewModels.LDMS_M_JobGrade>("JobGrade");
+            var jobTitles = await All<ViewModels.LDMS_M_JobTitle>("JobTitle");
 
             var parameters = new DynamicParameters(); 
             parameters.Add("@paramEmployeeId", employeeId);
@@ -80,7 +200,7 @@ namespace LDMS.Services
             parameters.Add("@paramjobgrades", jobgrades != null ? string.Join(",", jobgrades) : "");
             parameters.Add("@paramjobtitles", jobtitles != null ? string.Join(",", jobtitles) : "");
 
-            var items = Connection.Query<LDMS_M_User, LDMS_M_Plant, LDMS_M_Center, LDMS_M_Division, LDMS_M_Department, LDMS_M_Section, LDMS_M_User>
+            var items = Connection.Query<ViewModels.LDMS_M_User, ViewModels.LDMS_M_Plant, ViewModels.LDMS_M_Center, ViewModels.LDMS_M_Division, ViewModels.LDMS_M_Department, ViewModels.LDMS_M_Section, ViewModels.LDMS_M_User>
                 (_schema + ".[usp_User_READ_ALL]",
                   map: (user, plant, center, division, depart, section) =>
                   {
@@ -152,17 +272,17 @@ namespace LDMS.Services
                 {
                     var ms = fileUpload.OpenReadStream();
 
-                    var jobGrades = (await All<LDMS_M_JobGrade>("JobGrade")).ToDictionary(e => e.JobGradeID);
-                    var jobTitles = (await All<LDMS_M_JobTitle>("JobTitle")).ToDictionary(e => e.JobTitleID);
+                    var jobGrades = (await All<ViewModels.LDMS_M_JobGrade>("JobGrade")).ToDictionary(e => e.JobGradeID);
+                    var jobTitles = (await All<ViewModels.LDMS_M_JobTitle>("JobTitle")).ToDictionary(e => e.JobTitleID);
                     var allUsers = (await ReadAllEmployee()).ToDictionary(e => e.EmployeeID);
-                    var sections = (await All<LDMS_M_Section>("Section")).Where(e => e.ID_Department == departmentId).ToDictionary(e => e.SectionID);
+                    var sections = (await All<ViewModels.LDMS_M_Section>("Section")).Where(e => e.ID_Department == departmentId).ToDictionary(e => e.SectionID);
                     DataTable dt = ConvertStreamToDatatable(ms, "Section");
-                    var list = new List<ImportSectionModel>();
+                    var list = new List<ViewModels.ImportSectionModel>();
                     foreach (DataRow row in dt.Rows)
                     {
                         StringBuilder stringBuilder = new StringBuilder();
                         string[] empName = row["Employee Name".ToLower()].ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        ImportSectionModel model = new ImportSectionModel()
+                        ViewModels.ImportSectionModel model = new ViewModels.ImportSectionModel()
                         {
                             EmployeeID = row["Employee ID".ToLower()].ToString(),
                             EmployeeName = empName.Length > 0 ? empName[0] : "",
@@ -266,7 +386,7 @@ namespace LDMS.Services
             {
                 DynamicParameters parameter = new DynamicParameters();
                 parameter.Add("@employeeId", employeeId);
-                var items = Connection.Query<LDMS_M_User, LDMS_M_Plant, LDMS_M_Center, LDMS_M_Division, LDMS_M_Department, LDMS_M_Section, LDMS_M_User>
+                var items = Connection.Query<ViewModels.LDMS_M_User, ViewModels.LDMS_M_Plant, ViewModels.LDMS_M_Center, ViewModels.LDMS_M_Division, ViewModels.LDMS_M_Department, ViewModels.LDMS_M_Section, ViewModels.LDMS_M_User>
                     (_schema + ".[usp_User_READ_BY_EmployeeId]",
                      map: (user, plant, center, division, depart, section) =>
                      {
@@ -305,9 +425,9 @@ namespace LDMS.Services
                 var user = items.FirstOrDefault();
                 if (user != null)
                 {
-                    var roles = await All<LDMS_M_Role>("Role");
-                    var jobGrades = await All<LDMS_M_JobGrade>("JobGrade");
-                    var jobTitles = await All<LDMS_M_JobTitle>("JobTitle");
+                    var roles = await All<ViewModels.LDMS_M_Role>("Role");
+                    var jobGrades = await All<ViewModels.LDMS_M_JobGrade>("JobGrade");
+                    var jobTitles = await All<ViewModels.LDMS_M_JobTitle>("JobTitle");
                     user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == user.ID_Role);
                     user.LDMS_M_JobGrade = jobGrades.FirstOrDefault(e => e.ID_JobGrade == user.ID_JobGrade);
                     user.LDMS_M_JobTitle = jobTitles.FirstOrDefault(e => e.ID_JobTitle == user.ID_JobTitle);
@@ -333,7 +453,7 @@ namespace LDMS.Services
             }
         }
 
-        public async Task<ServiceResult> UpdateUserSection(List<LDMS_M_User> users)
+        public async Task<ServiceResult> UpdateUserSection(List<ViewModels.LDMS_M_User> users)
         {
             try
             {
@@ -380,13 +500,13 @@ namespace LDMS.Services
         {
             try
             {
-                var roles = await All<LDMS_M_Role>("Role");
-                var jobGrades = await All<LDMS_M_JobGrade>("JobGrade");
+                var roles = await All<ViewModels.LDMS_M_Role>("Role");
+                var jobGrades = await All<ViewModels.LDMS_M_JobGrade>("JobGrade");
                 var parameters = new DynamicParameters();
                 parameters.Add("@param_DepartmentId", departmentId);
 
-                var jobTitles = await All<LDMS_M_JobTitle>("JobTitle");
-                var items = Connection.Query<LDMS_M_User, LDMS_M_Plant, LDMS_M_Center, LDMS_M_Division, LDMS_M_Department, LDMS_M_Section, LDMS_M_User>
+                var jobTitles = await All<ViewModels.LDMS_M_JobTitle>("JobTitle");
+                var items = Connection.Query<ViewModels.LDMS_M_User, ViewModels.LDMS_M_Plant, ViewModels.LDMS_M_Center, ViewModels.LDMS_M_Division, ViewModels.LDMS_M_Department, ViewModels.LDMS_M_Section, ViewModels.LDMS_M_User>
                   (_schema + ".[usp_User_READ_BY_DepartmentId]",
                   map: (user, plant, center, division, depart, section) =>
                   {
@@ -451,14 +571,14 @@ namespace LDMS.Services
         {
             try
             {
-                var roles = await All<LDMS_M_Role>("Role");
-                var jobGrades = await All<LDMS_M_JobGrade>("JobGrade");
-                var jobTitles = await All<LDMS_M_JobTitle>("JobTitle");
+                var roles = await All<ViewModels.LDMS_M_Role>("Role");
+                var jobGrades = await All<ViewModels.LDMS_M_JobGrade>("JobGrade");
+                var jobTitles = await All<ViewModels.LDMS_M_JobTitle>("JobTitle");
                 var parameters = new DynamicParameters();
                 parameters.Add("@param_SectionId", sectionId);
 
 
-                var items = Connection.Query<LDMS_M_User, LDMS_M_Plant, LDMS_M_Center, LDMS_M_Division, LDMS_M_Department, LDMS_M_Section, LDMS_M_User>
+                var items = Connection.Query<ViewModels.LDMS_M_User, ViewModels.LDMS_M_Plant, ViewModels.LDMS_M_Center, ViewModels.LDMS_M_Division, ViewModels.LDMS_M_Department, ViewModels.LDMS_M_Section, ViewModels.LDMS_M_User>
                (_schema + ".[usp_User_READ_BY_SectionId]",
                       map: (user, plant, center, division, depart, section) =>
                       {
@@ -531,7 +651,7 @@ namespace LDMS.Services
                 {
                     return serviceResult;
                 }
-                var user = serviceResult.Data as LDMS_M_User;
+                var user = serviceResult.Data as ViewModels.LDMS_M_User;
                 if (user == null)
                 {
                     CreateDataLog(DataLogType.LoginFaild, username, "EmployeeID not found");
@@ -629,7 +749,7 @@ namespace LDMS.Services
             }
         }
 
-        private void CheckRedirectPage(LDMS_M_User user)
+        private void CheckRedirectPage(ViewModels.LDMS_M_User user)
         {
             if (user.IsForceChangePass || user.IsFirstLogin)
             {
@@ -669,7 +789,7 @@ namespace LDMS.Services
 
         private IEnumerable<NavigationMenu> BuildUserMenu(int roleId)
         { 
-                var items = Connection.Query<LDMS_M_SubModule, LDMS_M_Module, LDMS_M_RolePermission, LDMS_M_Role, LDMS_M_SubModule>
+                var items = Connection.Query<ViewModels.LDMS_M_SubModule, ViewModels.LDMS_M_Module, ViewModels.LDMS_M_RolePermission, ViewModels.LDMS_M_Role, ViewModels.LDMS_M_SubModule>
                 (_schema + ".[usp_RoleMenu_READ_By_Role] @paramRoleId",
                   map: (submodule, module, rolepermission, role) =>
                   {
@@ -766,7 +886,7 @@ namespace LDMS.Services
             } 
         }
 
-        public async Task<ServiceResult> CreateUser(LDMS_M_User user)
+        public async Task<ServiceResult> CreateUser(ViewModels.LDMS_M_User user)
         {
             try
             { 
@@ -811,7 +931,7 @@ namespace LDMS.Services
             }
         }
 
-        public async Task<ServiceResult> UpdateUser(LDMS_M_User user)
+        public async Task<ServiceResult> UpdateUser(ViewModels.LDMS_M_User user)
         {
             try
             {
@@ -862,7 +982,7 @@ namespace LDMS.Services
                 var emp = await GetUserByEmployeeId(employeeId);
                 var passsalt = PasswordHelper.CreateSalt();
                 var newHaspass = PasswordHelper.GenerateSaltedHash(newpassword, passsalt);
-                var oldPasshash = PasswordHelper.GenerateSaltedHash(currentPassword, (emp.Data as LDMS_M_User).PasswordSalt);
+                var oldPasshash = PasswordHelper.GenerateSaltedHash(currentPassword, (emp.Data as ViewModels.LDMS_M_User).PasswordSalt);
                 DynamicParameters parameter = new DynamicParameters();
                 parameter.Add("@EmployeeId", employeeId);
                 parameter.Add("@OldPassword", newHaspass);
@@ -874,11 +994,11 @@ namespace LDMS.Services
                 {
                     return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
                 }
-                var user = emp.Data as LDMS_M_User;
+                var user = emp.Data as ViewModels.LDMS_M_User;
 
                 HttpContext.Response.Set("FORCECHANGEPASS", user.IsForceChangePass.ToString(), 120);
                 HttpContext.Response.Set("ALLOWGPP", user.IsAllowGPP.ToString(), 120);
-                CheckRedirectPage(emp.Data as LDMS_M_User);
+                CheckRedirectPage(emp.Data as ViewModels.LDMS_M_User);
                 CreateDataLog(DataLogType.ChangePassword, employeeId, "Change Password.");
                 return emp;
             }
@@ -904,11 +1024,11 @@ namespace LDMS.Services
                     return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
                 }
                 var emp = await GetUserByEmployeeId(employeeId);
-                var user = emp.Data as LDMS_M_User;
+                var user = emp.Data as ViewModels.LDMS_M_User;
                 HttpContext.Response.Set("FORCECHANGEPASS", user.IsForceChangePass.ToString(), 120);
                 HttpContext.Response.Set("ALLOWGPP", user.IsAllowGPP.ToString(), 120);
 
-                CheckRedirectPage(emp.Data as LDMS_M_User);
+                CheckRedirectPage(emp.Data as ViewModels.LDMS_M_User);
                 CreateDataLog(DataLogType.AcceptGPP, employeeId, string.Format("Allow {0}", isAllow));
                 return emp;
             }
