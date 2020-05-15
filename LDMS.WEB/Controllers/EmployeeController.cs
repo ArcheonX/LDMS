@@ -32,12 +32,10 @@ namespace LDMS.WEB.Controllers
                 SectionId = user.ID_Section,
                 JobGradeId = user.ID_JobGrade,
                 JobTitleId = user.ID_JobTitle,
-
                 DepartmentName = user.LDMS_M_Department != null ? user.LDMS_M_Department.DepartmentID : "",
                 SectionName = user.LDMS_M_Section != null ? user.LDMS_M_Section.SectionID : "",
                 JobGrade = user.LDMS_M_JobGrade != null ? user.LDMS_M_JobGrade.JobGradeID : "",
                 JobTitle = user.LDMS_M_JobTitle != null ? user.LDMS_M_JobTitle.JobTitleID : "",
-
                 Email = user.Email,
                 EmployeeId = user.EmployeeID,
                 EmployeeName = user.Name,
@@ -50,7 +48,8 @@ namespace LDMS.WEB.Controllers
                 RoleId = user.ID_Role,
                 IsInstructer = user.IsInstructor,
                 IsSectionHead = user.IsSectionHead,
-                IsAD = user.IsAD
+                IsAD = user.IsAD,
+                Id_Employee = user.ID_User
             };
         }
 
@@ -205,7 +204,8 @@ namespace LDMS.WEB.Controllers
                     IsInstructor = model.IsInstructer,
                     IsSectionHead = model.IsSectionHead,
                     Password = model.Password,
-                    Remark = model.Remark
+                    Remark = model.Remark,
+                    ID_User = model.Id_Employee
                 }; 
                 return Response(await UserService.UpdateUser(user));
             }

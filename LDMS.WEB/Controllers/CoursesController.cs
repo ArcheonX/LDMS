@@ -93,6 +93,7 @@ namespace LDMS.WEB.Controllers
             cls.ID = 0;
             cls.ID_Course = p.ID;
             cls.CourseName = p.CourseName;
+            cls.ID_LearnMethod = p.ID_LearnMethod;
 
             return View("/Views/Courses/ClassDetail.cshtml", cls);
         }
@@ -304,7 +305,16 @@ namespace LDMS.WEB.Controllers
                                             string CertificationRemark, string ReminderDurationDay, string IsActive )
         {
 
-
+            string statusClass = "0"; // 0 = Plan, 10 = Not Start 
+            if(LearnDateStart != "" && RegisterDateStart == "" && RegisterDateEnd == "")
+            {
+                statusClass = "0"; //
+            }
+            
+            if(LearnDateStart != "" && RegisterDateStart != "" && RegisterDateEnd != "")
+            {
+                statusClass = "10"; // Not Start 
+            }
      
             LDMS_T_Class t_class = new LDMS_T_Class();
             if (ID == "0")
@@ -312,7 +322,7 @@ namespace LDMS.WEB.Controllers
                 t_class = _CourseService.CreateClass(LMS_PACD_courseID, ID_Course,  ID_Instructor,  ClassCapacity,  ClassFee,
                                                      LearnDateStart,  LearnTimeStart,  LearnDateEnd,  LearnTimeEnd,
                                                      RegisterDateStart,  RegisterDateEnd,  ID_PlantVenue,
-                                                     ID_VenueRoom,  PlaceAndLocation,  ClassStatus,
+                                                     ID_VenueRoom,  PlaceAndLocation, statusClass,
                                                      IsAttend,  AttendNum,  IsTest,
                                                      TestFullScore,  TestPercentage,  IsSkill,  SkillFullScore,
                                                      SkillPercentage,  IsCoaching,  IsCertificate,  IsAttachCert,
@@ -362,8 +372,21 @@ namespace LDMS.WEB.Controllers
             var cap = _CourseService.GetClassRemain(ID_Course, ID_Plant, ID_Center, 
                                                     ID_Division, ID_Department, ID_Section);
 
+            //LDMS_M_Course p = _CourseService.GetCourseByID(ID_Course);
+
+            //cap.ID_LearnMethod = p.ID_LearnMethod;
+
             return Json(cap);
         }
+
+        [HttpPost]
+        [Route("Courses/DeleteCourse")]
+        public IActionResult DeleteCourse(string ID_Course)
+        {
+
+            return Json(_CourseService.DeleteCourse(ID_Course));
+        }
+
 
         [HttpPost]
         [Route("Courses/DeleteClass")]

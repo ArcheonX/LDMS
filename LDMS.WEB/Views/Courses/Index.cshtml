@@ -181,7 +181,12 @@
                     },
                     {
                         "mData": "ID",
-                        "mRender": function (data, type, row) { return "<a href='#'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>"; }
+                        "mRender": function (data, type, row) {
+                            //return "<a href='#'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>";
+                            var name = row['CourseName'];
+                            return "<a href='#' onclick=\"DeleteCourse('"+data+"','"+name+"')\"'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>";
+                        }
+                        
                     }
 
                  ],
@@ -196,8 +201,28 @@
                      //{ "orderable": false, "targets": 7, "className": "text-center" }
 
                  ]
-            });
+             });
         }
+
+        function DeleteCourse(ID, name) {
+             MessageController.ConfirmCallback("Are you sure you want to delete Course '" + name + "' ?", "Confirm Delete!", function (res) {
+            if (res) {
+                $.ajax({
+                    url: "/Courses/DeleteCourse",
+                    type: "Post",
+                    data: {
+                        ID_Course: ID
+
+                    },
+                    success: function (e) {
+                        Search();
+                    },
+
+                }
+                )
+            }
+        });
+    }
 
     </script>
 }

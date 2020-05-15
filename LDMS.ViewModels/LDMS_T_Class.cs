@@ -47,5 +47,6 @@ namespace LDMS.ViewModels
 
         public string RegisterDateStart_Show { get; set; }
         public string RegisterDateEnd_Show { get; set; }
+        public int ID_LearnMethod { get; set; }
     }
 }

@@ -132,7 +132,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+            alert(' loadPlant : ' + @HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]);
             $('select').select2({
                 allowClear: true,
                 closeOnSelect: true,
@@ -180,7 +180,7 @@
 
 
         function loadPlant() {
-            //alert(' loadPlant : ' + @HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]);
+
             $.ajax({
                 type: "GET",
                 url: "/Master/GetAllPlants",

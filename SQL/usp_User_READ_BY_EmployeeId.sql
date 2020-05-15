@@ -12,11 +12,11 @@ GO
 -- Author:		<Author,,Name>
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
--- EXEC [dbo].[usp_User_READ_BY_EmployeeId] 'STT00001'
+-- EXEC [dbo].[usp_User_READ_BY_EmployeeId] @employeeId ='SR0001'
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[usp_User_READ_BY_EmployeeId]
 	-- Add the parameters for the stored procedure here
-	@param_EmployeeId nvarchar(50) 
+	@employeeId nvarchar(50) 
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -24,7 +24,8 @@ BEGIN
 	SET NOCOUNT ON; 
 
 	SELECT  
-	ROW_NUMBER() OVER(ORDER BY muser.EmployeeID ASC)  as RowIndex,
+	ROW_NUMBER() OVER(ORDER BY muser.ID_User ASC)  as RowIndex,
+	muser.ID_User,
 	muser.DateOfBirth,muser.DriverLicenseID,muser.email,muser.EmployeeID,muser.Gender,muser.IDCardNumber,
 	isnull(muser.IsAD,0) AS IsAD  , 
 	muser.JoinDate ,muser.Name,
@@ -54,7 +55,7 @@ BEGIN
 	LEFT OUTER JOIN LDMS_M_Division Division  WITH (NOLOCK) on muser.ID_Division = Division.ID 
 	LEFT OUTER JOIN LDMS_M_Department dep  WITH (NOLOCK) on muser.ID_Department = dep.ID
 	LEFT OUTER JOIN LDMS_M_Section section  WITH (NOLOCK) on muser.ID_Section = section.ID
-	WHERE muser.EmployeeID = @param_EmployeeId AND muser.IsActive =1
+	WHERE muser.EmployeeID = @employeeId AND muser.IsActive =1
 
 END
 GO

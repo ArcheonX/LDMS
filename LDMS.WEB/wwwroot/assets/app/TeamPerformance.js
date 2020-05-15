@@ -36,7 +36,13 @@
         $('#btnQueryProgress').click(function () {
             SearchTeamPerformance();
         });
-        SearchTeamPerformance(); 
+
+        RenderChartProgress(null);
+        RenderChartBySection(null);
+        RenderChartByPlatform(null);
+        RenderChartByJobLevel(null);
+        RenderChartCostSpending(null);
+       // SearchTeamPerformance(); 
     })
 })(jQuery);
 

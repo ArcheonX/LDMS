@@ -4,7 +4,7 @@ namespace LDMS.ViewModels
 {
     public class LDMS_M_User : BaseViewModel
     {
-        public long ID_User { get; set; }
+        public int ID_User { get; set; }
         public string EmployeeID { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }

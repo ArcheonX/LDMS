@@ -16,7 +16,7 @@
                                value=""
                                class="form-control" />
                     </div>
-                </div> 
+                </div>
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right" style="vertical-align: middle">
@@ -43,7 +43,7 @@
                                 name="selectSection"
                                 title="Please Enter Section"
                                 class="form-control required"
-                                style="width: 100%"> 
+                                style="width: 100%">
                         </select>
                     </div>
                     <div class="col-sm-2 col-md-2">
@@ -62,22 +62,22 @@
                 <div class="row form-group" style="padding-top:15px;">
                     <div class="col-sm-2 offset-2">
                         <button id="btnSearchEmployee" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                            <img  style="width:25px;height:20px"  src="~/assets/images/svg/icon-seach.svg" />Search
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />Search
                         </button>
                     </div>
                     <div class="col-sm-2">
                         <button id="btnEditSection" class="btn btn-outline-danger waves-effect waves-light" style="width:100%">
-                            <img  style="width:25px;height:20px"  src="~/assets/images/svg/icon-edit-blue.svg" />&nbsp;Edit Section
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-edit-blue.svg" />&nbsp;Edit Section
                         </button>
                     </div>
                     <div class="col-sm-2 offset-2">
-                        <button id="btnImportExcel" class="btn btn-outline-primary waves-effect waves-light" style="width:100%">
-                            <img  style="width:25px;height:20px"  src="~/assets/images/svg/icon-excel-green.svg" />&nbsp;Import
-                        </button>
+                        <a id="btnImportExcel" href="#import-excel-modal" class="btn btn-outline-primary waves-effect waves-light import-excel-modal" style="width:100%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-excel-green.svg" />&nbsp;Import
+                        </a>
                     </div>
                     <div class="col-sm-2">
                         <button id="btnExportExcel" class="btn btn-outline-primary waves-effect waves-light" style="width:100%">
-                            <img  style="width:25px;height:20px"  src="~/assets/images/svg/icon-excel-green.svg" />&nbsp;Export
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-excel-green.svg" />&nbsp;Export
                         </button>
                     </div>
                 </div>
@@ -89,23 +89,77 @@
 <div id="viewListEmployee" style="display:block;width:100%;border-width: thin; border-style: solid;">
     <div class="panel panel-default" style="margin-top:-15px;width:100%;">
         <div class="panel-body" style="width:100%;margin-top:25px;">
-            <div class="form-horizontal"> 
-                    <div class="row form-group"> 
-                        <div class="col-sm-2 offset-8">
-                            <button id="btnEmpListSave" class="btn btn-outline-success waves-effect waves-light" style="width:100%">
-                                <img  style="width:25px;height:20px"  src="~/assets/images/svg/save.svg" />&nbsp;Save
-                            </button>
-                        </div>
-                        <div class="col-sm-2">
-                            <button id="btnEmpListCancel" class="btn btn-outline-danger waves-effect waves-light" style="width:100%;margin-left:-15px">
-                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-do-not-red.svg" />&nbsp;Cancel
-                            </button>
-                        </div>
-                    </div> 
+            <div class="form-horizontal">
+                <div class="row form-group">
+                    <div class="col-sm-2 offset-8">
+                        <button id="btnEmpListSave" class="btn btn-outline-success waves-effect waves-light" style="width:100%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/save.svg" />&nbsp;Save
+                        </button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="btnEmpListCancel" class="btn btn-outline-danger waves-effect waves-light" style="width:100%;margin-left:-15px">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-do-not-red.svg" />&nbsp;Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="table-responsive">
                 @await Html.PartialAsync("section/_employeeList")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="import-excel-modal" class="white-popup-block mfp-hide" style="width:1200px;height:700px;background-color:#ffffff;margin-left:25%;border:thin;">
+    <div class="panel panel-primary" style="width:100%;">
+        <div class="panel-body panel-body-begin">
+            <div class="form-horizontal" style="padding-top:25px;">
+                <div class="row form-group" style="margin-right:15px;margin-left:-15px;">
+                    <div class="col-sm-10 offset-1">
+                        <div class="input-group">
+                            @*<div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                                </div>*@
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                       aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" id="lblFileName" for="inputGroupFile01">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:15px;margin-bottom:15px;height:550px;">
+                    <div class="col-sm-12">
+                        <table class="display dataTable" id="dtImportExcel" style="width:98%;margin-left:10px;margin-right:10px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;width:10%">Employee ID</th>
+                                    <th style="text-align:center;width:10%">Employee Name</th>
+                                    <th style="text-align:center;width:10%">Job Grade</th>
+                                    <th style="text-align:center;width:10%">Job Title</th>
+                                    <th style="text-align:center;width:10%">Section</th>
+                                    <th style="text-align:center;width:10%">Valid</th>
+                                    <th style="text-align:center;width:40%">Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:15px;margin-bottom:15px;">
+                    @*<div class="col-sm-2 col-md-2 offset-8">
+                        <button id="btnAllowImport" class="btn btn-outline-primary waves-effect waves-light" style="width:100%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Import
+                        </button>
+                    </div>*@
+                    <div class="popup-modal-dismiss col-sm-2 col-md-2 offset-10" style="margin-right:15px;">
+                        <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:98%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-cross-red.svg" />&nbsp;&nbsp;Close
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

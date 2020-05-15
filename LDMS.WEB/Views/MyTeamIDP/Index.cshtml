@@ -103,39 +103,147 @@
                                 </a>
                             </div>
                             <div class="col-sm-2 col-md-2" style="margin-left:-55px">
-                                <a  data-toggle="modal" href="#myModal" class="btn btn-outline-success waves-effect waves-light" style="width:80%;" >
-                                    <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" /><br />Add Topic
+                                <a id="btnAddTopic" class="btn btn-outline-success waves-effect waves-light" style="width:80%;" onclick="OpenEmployee()">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" alt='homepage' title="Find" /><br />Add Topic
                                 </a>
                                 <!-- Modal -->
-                                <div class="modal fade" id="myModal" role="dialog">
-                                    <div class="modal-dialog modal-lg">
 
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-body " style="margin-left:auto">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">Employee Search</h4>
-                                            </div>
-                                            <div class="modal-body panel-body" style="margin-left:auto">
+                            </div>
+                        </div>
+                </form>
+                <div class="modal" id="modSearhEmployee" style="padding-top:-25px;" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-lg" style="background-color:white;border-radius:2%;width:150%">
 
-                                                @await Html.PartialAsync("_EmployeeSearch")
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-body " style="margin-left:auto">
+                                <button type="button" class="close" onclick="ClosedEmployee()">&times;</button>
+                                <h4 class="modal-title">Employee Search</h4>
+                            </div>
+                            <div class="modal-body" style="min-height:20px">
+                                <div class="form-horizontal" style="margin-top:20px">
+                                    <div class="row form-group" style="margin-top:10px">
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Employee ID</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-2 col-md-4">
+                                            <input type="text" id="txtFilterEmployeeID" class="form-control input-sm" />
+                                        </div>
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Emp Name</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-4 col-md-4">
+                                            <input type="text" id="txtFilterEmployeeName" class="form-control input-sm" />
+                                        </div>
+                                    </div>
 
-                                            </div>
-                                                <div class="modal-header">
-                                                    <div class="col-sm-2 col-md-2 offset-10" >
-                                                        <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" data-dismiss="modal" style="width:80%">
-                                                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" /><br />Close
-                                                        </button>
 
-                                                    </div>
-                                                </div>
+                                    <div class="row form-group">
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Plant ID</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-4 col-md-4">
+                                            <select id="selectPlantEmp"
+                                                    name="selectPlantEmp"
+                                                    title="Please Enter Plant"
+                                                    class="form-control required"
+                                                    style="width: 100%">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Center</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-3 col-md-3">
+                                            <select id="selectCenterEmp"
+                                                    name="selectCenterEmp"
+                                                    title="Please Enter Center"
+                                                    class="form-control required"
+                                                    style="width: 100%"
+                                                    disabled="disabled">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Divison</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-4 col-md-4">
+                                            <select id="selectDivisionEmp"
+                                                    name="selectDivisionEmp"
+                                                    title="Please Enter Division"
+                                                    class="form-control required"
+                                                    style="width: 100%"
+                                                    disabled="disabled">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 col-md-2">
+                                            <span class="pull-right">
+                                                <label class="LabelCaption">Department</label>
+                                            </span>
+                                        </div>
+                                        <div class="col-3">
+                                            <select id="selectDepartmentEmp"
+                                                    name="selectDepartmentEmp"
+                                                    title="Please Enter Department"
+                                                    class="form-control required"
+                                                    style="width: 100%"
+                                                    disabled="disabled">
+                                            </select>
+                                        </div>
+                                    </div>
 
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-sm-6 col-md-3 " style="margin-left:25rem; margin-top:20px">
+                                        <a id="btnSearch" class="btn btn-outline-success waves-effect waves-light" style="width:70%" onclick="SearchEmployee();">
+                                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" /><br/>Search
+                                        </a>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="panel-body">
+                                <div class="table-responsive" style="overflow-y:auto; height:300px">
+                                    <table class="display dataTable" id="dtEmployee" style="padding-top:5px">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <!--<th style="text-align:center;width:100px">No</th>-->
+                                                <th style="text-align:center;width:100px">EMP ID</th>
+                                                <th style="text-align:center">Emp Name</th>
+                                                <th style="text-align:center">Department</th>
+                                                <th style="text-align:center">Division</th>
+                                                <th style="text-align:center">Center</th>
+                                                <th style="text-align:center">Plant</th>
+                                                <th style="text-align:center"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-header">
+                                <div class="col-sm-2 col-md-2">
+                                    <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:80%" onclick="ClosedEmployee()">
+                                        <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" /><br />Close
+                                    </button>
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         @*<div class="table-responsive m-t-40">*@
@@ -243,7 +351,7 @@
             });
 
             loadPlant();
-            //loadPlatform();
+        //    loadPlatEmp();
             //LoadCourseLearnMethod();
             Search();
 
@@ -253,15 +361,28 @@
 
                 ReloadCenter($, plantid, null);
             });
+            $('select[name="selectPlantEmp"]').on('change', function () {
+                var plantidEmp = $(this).val();
+
+                ReloadCenterEmp($, plantidEmp, null);
+            });
 
             $('select[name="selectCenter"]').on('change', function () {
                 var centerId = $(this).val();
                 ReloadDivision($, centerId, null);
             });
+            $('select[name="selectCenterEmp"]').on('change', function () {
+                var centerIdEmp = $(this).val();
+                ReloadDivisionEmp($, centerIdEmp, null);
+            });
 
             $('select[name="selectDivision"]').on('change', function () {
                 var divisionId = $(this).val();
                 ReloadDepartment($, divisionId, null);
+            });
+            $('select[name="selectDivisionEmp"]').on('change', function () {
+                var divisionIdEmp = $(this).val();
+                ReloadDepartmentEmp($, divisionIdEmp, null);
             });
 
 
@@ -283,18 +404,23 @@
 
 
         function loadPlant() {
-            //alert(' loadPlant : ' + @HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]);
+         //   alert(' loadPlant : ' + @HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]);
             $.ajax({
                 type: "GET",
                 url: "/Master/GetAllPlants",
                 success: function (response) {
                     var options = $('#selectPlant');
+                    var optionsMod = $('#selectPlantEmp');
+
                     options.append($("<option />").val(null).text("Please select"));
+                    optionsMod.append($("<option />").val(null).text("Please select"));
                     $.each(response.Data, function () {
                         options.append($("<option />").val(this.ID_Plant).text(this.PlantName_EN));
+                        optionsMod.append($("<option />").val(this.ID_Plant).text(this.PlantName_EN));
                     });
 
                     $('select[name="selectPlant"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]).trigger('change');
+                    $('select[name="selectPlantEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]).trigger('change');
                     //$('select[name="selectPlant"]').val(1).trigger('change');
                 },
                 failure: function (response) {
@@ -304,10 +430,12 @@
                     MessageController.Error(response.responseText, "Error");
                 }
             });
-            }
+                }
+
         function ReloadCenter($, plantId, callback) {
             //alert('ReloadCenter ' + plantId);
             var options = $('#selectCenter');
+           // var optionsEmp = $('#selectCenterEmp');
             options.empty();
             if (plantId && plantId != "") {
                 $.ajax({
@@ -317,14 +445,59 @@
                            plantId : plantId
                            },
                         success: function (response) {
-                        options.append($("<option />").val(null).text("Please select"));
+                            options.append($("<option />").val(null).text("Please select"));
+                     //       optionsEmp.append($("<option />").val(null).text("Please select"));
                         $.each(response.Data, function () {
                             //if (this.ID_Plant == plantId) {
-                               options.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
+                            options.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
+                      //      optionsEmp.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
+
                             //}
                         });
-                        $('select[name="selectCenter"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
+                            $('select[name="selectCenter"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
+                     //        $('select[name="selectCenterEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
                         document.getElementById("selectCenter").disabled = false;
+
+                        if (callback) {
+                            //callback($("#userDivisionId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+
+
+
+            }
+                }
+        function ReloadCenterEmp($, plantId, callback) {
+          //  alert('ReloadCenter ' + plantId);
+            var options = $('#selectCenterEmp');
+
+            options.empty();
+            if (plantId && plantId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllCentersByPlant",
+                    data: {
+                           plantId : plantId
+                           },
+                        success: function (response) {
+
+                            options.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+
+                            options.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
+
+                            //}
+                        });
+                      //      $('select[name="selectCenter"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
+                             $('select[name="selectCenterEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
+                        document.getElementById("selectCenterEmp").disabled = false;
 
                         if (callback) {
                             //callback($("#userDivisionId").val());
@@ -345,6 +518,7 @@
 
         function ReloadDivision($, centerId, callback) {
             var options = $('#selectDivision');
+          //  var optionsEmp = $('#selectDivisionEmp');
             options.empty();
             if (centerId && centerId != "") {
                 $.ajax({
@@ -355,14 +529,17 @@
                     },
                     success: function (response) {
                         options.append($("<option />").val(null).text("Please select"));
+                    //    optionsEmp.append($("<option />").val(null).text("Please select"));
                         $.each(response.Data, function () {
                             //if (this.ID_Center == centerId) {
-                                options.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
+                            options.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
+                     //       optionsEmp.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
                             //}
                         });
                         $('select[name="selectDivision"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DIVISIONID"]).trigger('change');
+                    //    $('select[name="selectDivisionEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DIVISIONID"]).trigger('change');
                         document.getElementById("selectDivision").disabled = false;
-
+                       // document.getElementById("selectDivisionEmp").disabled = false;
 
                         if (callback) {
                             //callback($("#userDivisionId").val());
@@ -376,10 +553,60 @@
                     }
                 });
             }
-        }
+                }
+        function ReloadDivisionEmp($, centerId, callback) {
+            var options = $('#selectDivisionEmp');
+          //  var optionsEmp = $('#selectDivisionEmp');
+            options.empty();
+            if (centerId && centerId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllDivisionsByCenter",
+                    data: {
+                        centerId : centerId
+                    },
+                    success: function (response) {
+                        options.append($("<option />").val(null).text("Please select"));
+                    //    optionsEmp.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+                            //if (this.ID_Center == centerId) {
+                            options.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
+                     //       optionsEmp.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
+                            //}
+                        });
+                        $('select[name="selectDivisionEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DIVISIONID"]).trigger('change');
+                    //    $('select[name="selectDivisionEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DIVISIONID"]).trigger('change');
 
+                        document.getElementById("selectDivisionEmp").disabled = false;
+                        if (callback) {
+                            //callback($("#userDivisionId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+            }
+        }
+        function OpenEmployee() {
+
+                    loadPlant();
+
+                    $('#modSearhEmployee').modal('toggle');
+                    SearchEmployee();
+                    // SetDataTableModal('#dtEmployee');
+                }
+                function ClosedEmployee() {
+                    $('#modSearhEmployee').modal('hide');
+                    $("#dtEmployeeSearch tbody > tr").remove();
+                  //  $("#selectEmp_all").checked = false;
+                }
         function ReloadDepartment($, divisionId, callback) {
             var options = $('#selectDepartment');
+          //  var optionsEmp = $('#selectDepartmentEmp');
             options.empty();
             if (divisionId && divisionId != "") {
                 $.ajax({
@@ -390,13 +617,16 @@
                     },
                     success: function (response) {
                         options.append($("<option />").val(null).text("Please select"));
+          //              optionsEmp.append($("<option />").val(null).text("Please select"));
                         $.each(response.Data, function () {
                             //if (this.ID_Division == divisionId) {
-                                options.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+                            options.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+         //                   optionsEmp.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
                             //}
                         });
 
                         $('select[name="selectDepartment"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"]).trigger('change');
+        //                $('select[name="selectDepartmentEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"]).trigger('change');
                         document.getElementById("selectDepartment").disabled = false;
 
 
@@ -413,8 +643,117 @@
                 });
             }
                 }
+        function ReloadDepartmentEmp($, divisionId, callback) {
+            var options = $('#selectDepartmentEmp');
+          //  var optionsEmp = $('#selectDepartmentEmp');
+            options.empty();
+            if (divisionId && divisionId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllDepartmentsByDivision",
+                    data: {
+                        divisionId : divisionId
+                    },
+                    success: function (response) {
+                        options.append($("<option />").val(null).text("Please select"));
+          //              optionsEmp.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+                            //if (this.ID_Division == divisionId) {
+                            options.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+         //                   optionsEmp.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+                            //}
+                        });
+
+                        $('select[name="selectDepartmentEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"]).trigger('change');
+        //                $('select[name="selectDepartmentEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"]).trigger('change');
+                        document.getElementById("selectDepartmentEmp").disabled = false;
+
+
+                        if (callback) {
+                            //callback($("#userDepartmentId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+            }
+                }
+        function SearchEmployee() {
+
+            MessageController.BlockUI({ boxed: true, target: '#dtEmployee' });
+                    $.ajax({
+                        url: "/MyTeamIDP/EmployeeSearch",
+                        type: "Post",
+                        data: {
+                            'EmployeeID': $("#txtFilterEmployeeID").val(),
+                            'EmployeeName': $("#txtFilterEmployeeName").val(),
+                            'DepartmentID': $("#selectDepartmentEmp").val(),
+                            'DivisionID': $("#selectDivisionEmp").val(),
+                            'CenterID': $("#selectCenterEmp").val(),
+                            'PlantID': $("#selectPlantEmp").val(),
+                            "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
+                        },
+                        success: function (e) {
+                 //          alert(JSON.stringify(e));
+                            RenderEmplooyee(e);
+                          //  alert("pass");
+                            MessageController.UnblockUI('#dtEmployee');
+                         //   alert(e.text);
+                        }
+                    })
+                }
+               function RenderEmplooyee(e) {
+                    if ($.fn.dataTable.isDataTable('#dtEmployee')) {
+                        var table = $('#dtEmployee').DataTable();
+                        table.destroy();
+                    }
+                    $("#dtEmployee tbody > tr").remove();
+            //alert(e.length);
+            for (i = 0; i < e.length; i++) {
+             //  alert(i);
+                        var row = $("<tr />");
+                        var url = '@Url.Content("~/MyTemaIDP/MyTeamIDPDetail")';
+                        var icon = '@Url.Content("~/assets/images/svg/icon-edit-blue.svg")';
+                        $("#dtEmployee tbody").append(row);
+                        ////row.append('<td style="text-align:center">' + e[i].rownumber +'</td>');
+                        row.append('<td style="text-align:center">' + e[i].EmployeeID + '</td>');
+                        row.append('<td style="text-align:center">' + e[i].EmployeeName + '</td>');
+                        row.append('<td style="text-align:center">' + e[i].DepartmentName_EN + '</td>');
+                        row.append('<td style="text-align:center">' + e[i].DivisionName_EN + '</td>');
+                        row.append('<td style="text-align:center">' + e[i].CenterName_EN + '</td>');
+                        row.append('<td style="text-align:center">' + e[i].PlantName_EN + '</td>');
+
+                        row.append('<td <a href="@Url.Content("~/MyTemaIDP/MyTeamIDPDetail")"><img src= ' + icon + ' class="light - logo" alt="homepage" /></a></td>');
+            }           // "<a href='"+url+"'><img src='"+icon+"' class='light-logo' alt='homepage' /></a>";
+
+                    $('#dtEmployee').DataTable({
+                        'processing': true,
+                        'paging': true,  
+                        "ordering": false,
+                        "searching": false,
+                        "lengthChange": false,
+                        "bAutoWidth": false,
+                        "Filter": false,
+                        "info": false,
+                        "bPaginate": false,
+                        "bLengthChange": false,
+                        "pageLength": 4,
+                        "bJQueryUI": true, //Enable smooth theme
+                        "sPaginationType": "full_numbers", //Enable smooth theme
+                        "sDom": 'lfrtip'
+                    });
+                    $('.dataTables_length').addClass('bs-select');
+
+
+        }
         function Search() {
-            var icon = '@Url.Content("~/assets/images/svg/icon-edit.svg")';
+            var iconEdit = '@Url.Content("~/assets/images/svg/icon-edit-blue.svg")';
+            var iconDelete = '@Url.Content("~/assets/images/svg/icon-delete-red.svg")';
+            var iconComplete =  '@Url.Content("~/assets/images/svg/projects-icon.svg")';
             dtData = $('#dtMyTeamIDPList').DataTable({
                 'processing': true,
                 'serverSide': true,
@@ -442,7 +781,7 @@
                         ID_Status: $('#selectIDPStatus').val(),
                         ID_Employee: $('#txtEmployeeID').val(),
 
-                       
+
                         "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
                     },
                 },
@@ -469,17 +808,28 @@
                     {
                         data: null,
                         "mRender": function (data, type, row) {
-                            return "<strong>Objective</strong> <br><textarea rows='4' cols='50' readonly>" + row.Objective + 
-                                "</textarea > <br> <strong>Total Review: </strong>" + row.TotalReview + "<br> <strong> IDP Status: </strong >" +
-                                row.statename + "<br> <strong>Update Date: </strong>" + row.UpdateDate
+                            var iconimg = "<img src='" + iconEdit + "' class='light-logo' alt='edit' width='34' height='34'>&nbsp;&nbsp;";
+                            if (row.statename == "Completed") {
+                                iconimg = "<img src='" + iconComplete + "' class='light-logo' alt='edit' width='34' height='34'>&nbsp;&nbsp;";
+                            }
+                            if (row.statename == "Not Start") {
+                                iconimg = iconimg + "<img src='" + iconDelete + "' class='light-logo' alt='edit' width='34' height='34'>";
+                            }
+
+
+                                return "<strong>Objective</strong> <br><textarea rows='4' cols='50' readonly>" + row.Objective +
+                                    "</textarea > <br> <strong>Total Review: </strong>" + row.TotalReview + "<br> <strong> IDP Status: </strong >" +
+                                    row.statename + "<br> <strong>Update Date: </strong>" + row.UpdateDate + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                                    + iconimg
+
                         }
-                    
+
                     }],
                 "columnDefs": [
                     { "orderable": false, "targets": 0, "className": "text-center", "width": "30%" },
                     { "orderable": false, "targets": 1, "className": "text-Left", "width": "70%"},
                     { "orderable": false, "targets": 2, "className": "text-Left", "width": "100%" },
-                 
+
 
                 ]
             });

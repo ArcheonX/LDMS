@@ -39,6 +39,19 @@ BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
+		IF EXISTS (SELECT * FROM [LDMS_T_CompetenceAnalytic] WHERE [CompetenceAnalyticName] = @CompetenceName AND [ID] <> @ID_CompetenceAnalytic AND IS_ACTIVE = 1)
+		BEGIN
+			 SELECT -- As many or few of these as you care to return
+				100 AS ErrorNumber
+			   ,1 AS ErrorSeverity
+			   ,1 AS ErrorState
+			   ,1 AS ErrorProcedure
+			   ,1 AS ErrorLine
+			   ,'An CompetenceAnalytic Platform Name already exists' AS ErrorMessage;
+			   return;
+		END
+		--RAISERROR (50001 ,-1,-1, 'An CompetenceAnalytic Platform Name already exists');  
+
 	BEGIN TRANSACTION;
 	BEGIN TRY  		
 			UPDATE [dbo].[LDMS_T_CompetenceAnalytic_Employee]

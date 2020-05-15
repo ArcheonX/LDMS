@@ -664,6 +664,7 @@ function OnSaveCompetence() {
         return false;
     } 
 
+    $('#btnSaveCompetence').attr("disabled", "disabled");
     var url = "";
     var analytic_id = $("#analytic_id").val();
     if (analytic_id != "" && analytic_id != null && analytic_id != undefined && analytic_id != "0" && analytic_id != 0) {
@@ -682,10 +683,12 @@ function OnSaveCompetence() {
             topics: listTopics
         },
         success: function (response) { 
+            $('#btnSaveCompetence').removeAttr("disabled");
             MessageController.Success("Save Competence Completed.", "Success");
             window.location.href = "/Competence/Index";  
         },
         failure: function (response) { 
+            $('#btnSaveCompetence').removeAttr("disabled");
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
             } else {
@@ -693,6 +696,7 @@ function OnSaveCompetence() {
             }
         },
         error: function (response) { 
+            $('#btnSaveCompetence').removeAttr("disabled");
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
             } else {

@@ -27,6 +27,16 @@
                 }
             })
         });
+        //$("#btnAllowImport").click(function () {
+        //    console.log("AA");
+        //    //MessageController.WarningCallback("Are you sure you want to dicard changes'?", "Confirm Delete!", function (res) {
+        //    //    if (res) {
+        //    //        $("#txtSectionId").val(null);
+        //    //        $("#txtSectionName").val(null);
+        //    //    }
+        //    //})
+        //});
+
         $("#btnCancel").click(function (event) {
             MessageController.ConfirmCallback("Are you sure you want to cancel changes", "Confirm Cancel Change", function (res) {
                 if (!res) {
@@ -75,6 +85,10 @@
         $("#btnSearchEmployee").click(function (event) {
             LoadEmployees();
         }); 
+      $("#btnExportExcel").click(function (event) {
+            ExportEmployees();
+        }); 
+
         $("#btnEmpListSave").click(function (event) {
             var models = []; 
             var table = $('#dtListEmployee').DataTable(); 
@@ -116,6 +130,12 @@
                 }
             });
         });  
+        $('.custom-file input').change(function (e) {
+            if (e.target.files.length) {
+                $(this).next('.custom-file-label').html(e.target.files[0].name);
+            }
+            uploadFiles();
+        });
     $.ajax({
         type: "GET",
         url: "/Master/Division",
@@ -169,9 +189,39 @@
     }); 
         LoadEmployees(); 
         LoadDepartmentSection();  
+        CreatePopupImportFile();
     })
 })(jQuery);
 
+function ExportEmployees() { 
+    $.ajax({
+        type: "GET",
+        url: '/Organization/ExportEmployees',
+        data: {
+            'departmentId': CookiesController.getCookie("DEPARTMENTID"),
+            'sectionId': $("#selectSection").val(),
+            'keyword': $("#txtKeyword").val()
+        },
+        success: function (response) {
+            var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
+            Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
+        },
+        failure: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}
 function LoadSection() {
     MessageController.BlockUI({ boxed: true, target: '#dtSectionRows' });
     $.ajax({
@@ -180,7 +230,7 @@ function LoadSection() {
         data: {
             'departmentId': CookiesController.getCookie("DEPARTMENTID")
         },
-        success: function (response) { 
+        success: function (response) {
             $('#dtSectionRows').empty();
             $('#dtSectionRows').html(response);
             try {
@@ -198,10 +248,14 @@ function LoadSection() {
                     "Filter": false,
                     "info": false,
                     "bPaginate": false,
-                    "bLengthChange": false, 
+                    "bLengthChange": false,
                     "bJQueryUI": true, //Enable smooth theme
                     "sPaginationType": "full_numbers", //Enable smooth theme
-                    "sDom": 'lfrtip'
+                    "sDom": 'lfrtip',
+                    "pageLength": 10,
+                    "language": {
+                        "zeroRecords": "No data"
+                    }
                 });
                 $('.dataTables_length').addClass('bs-select');
                 CreateSectionPopup();
@@ -210,7 +264,7 @@ function LoadSection() {
             }
             MessageController.UnblockUI('#dtSectionRows');
         },
-        failure: function (response) { 
+        failure: function (response) {
             MessageController.UnblockUI('#dtSectionRows');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
@@ -218,7 +272,7 @@ function LoadSection() {
                 MessageController.Error(response.responseText, "Error");
             }
         },
-        error: function (response) { 
+        error: function (response) {
             MessageController.UnblockUI('#dtSectionRows');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
@@ -452,4 +506,145 @@ function CreateSectionPopup() {
         $.magnificPopup.close();
     });
 }
- 
+
+function CreatePopupImportFile() {
+    $('.import-excel-modal').magnificPopup({
+        type: 'inline',
+        preloader: false,
+        modal: true,
+        callbacks: {
+            beforeOpen: function () {
+                if ($.fn.dataTable.isDataTable('#dtImportExcel')) {
+                    var table = $('#dtImportExcel').DataTable();
+                    table.destroy();
+                }
+                $('#dtImportExcel').DataTable({
+                    'processing': true,
+                    'paging': true,
+                    "ordering": true,
+                    "searching": false,
+                    "lengthChange": false,
+                    "bAutoWidth": false,
+                    "Filter": false,
+                    "info": false,
+                    "bPaginate": false,
+                    "pageLength": 10, 
+                    "bLengthChange": false,
+                    "bJQueryUI": true, //Enable smooth theme
+                    "sPaginationType": "full_numbers", //Enable smooth theme
+                    "sDom": 'lfrtip'
+                });
+                $('.dataTables_length').addClass('bs-select');
+                $("#inputGroupFile01").val(null);
+                $('#lblFileName').html("Choose file");
+            },
+            beforeClose: function () {
+                $('#dtImportExcel').empty(); 
+                $("#inputGroupFile01").val(null);
+                $('#lblFileName').html("Choose file");
+            }
+        }
+    });
+
+    $(document).on('click', '.popup-modal-dismiss', function (e) {
+        e.preventDefault();
+        $.magnificPopup.close();
+    });
+} 
+
+function uploadFiles() { 
+    var input = document.getElementById("inputGroupFile01");
+    var files = input.files;
+    if (files.length <= 0) return;
+    MessageController.BlockUI({ boxed: true, target: '#import-excel-modal' }); 
+    var formData = new FormData(); 
+    formData.append("file", files[0]); 
+    formData.append('divisionId', CookiesController.getCookie("DIVISIONID"));
+    formData.append('departmentId', CookiesController.getCookie("DEPARTMENTID"));
+    //for (var i = 0; i != files.length; i++) {
+    //    formData.append("files", files[i]); 
+    $.ajax({
+        url: '/Organization/ImportSection',
+        type: 'post',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (response) { 
+            if ($.fn.dataTable.isDataTable('#dtImportExcel')) {
+                var table = $('#dtImportExcel').DataTable();
+                table.destroy();
+            }
+            $('#dtImportExcel').DataTable({
+                'data': response.Data,
+                'columns': [
+                    { "data": 'EmployeeID', title: 'Employee ID', "className": 'text-center'}, 
+                    { "data": 'FullName', title: 'Employee Name', "className": 'text-center' },
+                    { "data": 'JobGrade', title: 'Job Grade', "className": 'text-center' },
+                    { "data": 'JobTitle', title: 'Job Title', "className": 'text-center' },
+                    { "data": 'Section', title: 'Section', "className": 'text-center'  }, 
+                    {
+                        "data": 'IsValid',
+                        "sTitle": 'Is Valid',
+                        "className": 'text-center',
+                        "mRender": function (data, type, row) {
+                            if (data == true) {
+                                return '<img src="../assets/images/svg/icon-check-green.svg" class="light-logo" />'
+                            } else {
+                                return '<img src="../assets/images/svg/icon-cross-red.svg" class="light-logo" />'
+                            }
+                        }
+                    },
+                     { "data": 'Remark', title: 'Remark' }
+                ],
+                'processing': true,
+                'paging': true,
+                "ordering": true,
+                "searching": false,
+                "lengthChange": false,
+                "bAutoWidth": false,
+                "Filter": false,
+                "info": false,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bJQueryUI": true, //Enable smooth theme
+                "sPaginationType": "full_numbers", //Enable smooth theme
+                "sDom": 'lfrtip',
+                "pageLength": 10,
+                "language": {
+                    "zeroRecords": "No data"
+                }
+            });
+            $('.dataTables_length').addClass('bs-select');
+            //var isfound = response.Data.any((item) => {
+            //    return item.IsValid == false;
+            //});
+            //if (isfound == true) {
+            //    $("#btnAllowImport").attr("disabled", "disabled");
+            //} else {
+            //    $("#btnAllowImport").removeAttr("disabled");
+            //}
+            MessageController.UnblockUI('#import-excel-modal');
+        },
+        failure: function (response) {
+            MessageController.UnblockUI('#import-excel-modal');
+            $("#inputGroupFile01").val(null);
+            $('#lblFileName').html("Choose file");
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            MessageController.UnblockUI('#import-excel-modal');
+            $("#inputGroupFile01").val(null);
+            $('#lblFileName').html("Choose file");
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}

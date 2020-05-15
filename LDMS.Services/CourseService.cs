@@ -102,6 +102,27 @@ namespace LDMS.Services
             }
         }
 
+        public int DeleteCourse(string ID_Course)
+        {
+            using (IDbConnection conn = Connection)
+            {
+                try
+                {
+                    var p = new DynamicParameters();
+                    p.Add("@ID_Course", ID_Course);
+                    p.Add("@UpdateBy", CurrentUserId);
+
+                    int ret = conn.Query<int>(_schema + ".[sp_M_Course_Delete]", p, commandType: System.Data.CommandType.StoredProcedure).Single();
+
+                    return ret;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+        }
+
         public ViewModels.LDMS_M_Course GetCourseByID(string ID)
         {
             using (IDbConnection conn = Connection)
@@ -431,7 +452,10 @@ namespace LDMS.Services
                 p.Add("@paramID_PlantVenue", ID_PlantVenue);
                 p.Add("@paramID_VenueRoom", ID_VenueRoom);
                 p.Add("@paramPlaceAndLocation", PlaceAndLocation);
-                p.Add("@paramClassStatus", ClassStatus);
+                
+                //if(ClassStatus.Length > 0)
+                //    p.Add("@paramClassStatus", ClassStatus);
+                
                 p.Add("@paramIsAttend", IsAttend);
                 p.Add("@paramAttendNum", AttendNum);
                 p.Add("@paramIsTest", IsTest);

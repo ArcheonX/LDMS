@@ -36,6 +36,7 @@
                     <input type="hidden" id="hID_Class" name="hID_Class" value=@Model.ClassID />
                     <input type="hidden" id="hID_LMS_PACD_courseID" name="hID_LMS_PACD_courseID" value=@Model.LMS_PACD_courseID />
                     <input type="hidden" id="hID_Course" name="hID_Course" value=@Model.ID_Course />
+                    <input type="hidden" id="hID_LearnMethod" name="hID_LearnMethod" value=@Model.ID_LearnMethod />
                     <input type="hidden" id="hID_CourseName" name="hID_CourseName" value=@Model.CourseName />
                     <input type="hidden" id="hID_LearnTimeStart" name="hID_LearnTimeStart" value=@Model.LearnTimeStart />
                     <input type="hidden" id="hID_LearnTimeEnd" name="hID_LearnTimeEnd" value=@Model.LearnTimeEnd />
@@ -79,7 +80,7 @@
                     </div>
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">LDMS/PACD Course ID</label>
+                            <label class="LabelCaption">LDMS/PACD Course ID <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
@@ -87,7 +88,8 @@
                                id="txtLDMSCourseID"
                                asp-for="LMS_PACD_courseID"
                                style="width: 100%"
-                               class="form-control input-sm" />
+                               class="form-control input-sm"
+                               disabled />
                     </div>
                 </div>
                 <div class="row form-group">
@@ -173,7 +175,7 @@
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">Learning Date</label>
+                            <label class="LabelCaption">Learning Date <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
@@ -190,7 +192,7 @@
                     </div>
                     <div class="col-sm-1 col-md-1">
                         <span class="pull-right">
-                            <label class="LabelCaption">To</label>
+                            <label class="LabelCaption">To <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
@@ -584,7 +586,7 @@
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
                         <a id="btnClose" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalInstructor()">
-                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
                         </a>
                     </div>
                 </div>
@@ -614,6 +616,7 @@
                 //              return false;
             });*/
 
+        //alert($('#hID').val());
 
         LoadTime();
         loadPlant();
@@ -622,8 +625,6 @@
        
 
         GetClassRemain($('#hID').val());
-
-
         if ($('#hID_ClassStatus').val() === '30') {
             
             document.getElementById("chkAttend").disabled = true;
@@ -643,6 +644,10 @@
             
         }
 
+        // check LMS & PACD
+        if ($('#hID_LearnMethod').val() == 3 || $('#hID_LearnMethod').val() == 4 ) {
+            document.getElementById("txtLDMSCourseID").disabled = false;
+        }
 
 
         $('#txtCapacity').keyup(function() {
@@ -851,17 +856,21 @@
                  var options = $('#selectTimeFrom');
                  var options1 = $('#selectTimeTo');
 
-                 options.append($("<option />").val(null).text("Please Select"));
-                 options1.append($("<option />").val(null).text("Please Select"));
+                 //options.append($("<option />").val(null).text("Please Select"));
+                 //options1.append($("<option />").val(null).text("Please Select"));
                 $.each(items, function () {
                     options.append($("<option />").val(this.Key).text(this.value));
                     options1.append($("<option />").val(this.key).text(this.value));
                 });
 
                 //$('#selectTimeFrom').find('option:selected').text($('#hID_LearnTimeStart').val());
-                $('select[name="selectTimeFrom"]').val($('#hID_LearnTimeStart').val());
-                $('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                if ($('#hID_LearnTimeStart').val() != "") {
+                    $('select[name="selectTimeFrom"]').val($('#hID_LearnTimeStart').val());
+                }
 
+                if ($('#hID_LearnTimeEnd').val() != "") {
+                    $('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                }
        });
     }
 
@@ -1028,6 +1037,26 @@
 
     function SaveClass() {
         //alert('SaveClass');
+
+        if ($('#dteLearningDateFrm').val() == '') {
+             MessageController.Error('Please Select Learning Date Start', "Error");
+             return;
+         }
+         if ($("#dteLearningDateTo").val() == '') {
+             MessageController.Error('Please Select Learning Date To', "Error");
+             return;
+        }
+
+        // LMS / PACD Required
+        if ($('#hID_LearnMethod').val() == 3 || $('#hID_LearnMethod').val() == 4) {
+
+            if ($("#txtLDMSCourseID").val() == '') {
+                MessageController.Error('Please Key Enter LDMS / PACD CourseID', "Error");
+                return;
+            }
+        }
+
+
         MessageController.BlockUI({ boxed: true, target: '#frmClassDetailEditor' });
         //debugger;
          $.ajax({
@@ -1109,7 +1138,6 @@
                 ID_Section : @HttpContextAccessor.HttpContext.Request.Cookies["SECTIONTID"]
             },
             success: function(e) {
-
                 $("#txtCapacity").val(e.Remain);
             }
         });

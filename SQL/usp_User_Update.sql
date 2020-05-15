@@ -20,7 +20,7 @@ GO
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[usp_User_Update]
 	-- Add the parameters for the stored procedure here 
-	@ID_Employee bigint,
+	@ID_Employee int,
 	@EmployeeId nvarchar(50),
 	@EmployeeName nvarchar(50),
 	@EmployeeSurName nvarchar(50),
@@ -53,13 +53,23 @@ BEGIN
     -- Insert statements for procedure here
 	DECLARE @PlantId INT; 
 	SELECT @PlantId = ID_Plant FROM LDMS_M_Center  WHERE ID = @CenterId;
-	IF NOT EXISTS (SELECT * FROM LDMS_M_User WHERE EmployeeID = @EmployeeId)
-		RAISERROR (101,-1,-1, 'An Employee ID doen''t exists');  
+	IF NOT EXISTS (SELECT * FROM LDMS_M_User WHERE   ID_User = @ID_Employee)
+	BEGIN
+			 SELECT -- As many or few of these as you care to return
+				100 AS ErrorNumber
+			   ,1 AS ErrorSeverity
+			   ,1 AS ErrorState
+			   ,1 AS ErrorProcedure
+			   ,1 AS ErrorLine
+			   ,'An Employee ID doen''t exists' AS ErrorMessage;
+			   return;
+		END
+		--RAISERROR (50001 ,-1,-1, 'An Employee ID doen''t exists');  
 
 BEGIN TRANSACTION;
 BEGIN TRY
 
-	UPDATE [dbo].[LDMS_M_User]
+   UPDATE [dbo].[LDMS_M_User]
    SET [EmployeeID] = @EmployeeId
       ,[Name] = @EmployeeName
       ,[Surname] =@EmployeeSurName
@@ -90,9 +100,9 @@ BEGIN TRY
       ,[IsLocked] =0 
       ,[UpdateBy] =@UpdateBy
       ,[UpdateDate] = GETDATE()
-	WHERE [EmployeeID]  = @EmployeeId; 
+	WHERE ID_User  = @ID_Employee; 
 	 
-		COMMIT TRANSACTION;
+	COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH
 	  ROLLBACK TRANSACTION;

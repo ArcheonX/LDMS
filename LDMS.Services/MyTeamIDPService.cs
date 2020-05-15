@@ -24,7 +24,47 @@ namespace LDMS.Services
         {
             _logger = logger;
         }
+        public List<ViewModels.LDMS_M_IDP_Employee> GetEmployee(ViewModels.SearchModel.LDMS_M_IDP_Employee_Search criteria)
+        {
+            using (IDbConnection conn = Connection)
+            {
+                ViewModels.Paging_Result ret = new ViewModels.Paging_Result();
+                List<ViewModels.LDMS_M_IDP_Employee> EmployeeList = new List<ViewModels.LDMS_M_IDP_Employee>();
+                try
+                {
 
+                    var p = new DynamicParameters();
+                    if (criteria.EmployeeID != null) p.Add("@EmployeeID", criteria.EmployeeID);
+                    if (criteria.EmployeeName != null) p.Add("@EmployeeName", criteria.EmployeeName);
+                    if (criteria.DepartmentID != null) p.Add("@DepartmentID", criteria.DepartmentID);
+                    if (criteria.DivisionID != null) p.Add("@DivisionID", criteria.DivisionID);
+                    if (criteria.CenterID != null) p.Add("@CenterID", criteria.CenterID);
+                    if (criteria.PlantID != null) p.Add("@PlantID", criteria.PlantID);
+
+                    //p.Add("@PageNum", criteria.PageNum);
+                    //p.Add("@PageSize", criteria.PageSize);
+                    //p.Add("@SortField", criteria.SortField);
+                    //p.Add("@SortOrder", criteria.SortOrder);
+
+
+                    var grid = conn.QueryMultiple("[dbo].[sp_M_IDP_Employee_SelectPaging]", p, commandType: CommandType.StoredProcedure);
+
+                    EmployeeList = grid.Read<ViewModels.LDMS_M_IDP_Employee>().ToList();
+                    //var totalRec = grid.Read().ToList();
+
+                    //ret.data = EmployeeList;
+                    //ret.recordsTotal = totalRec[0].TotalRecords;
+                    //ret.recordsFiltered = totalRec[0].TotalRecords;
+                    //ret.draw = 0;
+
+                    return EmployeeList;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+        }
         public ViewModels.Paging_Result GetMy_Team_IDP(LDMS_T_IDP_Master criteria) {
 
             using (IDbConnection conn = Connection)

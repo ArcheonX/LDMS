@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Course Name</label>
+                        <label class="LabelCaption">Course Name <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -86,7 +86,7 @@
             <div class="row form-group">
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Course Type</label>
+                        <label class="LabelCaption">Course Type <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -99,7 +99,7 @@
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Learn Method</label>
+                        <label class="LabelCaption">Learn Method <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-2 col-md-4">
@@ -161,7 +161,7 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-10">
-                    <textarea id="txtOutline"
+                    <textarea id="txt_Outline"
                               name="OutLine"
                               asp-for="OutLine"
                               rows="5" style="width:100%"></textarea>
@@ -351,7 +351,7 @@
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
-                        <input type="text" id="txtJobgrade" name="txtJobgrade"
+                        <input type="text" id="txtJobgrade" name="txtJobgrade" disabled="disabled"
                                asp-for="JobGradeTargetID" class="form-control" />
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -367,7 +367,7 @@
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
-                        <input type="text" id="txtJobTitle" name="txtJobTitle"
+                        <input type="text" id="txtJobTitle" name="txtJobTitle" disabled="disabled"
                                asp-for="JobTitleTargetID" class="form-control" />
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -555,7 +555,7 @@
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
                         <a id="btnClose" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="ClosedEmployee()">
-                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;close
                         </a>
                     </div>
                 </div>
@@ -600,7 +600,7 @@
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
                         <a id="btnCloseJobGrade" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalJobGrade()">
-                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
                         </a>
                     </div>
                 </div>
@@ -645,7 +645,7 @@
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
                         <a id="btnCloseJobTitle" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalJobTitle()">
-                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
                         </a>
                     </div>
                 </div>
@@ -827,11 +827,11 @@
         function validation() {
             $("#selRefresh").change( function(){
            if( $(this).is(':checked') ) {
-
+                $(this).val('1');
                 document.getElementById("txtRefreshmentPeriod").disabled = false;
                 document.getElementById("selectRefreshmentUnit").disabled = false;
             }else{
-
+               $(this).val('0');
                document.getElementById("txtRefreshmentPeriod").disabled = true;
                document.getElementById("selectRefreshmentUnit").disabled = true;
            }
@@ -887,7 +887,6 @@
 
                 document.getElementById("selectLearnMethod").disabled = true;
                 document.getElementById("selectCourseType").disabled = true;
-
 
                 loadPlant();
                 LoadCourseLearnMethod();
@@ -1242,7 +1241,7 @@
                 type: "GET",
                     }).done(function (items) {
                         var options = $('#selectLearnMethod');
-                        options.append($("<option />").val(null).text("--- Select All---"));
+                        options.append($("<option />").val(null).text("--- Please Select ---"));
                         $.each(items, function () {
                             options.append($("<option />").val(this.ID).text(this.Course_LearnMethodName_EN));
                         });
@@ -1570,6 +1569,21 @@
 
         function SaveCourse() {
             //alert('Save Click Outline : ' + $('#txtOutLine').val());
+
+             if ($("#txtCourseName").val() == '') {
+                 MessageController.Error('Please Enter Course Name', "Error");
+                 return;
+             }
+             if ($("#selectCourseType").val() == '') {
+                 MessageController.Error('Please Select CourseType', "Error");
+                 return;
+             }
+             if ($("#selectLearnMethod").val() == '') {
+                 MessageController.Error('Please Select LearnMethod', "Error");
+                 return;
+             }
+
+
             MessageController.BlockUI({ boxed: true, target: '#frmCourseDetailEditor' });
             $.ajax({
                     url: "/Courses/InsertCourse",
@@ -1582,7 +1596,7 @@
                         ID_CourseType : $('#selectCourseType').val(),
                         Objective : $('#txtObjective').val(),
                         Description : $('#txtDescription').val(),
-                        OutLine : $('#txtOutLine').val(),
+                        OutLine : $('#txt_Outline').val(),
                         IsRefreshment : $('#selRefresh').val(),
                         RefreshmentPeriod : $('#txtRefreshmentPeriod').val(),
                         RefreshmentUnit : $('#selectRefreshmentUnit').val(),
@@ -1597,8 +1611,8 @@
                         IsActive : $('#selectCourseStatus').val()
                 },
                 success: function (e) {
-                    //debugger;
-                        alert('ID : ' + $('#hID').val());
+                        //debugger;
+                        //alert('ID : ' + $('#hID').val());
                         $('#hID').val(e.ID);
                         $('#txtCourseID').val(e.CourseID);
                         $('#divClass').attr("style", "display:block");
@@ -1612,10 +1626,14 @@
         function LoadCourse(ID) {
 
             $('#txtCourseID').val($('#hCourseID').val());
-            $('#selRefresh').val($('#hIsRefreshment').val());
-            $('#txtRefreshmentPeriod').val($('#RefreshmentPeriod').val());
+            $('#txtRefreshmentPeriod').val($('#hRefreshmentPeriod').val());
             $('select[name="selectRefreshmentUnit"]').val($('#hRefreshmentUnit').val());
             $('#selectCourseStatus').val($('#hIsActive').val());
+
+            if ($('#hIsRefreshment').val() == '1') {
+                $('#selRefresh').val('1');
+                $('#selRefresh').attr('checked', true);
+            }
 
             $('#divClass').attr("style", "display:block");
 
@@ -1653,7 +1671,14 @@
                 row.append('<td style="text-align:center">' + e[i].Capacity + '</td>');
                 row.append('<td style="text-align:center">' + e[i].RoomName_EN + '</td>');
                 row.append('<td style="text-align:center">' + e[i].ClassStatus + '</td>');
-                row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle.svg") width="28" height="28" onclick="LoadClassRegister('+ e[i].ID + ')" ></img></a></td>');
+
+                if (e[i].ClassStatus == 'Register') {
+                    row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle-green.svg") width="28" height="28" onclick="LoadClassRegister(' + e[i].ID + ')" ></img></a></td>');
+                }
+                else {
+                    row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle.svg") width="28" height="28" onclick="LoadClassRegister('+ e[i].ID + ')" ></img></a></td>');
+                }
+                
                 row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-edit-blue.svg") width="28" height="28" onclick="LoadClassEdit('+ e[i].ID +')" ></a></td>');
                 //row.append('<td class="text-center"><img src=@Url.Content("~/assets/images/svg/icon-delete-red.svg") class="btn"></img></td>');
                 row.append('<td style="text-align:center"><input type="checkbox" class="chkSingleClass" style="text-align:center; name="selectClass_' + i + '" value="selectClass_' + i + '" id="selectClass_' + i + '"/><label for="selectClass_'+ i +'"> </label> </td>');
@@ -1677,18 +1702,24 @@
                  alert('กรุณาเลือก class');
             }
             else {
-                $.ajax({
-                url: "/Courses/DeleteClass",
-                type: "POST",
-                data: {
-                    ID_Class: classList,
-                   
-                },
-                success: function (e) {
-                    alert('Delete Complete');
-                    window.location.href = '@Url.Content("~/Courses/Detail/")' + $('#hID').val();
-                }
-            });
+
+                MessageController.ConfirmCallback("Are you sure you want to delete Class Selected ? ", "Confirm Delete!", function (res) {
+                    if (res) {
+                        $.ajax({
+                            url: "/Courses/DeleteClass",
+                            type: "POST",
+                            data: {
+                                ID_Class: classList,
+
+                            },
+                            success: function (e) {
+                                alert('Delete Complete');
+                                window.location.href = '@Url.Content("~/Courses/Detail/")' + $('#hID').val();
+                            }
+                        })
+
+                    }
+                });
             }
             
             

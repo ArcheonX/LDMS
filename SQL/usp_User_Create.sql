@@ -55,7 +55,17 @@ BEGIN
 	DECLARE @PlantId INT; 
 	SELECT @PlantId = ID_Plant FROM LDMS_M_Center  WHERE ID = @CenterId;
 	IF EXISTS (SELECT * FROM LDMS_M_User WHERE EmployeeID = @EmployeeId)
-		RAISERROR (100,-1,-1, 'An Employee ID already exists');  
+		BEGIN
+			 SELECT -- As many or few of these as you care to return
+				100 AS ErrorNumber
+			   ,1 AS ErrorSeverity
+			   ,1 AS ErrorState
+			   ,1 AS ErrorProcedure
+			   ,1 AS ErrorLine
+			   ,'An Employee ID already exists' AS ErrorMessage;
+			   return;
+		END
+		--RAISERROR (50001 ,-1,-1, 'An Employee ID already exists');  
 
 BEGIN TRANSACTION;
 BEGIN TRY
