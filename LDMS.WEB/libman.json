@@ -124,8 +124,16 @@
       "destination": "wwwroot/lib/crypto-js/"
     },
     {
+      "library": "canvg@1.5",
+      "destination": "wwwroot/lib/canvg/"
+    },
+    {
       "library": "moment.js@2.25.3",
       "destination": "wwwroot/lib/moment.js/"
+    },
+    {
+      "library": "html2canvas@0.4.1",
+      "destination": "wwwroot/lib/html2canvas/"
     }
   ]
 }

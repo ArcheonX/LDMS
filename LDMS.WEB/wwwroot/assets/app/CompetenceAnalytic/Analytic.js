@@ -341,16 +341,28 @@ function SaveCompetenceScore() {
 }
 
 function ExportCompetenceScore(analytic_id) {
-    MessageController.BlockUI({ boxed: true, target: '#pn-Analytic' }); 
-    chart.exportChart({ type: "image/png" });
+    MessageController.BlockUI({ boxed: true, target: '#pn-Analytic' });
+    debugger;
+    var svgString = chart.getSVG().replace(/</g, '\n&lt;').replace(/>/g, '&gt;'); 
+    //const blob = new Blob([svgString], { type: 'image/svg+xml' });
+    //const url = URL.createObjectURL(blob);
+    //const image = document.createElement('img');
+
+    //let parser = new DOMParser();
+    //let svgElem = parser.parseFromString(svgString, "image/svg+xml").documentElement;
+    //let base64 = svgElem.toDataURL();
+   // var formData = new FormData();
+    //formData.append('fileImage', blob);
+    //formData.append('competenceId', analytic_id);
     $.ajax({
-        type: "GET",
-        url: '/Competence/Export',
+        type: "POST",
+        url: '/Competence/Export', 
         data: {
-            'competenceId': analytic_id 
+            'competenceId': analytic_id,
+            'chartImage': JSON.stringify(svgString)
         },
         success: function (response) {
-            data = response.Data;
+            var data = response.Data;
             if (data != "") {
                 window.location.href = "/Competence/Download/?fileName=" + data;
             }

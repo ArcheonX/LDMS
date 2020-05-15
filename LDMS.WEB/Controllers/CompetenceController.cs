@@ -70,12 +70,18 @@ namespace LDMS.WEB.Controllers
         [ResponseCache(Duration = 1, Location = ResponseCacheLocation.None)]
         [AuthorizeRole(UserRole.All)]
         [Route("Competence/Export")]
-        public async Task<IActionResult> Export(int competenceId)
+        [HttpPost]
+        public async Task<IActionResult> Export(int competenceId, string chartImage)// [FromBody]Microsoft.AspNetCore.Http.IFormFile fileImage)// int competenceId,string chartImage)
         {
+           // int.TryParse(Request.Form.FirstOrDefault(x => x.Key == "competenceId").Value, out int competenceId);
             var result = await CompetenceAnalyticService.ReadById(competenceId);
             if (!result.IsOk)
             {
                 return Response(result);
+            }
+            if (result.Data == null)
+            {
+                return Response(new ServiceResult(new ArgumentNullException("Competence")));
             }
             var competence = result.Data as  ViewModels.TCompetenceAnalytic;
             using (var workbook = new XLWorkbook())
