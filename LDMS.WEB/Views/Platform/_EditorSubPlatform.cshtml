@@ -186,7 +186,7 @@
                             </div>
                         </div>
                         <div class="col-sm-3 col-md-3">
-                            <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%">
+                            <button id="btnSeacrh" onclick="SearchCourse();" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%">
                                 <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
                             </button>
                         </div>
@@ -263,18 +263,23 @@
             $('#modSearhCourse').modal('toggle');
             LoadCourseLearnMethod();
             $('#dtmodalCourse tbody').empty();
+            $("#dtmodalCourse tbody > tr").remove();
+            //$('input:checkbox').prop('checked', false);
+            
             SearchCourse();
         });
 
         $('#btnClose').click(function () {
             $('#modSearhCourse').modal('hide');
             $('#dtmodalCourse tbody').empty();
+            $("#dtmodalCourse tbody > tr").remove();
             CreateDataTablePaging($);
         });
 
         $('#btnSearch').click(function () {
             SearchCourse();
         }); 
+
         if ($('#hID').val() != 'null') { // Edit
             //alert('Have ID : ' + $('#hID').val());
             //LoadSubPlatformCourse($('#hID').val());
@@ -294,8 +299,7 @@
      $('input:checkbox').prop('checked', this.checked);
     });*/
 
-
-
+  
     function deleteCourse() {
         $('.table tbody').on('click', '.btn', function () {
         $(this).closest('tr').remove();
@@ -407,8 +411,10 @@
     });
     }
 
-    function SearchCourse() {
-            MessageController.BlockUI({ boxed: true, target: '#modSearhCourse' });
+        function SearchCourse() {
+            //alert('SearchCourse');
+
+            //MessageController.BlockUI({ boxed: true, target: '#modSearhCourse' });
             var searchmodel = {
                 CourseID: $("#txtFilterCourseID").val(),
                 CourseName: $("#txtFilterCourseName").val(),
@@ -416,14 +422,18 @@
                 LearnMethod: $("#selectLearnMetod").val()
             };
 
-            //alert('searmodel'+ JSON.stringify(searchmodel));
 
-            //alert('SearchCourse');
+            if ($.fn.dataTable.isDataTable('#dtmodalCourse')) {
+                var table = $('#dtmodalCourse').DataTable();
+                table.destroy();
+            }
+
             $.ajax({
                 url: "/Platform/SearchCourse",
                 type: "GET",
                 data: searchmodel,
                 success: function (e) {
+                    //alert('RendorCourse' + JSON.stringify(e));
                     RendorCourse(e);
                 }
             })
@@ -435,7 +445,7 @@
 
 
             function RendorCourse(e) {
-                // alert('RendorCourse');
+               
                 $("#dtmodalCourse tbody > tr").remove();
                 for (i = 0; i < e.length; i++) {
                     var row = $("<tr />");
@@ -454,10 +464,7 @@
                     row.append('<input type="hidden" id="hdSelect_CourseStatus_' + i + '" name="hdSelect_CourseStatus_' + i + '" value="' + e[i].CourseStatus + '" />');
                     row.append('<td style="text-align:center"><input type="checkbox" style="text-align:center; name="selectCourse_' + i + '" value="selectCourse_' + i + '" id="selectCourse_' + i + '" /><label for="selectCourse_' + i + '"> </label> </td>');
                 }
-                if ($.fn.dataTable.isDataTable('#dtmodalCourse')) {
-                    var table = $('#dtmodalCourse').DataTable();
-                    table.destroy();
-                }
+              
                 $('#dtmodalCourse').DataTable({
                     'processing': true,
                     'paging': true,
@@ -472,10 +479,12 @@
                     "pageLength": 5,
                     "bJQueryUI": true, //Enable smooth theme
                     "sPaginationType": "full_numbers", //Enable smooth theme
-                    "sDom": 'lfrtip'
+                    "sDom": 'lfrtip',
+                    //"destroy": true,
+                    
                 });
                 $('.dataTables_length').addClass('bs-select');
-                MessageController.UnblockUI('#modSearhCourse');
+                //MessageController.UnblockUI('#modSearhCourse');
             }
         }
 
@@ -567,7 +576,7 @@
     }
 
     function SaveSubPlatFormCourse() {
-        alert('SaveSubPlatFormCourse');
+        //alert('SaveSubPlatFormCourse');
         var model = [];
         var i = 0;
 
