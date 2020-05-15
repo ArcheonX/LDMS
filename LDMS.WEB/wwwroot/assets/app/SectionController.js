@@ -203,9 +203,14 @@ function ExportEmployees() {
             'keyword': $("#txtKeyword").val()
         },
         success: function (response) {
-            debugger; 
-            var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
-            Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
+            debugger;
+            data = response.Data;
+            if (data != "") {
+                //use window.location.href for redirect to download action for download the file
+                window.location.href = "/Organization/DownloadEmployees/?fileName=" + data;
+            }
+            //var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
+            //Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
         },
         failure: function (response) {
             if (JSON.parse(response.responseText).Errors.length > 0) {

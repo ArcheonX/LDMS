@@ -84,24 +84,13 @@ namespace LDMS.WEB.Controllers
                     worksheet.Cell(currentRow, 4).Value = user.JobTitle;
                     worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
                 }
-                string fileName = "Section.xlsx";
+                string fileName = System.Guid.NewGuid().ToString()+ "_Section.xlsx";
                 string filepath = Path.Combine(_filePath, fileName); 
                 using (FileStream fileStream = new FileStream(filepath, FileMode.Create, FileAccess.ReadWrite))
                 {
                     workbook.SaveAs(fileStream);
                 }
-                return Response(new ServiceResult(fileName));
-                //using (var stream = new MemoryStream())
-                //{
-                //    workbook.SaveAs(stream);
-                //    var content = stream.ToArray();
-                //    string fileName = String.Format("Section.xlsx");
-                //    Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                //    {
-                //        FileDownloadName = fileName
-                //    };
-                //    return new ServiceResult(content);
-                //}
+                return Response(new ServiceResult(fileName)); 
             }
         }
         [HttpGet]
