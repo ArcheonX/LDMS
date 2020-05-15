@@ -727,6 +727,7 @@ namespace LDMS.Services
                 HttpContext.Response.Set("EMPLOYEEID", user.EmployeeID, 120);
                 HttpContext.Response.Set("JOINDATE", user.JoinDate.HasValue ? string.Format("{0:dd-MMM-yyyy}", user.JoinDate.GetValueOrDefault()) : "", 120);
                 HttpContext.Response.Set("DEPARTMENT", user.LDMS_M_Department != null ? string.Format("{0}", user.LDMS_M_Department.DepartmentID) : "", 120);
+                HttpContext.Response.Set("DEPARTMENTNAME", user.LDMS_M_Department != null ? string.Format("{0}", user.LDMS_M_Department.DepartmentName_EN) : "", 120);
                 HttpContext.Response.Set("PLANTID", user.LDMS_M_Plant != null ? user.LDMS_M_Plant.ID_Plant.ToString() : user.ID_Plant.ToString(), 120);
                 HttpContext.Response.Set("CENTERID", user.LDMS_M_Center != null ? user.LDMS_M_Center.ID_Center.ToString() : user.ID_Center.ToString(), 120);
                 HttpContext.Response.Set("DIVISIONID", user.LDMS_M_Division != null ? user.LDMS_M_Division.ID_Division.ToString() : user.ID_Division.ToString(), 120);
@@ -791,9 +792,12 @@ namespace LDMS.Services
         }
 
         private IEnumerable<NavigationMenu> BuildUserMenu(int roleId)
-        { 
-                var items = Connection.Query<ViewModels.LDMS_M_SubModule, ViewModels.LDMS_M_Module, ViewModels.LDMS_M_RolePermission, ViewModels.LDMS_M_Role, ViewModels.LDMS_M_SubModule>
-                (_schema + ".[usp_RoleMenu_READ_By_Role] @paramRoleId",
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@paramRoleId", roleId);
+
+            var items = Connection.Query<ViewModels.LDMS_M_SubModule, ViewModels.LDMS_M_Module, ViewModels.LDMS_M_RolePermission, ViewModels.LDMS_M_Role, ViewModels.LDMS_M_SubModule>
+                (_schema + ".[usp_RoleMenu_READ_By_Role]",
                   map: (submodule, module, rolepermission, role) =>
                   {
                       submodule.LDMS_M_Module = module;
@@ -805,9 +809,11 @@ namespace LDMS.Services
                       return submodule;
                   },
                   splitOn: "ID_Module,RolePermissionId,RoleId",
-                  param: new { @paramRoleId = roleId });
+                  param: parameters,
+                  commandType: CommandType.StoredProcedure,
+                  commandTimeout: 0);
 
-                var groupMenu = items.OrderBy(e => e.LDMS_M_Module.Module_Sequence).GroupBy(e => e.LDMS_M_Module.ID_Module);
+            var groupMenu = items.OrderBy(e => e.LDMS_M_Module.Module_Sequence).GroupBy(e => e.LDMS_M_Module.ID_Module);
                 bool isFirst = true;
                 foreach (var item in groupMenu)
                 {

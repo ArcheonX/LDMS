@@ -120,7 +120,7 @@
                                 <a href='@Url.Action("MyProfile", "Account")' aria-expanded="false">I am : @HttpContextAccessor.HttpContext.Request.Cookies["FULLNAME"]</a>
                                 <a href='@Url.Action("MyProfile", "Account")' aria-expanded="false">My ID : @HttpContextAccessor.HttpContext.Request.Cookies["EMPLOYEEID"]</a>
                                 <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Join Date : @HttpContextAccessor.HttpContext.Request.Cookies["JOINDATE"]</a>
-                                <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Department : @HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENT"]</a>
+                                <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Department : @HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTNAME"]</a>
                             </div>
                             <span class="pull-right" style="padding-right:25px;">
                                 <a href="/Account/Logout" style="color:#ffffff" aria-expanded="false">Sign Out</a>
@@ -193,8 +193,7 @@
             }
         })
     })(jQuery);
-    function ToggleMenu(mn) {
-        debugger;
+    function ToggleMenu(mn) { 
         if (localStorage.MenuStage == null || localStorage.MenuStage == undefined || localStorage.MenuStage == "show") {
             $(".sidebar").hide();
             $("#pnAreaAction").attr("style", "width:100%;");

@@ -50,6 +50,7 @@ function OnAuthentication() {
                 //    CookiesController.setCookie("passkey") = null;
                 //    localStorage.RememberMe = false;
                 //}
+                localStorage.menuId = null;
                 MessageController.UnblockUI('#frm-login');
                 window.location.href = response.Data;
             } else { 
