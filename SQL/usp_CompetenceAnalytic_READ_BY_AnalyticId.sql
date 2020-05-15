@@ -34,7 +34,8 @@ BEGIN
 	al.Criteria5,
 	al.ID_Department,
 	al.ID_JobGrade,
-	JobGrade.JobGradeName_EN as JobGrade
+	JobGrade.JobGradeName_EN as JobGrade,
+	ISNULL(al.UpdateDate,al.CreateDate) LastUpdate
 	FROM LDMS_T_CompetenceAnalytic al WITH (NOLOCK) 
 	LEFT OUTER JOIN LDMS_M_JobGrade JobGrade on JobGrade.ID = al.ID_JobGrade
 	where al.ID = @AnalyticId and al.Is_Active=1;

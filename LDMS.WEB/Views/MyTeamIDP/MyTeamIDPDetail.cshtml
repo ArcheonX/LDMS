@@ -1,26 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "My Team IDP";
-    ViewData["MainTitle"] = "My Team IDP - Create";
+    ViewData["Title"] = "MyTeamIDP-Topic";
+    ViewData["MainTitle"] = "MyTeamIDP";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model LDMS.ViewModels.LDMS_T_IDP
-<script src="~/assets/app/CompetenceAnalytic/Editor.js"></script>
 <div class="panel panel-primary" style="margin-top:-15px;width:100%;">
     <div class="panel panel-default" style="width:100%;border-width:thin;border-style:solid;">
         <div class="panel-body" style="width:100%;">
             <form id="frmMain" class="form" method="post" enctype="multipart/form-data" style="width:100%">
-                @Html.AntiForgeryToken()
-                @if (Model != null)
-                {
-                    <input type="hidden" id="hID" name="hID" value=@Model.ID />
-
-                }
-                else
-                {
-                    <input type="hidden" id="hID_CoachingReviewHead" name="hID_CoachingReviewHead" value="" />
-                }
+                @Html.AntiForgeryToken()  @*CSRF Protected*@
                 <div class="form-horizontal" style="margin-top:25px">
                     <div class="row form-group">
                         <div class="col-sm-8 col-md-8">
@@ -40,16 +30,17 @@
                         <div class="col-sm-1 col-md-1">
                             <div class="user-profile-coaching">
                                 <div class="profile-img">
-                                    <img src='@Url.Content(@HttpContextAccessor.HttpContext.Request.Cookies["FACEIMAGE"])' alt="user" />
+                                    @*<img src='@Url.Content(@HttpContextAccessor.HttpContext.Request.Cookies["FACEIMAGE"])' alt="user" />*@
+                                    <img src="~/assets/images/users/virgil.jpg" class="img-fluid img-thumbnail" alt="virgil" width='120' height='240'>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4 col-md-4" style="margin-top:20px; margin-left:30px">
                             <div class="profile-text">
-                                <a aria-expanded="false">Name : @Model.EmployeeName </a>
+                                <a aria-expanded="false">Name : Mr. Virgil van Dijk </a>
                             </div>
                             <div class="profile-text">
-                                <a aria-expanded="false">Position :@Model.Position</a>
+                                <a aria-expanded="false">Position :Center Back</a>
                             </div>
                             <div class="profile-text">
                                 <a aria-expanded="false">Service (Year) : 5 </a>
@@ -58,13 +49,13 @@
                                 <a aria-expanded="false">IDP Time Line : 1 year 1 month 5 Day </a>
                             </div>
                             <div class="profile-text">
-                                <a aria-expanded="false">IDP Start : @Model.IDP_StartDate </a>
+                                <a aria-expanded="false">IDP Start : 1 May 2020 </a>
                             </div>
                             <div class="profile-text">
-                                <a aria-expanded="false">IDP End : @Model.IDP_EndDate</a>
+                                <a aria-expanded="false">IDP End : 30 April 2021</a>
                             </div>
                             <div class="profile-text">
-                                <a aria-expanded="false">IDP Status : @Model.IDP_StatusName </a>
+                                <a aria-expanded="false">IDP Status : On Progress </a>
                             </div>
                         </div>
 
@@ -79,372 +70,8 @@
                         </div>
 
                     </div>
-
-                    <div class="row form-group" style="margin-top:-3em; margin-left:7em">
-                        <div class="col-sm-4 col-md-4 offset-2">
-                            <span class="pull-right">
-                                <label class="LabelCaption" style="font-weight:bold;">Topic Reivew :  </label>
-                            </span>
-                        </div>
-                        <div id="dTopicCount">
-
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-sm-1 col-md-4">
-                            <span class="pull-right">
-                                <label class="LabelCaption"></label>
-                            </span>
-                        </div>
-                        <div class="col-sm-1 col-md-4 offset-6">
-                            <span class="pull-right">
-                                <label class="LabelCaption">Last Update : </label>
-                            </span>
-                        </div>
-                        <div class="col-sm-1 col-md-2">
-                            <span class="pull-left">
-                                <label class="LabelCaption">20/06/2020 18:39 </label>
-                            </span>
-                        </div>
-
-                    </div>
-
                 </div>
-                <div style="border-width:thin; border-style:solid; margin-left:0px; margin-top: 5px; margin-bottom:5px; width:100%;display:block"></div>
-
-                <div id="divTopicRender" style="display:none">
-
-                </div>
-                <div id="divTopic" style="margin-top:25px; margin-left:10px; display:none;">
-                    <div class="table-responsive m-t-40">
-                        <table class="display dataTable" width="100%" id="dtTopicList">
-                            <thead>
-                                <tr>
-                                    <!--<th style="text-align:center;"></th>-->
-                                    <th style="text-align:center;">No</th>
-                                    <th style="text-align:center;width:200px">Development Topic</th>
-                                    <th style="text-align:center;width:150px">Expected Outcome</th>
-                                    <th style="text-align:center;width:150px">How to Develop ?</th>
-                                    <th style="text-align:center;width:100px">Measurement Outcome</th>
-                                    <th style="text-align:center;width:200px">By When</th>
-                                    <th style="text-align:center;width:100px">Status</th>
-                                    <th style="text-align:center;width:50px">Review</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </form>
         </div>
     </div>
 </div>
-@section Scripts{
-    <style type="text/css">
-        .form-group {
-            position: relative;
-            background-size: cover;
-        }
-
-        .Topic {
-            position: absolute;
-            background-size: cover;
-            left: 34em;
-            margin-top: 10px;
-        }
-
-        .user-profile-coaching {
-            margin-bottom: 1.5rem;
-        }
-
-            .user-profile-coaching .profile-img {
-                width: 120px;
-                height: 120px;
-                padding-top: 15px;
-                padding-left: 15px;
-                border-radius: 100%
-            }
-
-                .user-profile-coaching .profile-img img {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 100%
-                }
-
-            .user-profile-coaching .profile-text {
-                padding: 5px 0px;
-                position: relative
-            }
-
-                .user-profile-coaching .profile-text > a {
-                    width: 100%;
-                    padding: 6px 30px;
-                    display: block
-                }
-
-                    .user-profile-coaching .profile-text > a:after {
-                        position: absolute;
-                        right: 20px;
-                        top: 20px
-                    }
-
-        /*td.details-control {
-            background: url('../assets/images/svg/icon-edit-blue.svg') no-repeat center center;
-            cursor: pointer;
-        }
-        tr.shown td.details-control {
-            background: url('../assets/images/svg/projects-icon.svg') no-repeat center center;
-        }*/
-
-    </style>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            //LoadTopic();
-            LoadTopicList();
-
-           /* $('#dtTopicList tbody').on('click', 'td.details-control', function () {
-
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if ( row.child.isShown() ) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                }
-                else {
-                    // Open this row
-                    row.child( format(row.data()) ).show();
-                    tr.addClass('shown');
-                }
-            } );*/
-
-
-        });
-
-         function VisiblePanel(e) {
-            //alert(document.getElementById("btnTargetAudience").className);
-
-            if (e.className === "fa fa-angle-up") {
-                e.className = "fa fa-angle-down";
-            }
-            else {
-                e.className = "fa fa-angle-up";
-            }
-        }
-
-        function LoadTopicList() {
-            //alert('LoadTopic ' + $('#hID').val());
-             $.ajax(
-                {
-                    'url': "/IDP/GetTopisc",
-                    'type': "POST",
-                    'data': {
-                        ID_IDP: $('#hID').val(),
-                        YEAR : '',
-                        "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
-
-                        },
-                        success: function (e) {
-                            if (e) {
-                                //RenderIDPReviewHead(e);
-                                //alert(JSON.stringify(e));
-                                RenderTopics(e);
-                            }
-                },
-                }
-            )
-        }
-
-        function LoadTopic() {
-
-            alert('LoadTopic ' + $('#hID').val());
-            var icon = '@Url.Content("~/assets/images/svg/icon-edit.svg")';
-             dtData = $('#dtTopicList').DataTable({
-                 'processing': true,
-                 'serverSide': true,
-                 'paging': true,
-                 "ordering": true,
-                 "searching": false,
-                 "lengthChange": false,
-                 "bAutoWidth": false,
-                 "Filter": false,
-                 "info": false,
-                 "bPaginate": false,
-                 "bLengthChange": false,
-                 "bJQueryUI": true, //Enable smooth theme
-                 "sPaginationType": "full_numbers", //Enable smooth theme
-                 "sDom": 'lfrtip',
-                 destroy: true,
-                'ajax': {
-                    'url': '@Url.Action("Topisc", "IDP")',
-                    'type': 'POST',
-                    'data': {
-                        ID_IDP: $('#hID').val(),
-                        YEAR : '',
-                        "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
-                    },
-                },
-                columns : [
-                   /* {
-                        "class":          'details-control',
-                        "orderable":      false,
-                        "data":           null,
-                        "defaultContent": ''
-                    },*/
-                    { data: 'rownumber' },
-                    { data: 'DevelopementTopic' },
-                    { data: 'ExpectedOutcom' },
-                    { data: 'HowToDevelopment' },
-                    { data: 'SubTopic_ExpectedOutcom' },
-                    { data: 'ByWhen' },
-                    {
-                        data : 'SubTopicStatusName',
-                        "mRender": function (data, type, row) {
-
-                            //alert(data);
-                            if (data == 'Not Start') {
-                                icon = '@Url.Content("~/assets/images/svg/icon-edit.svg")';
-                            }
-                            else if (data == 'Completed') {
-                                icon = '@Url.Content("~/assets/images/svg/projects-icon.svg")';
-                            }
-                            else {
-                                icon = '@Url.Content("~/assets/images/svg/icon-edit-blue.svg")';
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        "mData": "ID_SubTopic",
-                        "mRender": function (data, type, row) {
-                            var url = '@Url.Content("~/IDP/Detail/")'+data;
-                            //var icon = '@Url.Content("~/assets/images/svg/icon-edit-blue.svg")';
-                            return "<a href='"+url+"'><img src='"+icon+"' class='light-logo' width='32' height='32' alt='homepage' /></a>";
-                        }
-                    },
-                 ],
-                 "columnDefs": [
-                     { "orderable": false, "targets": 0, "className": "text-center",  "width": "4%" },
-                     { "orderable": true, "targets": 1, "className": "text-center" },
-                     { "orderable": true, "targets": 2, "className": "text-center" },
-                     { "orderable": true, "targets": 3, "className": "text-center" },
-                     { "orderable": true, "targets": 4, "className": "text-center" },
-                     { "orderable": true, "targets": 5, "className": "text-center" },
-                     { "orderable": false, "targets": 6, "className": "text-center" },
-                     { "orderable": false, "targets": 7, "className": "text-center" }
-
-                 ]
-            });
-        }
-
-       /* function format ( d ) {
-            // `d` is the original data object for the row
-            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                '<tr>'+
-                    '<td>Full name:</td>'+
-                    '<td>'+d.name+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>Extension number:</td>'+
-                    '<td>'+d.extn+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>Extra info:</td>'+
-                    '<td>And any further details here (images etc)...</td>'+
-                '</tr>'+
-            '</table>';
-        }*/
-
-        function RenderTopics(e) {
-
-
-            var htmlTopic = '<div class="col-sm-1 col-md-4">'+
-                            '<span class="pull-left">' +
-                            '<label class="LabelCaption">' + e.length + '</label>' +
-                            '</span>'+
-                            '</div>'
-             $("#dTopicCount").append(htmlTopic);
-
-
-            $('#divTopicRender').attr("style", "display:block");
-            $("#divTopicRender").empty();
-            var icon = '';
-            var html = '';
-            for (var i = 0; i < e.length; i++) {
-                //alert('Topic : ' + JSON.stringify(e[i]));
-                html += '<div id="divTopicHeader" style="border-width:thin; border-style:solid; margin-left:5px; margin-top: 0px; margin-bottom:20px; width:99%; display:block;">'+
-                            '<div class="row form-group" style="margin-top:1em; margin-left:1em">'+
-                                '<div class="col-sm-1 col-md-2">'+
-                                        '<span class="pull-left">'+
-                                    '<label class="LabelCaption" style="font-weight:bold">Development Topic : </label>'+
-                                 '</span>'+
-                                '</div>'+
-                                '<div class="col-sm-1 col-md-4">'+
-                                    '<span class="pull-left">'+
-                                        '<label class="LabelCaption">'+ e[i].DevelopementTopic +'</label>'+
-                                    '</span>'+
-                                 '</div>'+
-                            '</div>'+
-                            '<div class="row form-group" style="margin-top:5px; margin-left:1em">'+
-                                '<div class="col-sm-1 col-md-2">'+
-                                    '<span class="pull-left">'+
-                                        '<label class="LabelCaption" style="font-weight:bold">Expected Outcome : </label>'+
-                                    '</span>'+
-                                '</div>'+
-                                '<div class="col-sm-1 col-md-4">'+
-                                    '<span class="pull-left">'+
-                                        '<label class="LabelCaption">'+ e[i].ExpectedOutcom +'</label>'+
-                                    '</span>'+
-                             '</div>' +
-                            ' <div class="col-sm-1 col-md-1 offset-5" style="margin-top:20px; position:relative">'+
-                                  '<a href="#dbody_'+ i + '" id="btnReview_'+ i + '"data-toggle="collapse"  onclick="VisiblePanel(this)" style="padding-left:35px; color:#3b8ac1; font-size:36px;" class="fa fa-angle-up"></a>' +
-                             '</div>'+
-                            '</div>'+
-                            '</div>' +
-                            '<div id="dbody_'+ i + '"class="collapse show">'+
-                                '<table class="display dataTable" id="dtSubTopic" style="padding-top:-10px">'+
-                                    '<thead style="background-color:#f6f6f6;color:#1c94c4">'+
-                                        '<tr>'+
-                                            '<th style="text-align:center">How to Develop?</th>'+
-                                            '<th style="text-align:center">Measurement Outcome</th>'+
-                                            '<th style="text-align:center">By When</th>'+
-                                            '<th style="text-align:center">Status</th>'+
-                                            '<th style="text-align:center">Review</th>'+
-                                        '</tr>'+
-                                    '</thead>'+
-                            '<tbody>'
-                            for (var j = 0; j < e[i].listSubTopic.length; j++) {
-
-                                if (e[i].listSubTopic[j].SubTopicStatus == '10') {
-                                    icon = '@Url.Content("~/assets/images/svg/icon-edit.svg")';
-                                }
-                                else if (e[i].listSubTopic[j].SubTopicStatus == '70') {
-                                    icon = '@Url.Content("~/assets/images/svg/projects-icon.svg")';
-                                }
-                                else {
-                                    icon = '@Url.Content("~/assets/images/svg/icon-edit-blue.svg")';
-                                }
-
-                               var url = '@Url.Content("~/IDP/Detail/")' + e[i].listSubTopic[j].ID;
-                               html += '<tr>'+
-                                        '<td>' + e[i].listSubTopic[j].HowToDevelopment + '</td>'+
-                                        '<td>' + e[i].listSubTopic[j].ExpectedOutcom + '</td>'+
-                                        '<td>' + e[i].listSubTopic[j].ByWhen + '</td>'+
-                                        '<td>' + e[i].listSubTopic[j].SubTopicStatusName + '</td>'+
-                                        '<td style="text-align:center"><a href="'+url+'"><img src="'+icon+'" class="light-logo" width="28" height="28" alt="homepage" /></a></td>'+
-                                        '</tr>'
-                                }
-                html += '</tbody>'
-                html += '</table>'
-                html += '</div>'
-            }
-            $("#divTopicRender").append(html);
-
-        }
-
-    </script>
-
-}

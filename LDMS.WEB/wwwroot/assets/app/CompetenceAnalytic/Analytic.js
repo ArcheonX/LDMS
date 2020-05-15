@@ -133,14 +133,15 @@ function LoadCompetence(analytic_id) {
         type: "GET",
         url: "/Competence/Competence",
         data: { "competenceId": analytic_id },
-        success: function (response) { 
-            
+        success: function (response) {
+
             $("#txtCompetenceName").val(response.Data.CompetenceAnalyticName);
-            $("#txtExpectatoin5").val("5 = " +response.Data.Criteria5);
-            $("#txtExpectatoin4").val("4 = " +response.Data.Criteria4);
-            $("#txtExpectatoin3").val("3 = " +response.Data.Criteria3);
-            $("#txtExpectatoin2").val("2 = " +response.Data.Criteria2);
-            $("#txtExpectatoin1").val("1 = " +response.Data.Criteria1);
+            $("#txtExpectatoin5").val("5 = " + response.Data.Criteria5);
+            $("#txtExpectatoin4").val("4 = " + response.Data.Criteria4);
+            $("#txtExpectatoin3").val("3 = " + response.Data.Criteria3);
+            $("#txtExpectatoin2").val("2 = " + response.Data.Criteria2);
+            $("#txtExpectatoin1").val("1 = " + response.Data.Criteria1);
+            $("#lastUpdate").text(moment(response.Data.LastUpdate).format("DD/MM/YYYY HH:mm:ss"));
             $("#selectLevel").val(response.Data.ID_JobGrade).trigger('change');             
             $.each(response.Data.Topics, function () {
                 topics.push({

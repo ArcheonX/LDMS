@@ -460,7 +460,6 @@ namespace LDMS.Services
                     }
                 }
             }
-
             int columnMultipleExpand = 275;
             for (int columnIndex = 0; columnIndex < cellCount; columnIndex++)
             {

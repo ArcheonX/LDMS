@@ -53,13 +53,14 @@
             font-weight: 400;
         }
 
-        .card-header {
-            background-color: #1e88e5 !important;
-        }
-
         .label-success {
             color: #04b92d !important;
             background-color: #04b92d !important;
+        }
+
+        .label-white {
+            color: #efebef !important;
+            background-color: #efebef !important;
         }
 
         .h4 {
@@ -72,8 +73,8 @@
 <div class="card card-outline-success">
     <form method="post" id="frmCR">
         @Html.AntiForgeryToken()
-        <div class="card-header">
-            <h4 class="m-b-0 text-white">Course Information</h4>
+        <div class="card-header" style="background-color: #1e88e5 !important;padding-top:8px !important; padding-bottom:8px !important;">
+            <h4 class="m-b-0 text-white" style="margin-top:6px;">Course Information</h4>
         </div>
         <div class="card-block p-4">
             <div class="form-group row">
@@ -143,7 +144,7 @@
                             <img style="width:25px;height:20px" src="~/assets/images/svg/icon-down.svg" />&nbsp;&nbsp;Reject
                         </button>
                         <button type="button" id="btnClose" class="btn btn-outline-warning btn-command">
-                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed.svg" />&nbsp;&nbsp; Close
+                            <img style="width: 25px; height: 20px" src="~/assets/images/svg/closed.svg" />&nbsp;&nbsp; Close
                         </button>
                     </div>
                 </div>
@@ -620,23 +621,36 @@
 
                         $("#hdAttend").val(e[0].IsAttend);
 
-                        if(e[0].IsAttend == "1")
-                        {   if(e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class',"label label-success");
-                            else if ( e[0].Attend_Count > 0) $("#lblSAttend").attr('class',"label label-warning");
-                            else $("#lblSAttend").attr('class',"label label-gray"); }
+                         if (e[0].IsAttend == "1")
+                         {
+                             f(e[0].Attend_Count == 0) $("#lblSAttend").attr('class', "label label-white");
+                            else {
+                             if (e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class', "label label-success");
+                             else if (e[0].Attend_Count > 0) $("#lblSAttend").attr('class', "label label-warning");
+                             else $("#lblSAttend").attr('class', "label label-gray");
+                         }
+                        }
                         else{ $("#lblSAttend").attr('class',"label label-inverse"); }
 
                         $("#hdAttend1").val(e[0].AttendNum);
                         $("#hdTest").val(e[0].IsTest);
                         if(e[0].IsTest == "1")
                         {
-                            if(e[0].PreTest_Count >= all_Count) $("#lblSPre").attr('class',"label label-success");
-                            else if ( e[0].PreTest_Count > 0) $("#lblSPre").attr('class',"label label-warning");
-                            else $("#lblSPre").attr('class',"label label-gray");
+                            if (e[0].PreTest_Count == 0) $("#lblSPre").attr('class', "label label-white");
+                            else
+                            {
+                                if (e[0].PreTest_Count >= all_Count) $("#lblSPre").attr('class', "label label-success");
+                                else if (e[0].PreTest_Count > 0) $("#lblSPre").attr('class', "label label-warning");
+                                else $("#lblSPre").attr('class', "label label-gray");
+                            }
 
-                            if(e[0].PostTest_Count >= all_Count) $("#lblSPost").attr('class',"label label-success");
-                            else if ( e[0].PostTest_Count > 0) $("#lblSPost").attr('class',"label label-warning");
-                            else $("#lblSPost").attr('class',"label label-gray");
+
+                            if (e[0].PostTest_Count == 0) $("#lblSPost").attr('class', "label label-white");
+                            else {
+                                if (e[0].PostTest_Count >= all_Count) $("#lblSPost").attr('class', "label label-success");
+                                else if (e[0].PostTest_Count > 0) $("#lblSPost").attr('class', "label label-warning");
+                                else $("#lblSPost").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSPre").attr('class',"label label-inverse"); $("#lblSPost").attr('class',"label label-inverse");}
 
@@ -645,9 +659,12 @@
                         $("#hdSkill").val(e[0].IsSkill);
                         if(e[0].IsSkill == "1")
                         {
-                            if(e[0].Skill_Count >= all_Count) $("#lblSSkill").attr('class',"label label-success");
-                            else if ( e[0].Skill_Count > 0) $("#lblSSkill").attr('class',"label label-warning");
-                            else $("#lblSSkill").attr('class',"label label-gray");
+                            if (e[0].Skill_Count == 0) $("#lblSSkill").attr('class', "label label-white");
+                            else {
+                                if (e[0].Skill_Count >= all_Count) $("#lblSSkill").attr('class', "label label-success");
+                                else if (e[0].Skill_Count > 0) $("#lblSSkill").attr('class', "label label-warning");
+                                else $("#lblSSkill").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSSkill").attr('class',"label label-inverse"); }
 
@@ -656,18 +673,24 @@
                         $("#hdCoach").val(e[0].IsCoaching);
                         if(e[0].IsCoaching == "1")
                         {
-                            if(e[0].Coach_Count >= all_Count) $("#lblSCoach").attr('class',"label label-success");
-                            else if ( e[0].Coach_Count > 0) $("#lblSCoach").attr('class',"label label-warning");
-                            else $("#lblSCoach").attr('class',"label label-gray");
+                            if (e[0].Coach_Count == 0) $("#lblSCoach").attr('class', "label label-white");
+                            else {
+                                if (e[0].Coach_Count >= all_Count) $("#lblSCoach").attr('class', "label label-success");
+                                else if (e[0].Coach_Count > 0) $("#lblSCoach").attr('class', "label label-warning");
+                                else $("#lblSCoach").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSCoach").attr('class',"label label-inverse"); }
 
                         $("#hdCert").val(e[0].IsAttachCert);
                         if(e[0].IsCertificate == "1")
                         {
-                            if(e[0].Cert_Count >= all_Count) $("#lblSCert").attr('class',"label label-success");
-                            else if ( e[0].Cert_Count > 0) $("#lblSCert").attr('class',"label label-warning");
-                            else $("#lblSCert").attr('class',"label label-gray");
+                            if (e[0].Cert_Count == 0) $("#lblSCert").attr('class', "label label-white");
+                            else {
+                                if (e[0].Cert_Count >= all_Count) $("#lblSCert").attr('class', "label label-success");
+                                else if (e[0].Cert_Count > 0) $("#lblSCert").attr('class', "label label-warning");
+                                else $("#lblSCert").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSCert").attr('class',"label label-inverse"); }
 

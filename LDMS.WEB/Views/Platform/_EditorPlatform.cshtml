@@ -9,37 +9,37 @@
     <form id="frmPlatformEditor">
         <div class="panel-body" style="width:100%;">
             <div class="form-horizontal" style="margin-right: 25px; margin-left: -25px; margin-top: 25px">
+                @Html.AntiForgeryToken()
+                @if (Model != null)
+                {
+                    <input type="hidden" id="hID" name="hID" value=@Model.ID />
+                    <input type="hidden" id="ID_PlatformType" name="ID_PlatformType" value=@Model.ID_PlatformType />
+                    <input type="hidden" id="PlatformStatus" name="PlatformStatus" value=@Model.IsActive />
+
+                }
+                else
+                {
+                    <input type="hidden" id="hID" name="hID" value=null />
+                    <input type="hidden" id="ID_PlatformType" name="ID_PlatformType" value=null />
+                    <input type="hidden" id="PlatformStatus" name="PlatformStatus" value=null />
+                }
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">Platform ID</label>
+                            <label class="LabelCaption">Platform ID <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
-                    @Html.AntiForgeryToken()
-                    @if (Model != null)
-                    {
-                        <input type="hidden" id="hID" name="hID" value=@Model.ID />
-                        <input type="hidden" id="ID_PlatformType" name="ID_PlatformType" value=@Model.ID_PlatformType />
-                        <input type="hidden" id="PlatformStatus" name="PlatformStatus" value=@Model.IsActive />
-
-                    }
-                    else
-                    {
-                        <input type="hidden" id="hID" name="hID" value=null />
-                        <input type="hidden" id="ID_PlatformType" name="ID_PlatformType" value=null />
-                        <input type="hidden" id="PlatformStatus" name="PlatformStatus" value=null />
-                    }
                     <div class="col-sm-4 col-md-4">
                         <input type="text"
                                title="Please Enter Platform ID"
                                id="txtPlatformId"
                                asp-for="PlatformID"
                                style="width: 100%"
-                               class="form-control input-sm" />
+                               class="form-control input-sm required" />
                     </div>
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">Platform Name</label>
+                            <label class="LabelCaption">Platform Name <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
@@ -48,13 +48,13 @@
                                id="txtPlatformName"
                                asp-for="PlatformName_EN"
                                style="width: 100%"
-                               class="form-control input-sm" />
+                               class="form-control input-sm required" />
                     </div>
                 </div>
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">Platform Type</label>
+                            <label class="LabelCaption">Platform Type <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
@@ -117,7 +117,7 @@
             <div class="row form-group">
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Sub Platform</label>
+                        <label class="LabelCaption">Sub Platform <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -194,32 +194,64 @@
          }
 
 
-        $('#btnSavePlatform').click(function () {
-            $.ajax({
-                    url: "/Platform/InsertPlatform",
-                    type: "GET",
-                    data: {
-                    ID_Platform : $('#hID').val(),
-                    PlatformID : $("#txtPlatformId").val(),
-                    PlatformName_EN : $("#txtPlatformName").val(),
-                    PlatformName_TH: $("#txtPlatformName").val(),
-                    ID_PlatformType: $('#selectPlatformType').val(),
-                    ID_Department_Create : '0', // for user login department create
-                    PlatformStatus: $('#selectPlatformtStatus').val(),
-                    PlatformDescription : $('#txtDescription').val(),
-                },
-                success: function (e) {
-                    //debugger;
-                        alert('Save Complete');
-                        $('#hID').val(e.ID);
-                        $('#divSubPlatformHeader').attr("style", "margin-right: 25px; margin-left: -25px; margin-top: 25px; display:block");
-                },
+     $('#btnSavePlatform').click(function () {
+
+         //alert('txtPlatformId : ' + $("#txtPlatformId").val());
+         //alert('txtPlatformName : ' + $("#txtPlatformName").val());
+         //alert('selectPlatformType : ' + $("#selectPlatformType").val());
+
+         if ($("#txtPlatformId").val() == '') {
+             MessageController.Error('Please Enter Platform ID', "Error");
+             return;
+         }
+         if ($("#txtPlatformName").val() == '') {
+             MessageController.Error('Please Enter Platform Name', "Error");
+             return;
+         }
+         if ($("#selectPlatformType").val() == '') {
+             MessageController.Error('Please Select Platform Type', "Error");
+             return;
+         }
+
+        $.ajax({
+                url: "/Platform/InsertPlatform",
+                type: "GET",
+                data: {
+                ID_Platform : $('#hID').val(),
+                PlatformID : $("#txtPlatformId").val(),
+                PlatformName_EN : $("#txtPlatformName").val(),
+                PlatformName_TH: $("#txtPlatformName").val(),
+                ID_PlatformType: $('#selectPlatformType').val(),
+                ID_Department_Create : '0', // for user login department create
+                PlatformStatus: $('#selectPlatformtStatus').val(),
+                PlatformDescription : $('#txtDescription').val(),
+            },
+            success: function (e) {
+                //debugger;
+                //alert(JSON.stringify(e));
+                if (e.message === undefined) {
+
+                    alert('Save Complete');
+                    $('#hID').val(e.ID);
+                    $('#divSubPlatformHeader').attr("style", "margin-right: 25px; margin-left: -25px; margin-top: 25px; display:block");
                 }
+                else {
+                    //alert('xxxxx');
+                    alert(e.message);
+                }
+            },
+          }
             )
         });
 
         // Save Sub Platform
         $('#btnAddSubPlatform').click(function () {
+
+            if ($("#txtSubPlatform").val() == '') {
+                MessageController.Error('Please Enter SubPlatform Name', "Error");
+                return;
+            }
+
             $.ajax({
                     url: "/Platform/InsertSubPlatform",
                     type: "GET",
@@ -267,7 +299,7 @@
     function LoadSubPlatformList( ID ) {
             //alert('LoadSubPlatformList');
              dtData = $('#dtSubplatform').DataTable({
-               'processing': true,
+                  'processing': true,
                   'serverSide': true,
                   'paging': true,
                   "ordering": false,
@@ -315,7 +347,10 @@
                     },
                     {
                         "mData": "ID",
-                        "mRender": function (data, type, row) { return "<a href='#' onclick='DeleteSubPlatform(" + data + ")'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>"; }
+                        "mRender": function (data, type, row) {
+                            var name = row['SubPlatformName_EN'];
+                            return "<a href='#' onclick=\"DeleteSubPlatform('"+data+"','"+name+"') \"'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>";
+                        }
                     }
                  ],
                  "columnDefs": [
@@ -383,22 +418,25 @@
     }
 
 
-    function DeleteSubPlatform(ID) {
-        //alert('DeleteSubPlatform : ' + ID );
-        $.ajax({
-            url: "/Platform/DeleteSubPlatform",
-            type: "GET",
-            data: {
-            ID_SubPlatform : ID
+    function DeleteSubPlatform(ID, name) {
+        MessageController.ConfirmCallback("Are you sure you want to delete SubPlatform '" + name + "' ?", "Confirm Delete!", function (res) {
+            if (res) {
+                $.ajax({
+                    url: "/Platform/DeleteSubPlatform",
+                    type: "GET",
+                    data: {
+                        ID_SubPlatform: ID
 
-        },
-        success: function (e) {
-            LoadSubPlatformList($('#hID').val());
-            $('#divSubPlatformHeader').attr("style", "margin-right: 25px; margin-left: -25px; margin-top: 25px; display:block");
-        },
+                    },
+                    success: function (e) {
+                        LoadSubPlatformList($('#hID').val());
+                        $('#divSubPlatformHeader').attr("style", "margin-right: 25px; margin-left: -25px; margin-top: 25px; display:block");
+                    },
 
-        }
-      )
+                }
+                )
+            }
+        });
     }
 
     </script>

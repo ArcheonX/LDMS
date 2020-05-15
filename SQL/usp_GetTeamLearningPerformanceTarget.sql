@@ -17,7 +17,8 @@ GO
 -- Author:		<Author,,Name>
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
--- [dbo].[usp_GetTeamLearningPerformanceTarget] @plantId = 0, @centerId = 0, @divisionId = 0 , @departmentId = 0, @sectionId = 0,	 @ficialYear =2020,	@IsSelectQ1=0,@IsSelectQ2=0,@IsSelectQ3=0,@IsSelectQ4 =0
+--exec [dbo].[usp_GetTeamLearningPerformanceTarget] @plantId = 0, @centerId = 0, @divisionId = 0 , @departmentId = 0, @sectionId = 0,	 @ficialYear =2020,	@IsSelectQ1=0,@IsSelectQ2=0,@IsSelectQ3=0,@IsSelectQ4 =0
+--exec [dbo].[usp_GetTeamLearningPerformanceTarget] @plantId=2,@centerId=1,@divisionId=3,@departmentId=0,@sectionId=0,@ficialYear=2020,@IsSelectQ1=0,@IsSelectQ2=0,@IsSelectQ3=0,@IsSelectQ4=0
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[usp_GetTeamLearningPerformanceTarget]
 	-- Add the parameters for the stored procedure here
@@ -165,7 +166,11 @@ FROM
 			course.CourseID, 
 			targetPlant.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -188,7 +193,11 @@ FROM
 			course.CourseID, 
 			targetCenter.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -211,7 +220,11 @@ FROM
 			course.CourseID, 
 			targetDivision.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -234,7 +247,11 @@ FROM
 			course.CourseID, 
 			targetDepartment.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -257,7 +274,11 @@ FROM
 			course.CourseID, 
 			targetSection.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -280,7 +301,11 @@ FROM
 			course.CourseID, 
 			targetLevel.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -303,7 +328,11 @@ FROM
 			course.CourseID, 
 			targetEmp.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID
@@ -326,7 +355,11 @@ FROM
 			course.CourseID, 
 			targetPos.EmployeeId, 
 			class.RegisterDateStart,
-			class.RegisterDateEnd  
+			class.RegisterDateEnd,
+				class.LearnDateStart,
+		class.LearnTimeStart,
+		class.LearnDateEnd,
+		class.LearnTimeEnd
 			FROM LDMS_M_Platform plat
 			INNER JOIN LDMS_M_SubPlatform subplat on subplat.ID_Platform = plat.ID
 			INNER JOIN LDMS_M_SubPlatformCourse subplatcourse on subplatcourse.ID_SubPlatform = subplat.ID

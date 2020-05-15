@@ -3,24 +3,21 @@ using LDMS.Identity;
 using LDMS.Services;
 using LDMS.ViewModels;
 using LDMS.WEB.Filters;
-using LDMS.WEB.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace LDMS.WEB.Controllers
 {
-    public class MyTeamIDPController : Controller
+    public class MyTeamIDPController : BaseController
     {
         private readonly MyTeamIDPService _MyTeamIDPService;
+        private readonly IDPService _IDPService;
         private IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<MyTeamIDPController> _logger;
         public MyTeamIDPController(ILogger<MyTeamIDPController> logger, MyTeamIDPService MyTeamIDPService, IWebHostEnvironment environment)
@@ -29,9 +26,59 @@ namespace LDMS.WEB.Controllers
             _MyTeamIDPService = MyTeamIDPService;
             _hostingEnvironment = environment;
         }
+        //public MyTeamIDPController(ILogger<MyTeamIDPController> logger, MyTeamIDPService MyTeamIDPService, IWebHostEnvironment environment, IDPService iDPService)
+        //{
+        //    _logger = logger;
+        //    _MyTeamIDPService = MyTeamIDPService;
+        //    _hostingEnvironment = environment;
+        //    _IDPService = iDPService;
+        //}
         public IActionResult Index()
         {
            // var MyTeamIDP = MyTeamIDPService.GetMy_Team_IDP();
+            return View();
+        }
+        [AuthorizeRole(UserRole.All)]
+        [HttpPost]
+        [Route("MyTeamIDP/EmployeeSearch")]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult EmployeeSearch(string EmployeeID, string EmployeeName, string DepartmentID, string DivisionID, string CenterID, string PlantID)
+        {
+
+            //string sortOrder = Request.Form["order[0][dir]"];
+            //string sortIndex = Request.Form["order[0][column]"];
+
+            //string sortColumn = "";
+            //if (sortIndex != "0") sortColumn = Request.Form["columns[" + sortIndex + "][data]"].ToString();
+            ViewModels.SearchModel.LDMS_M_IDP_Employee_Search criteria = new ViewModels.SearchModel.LDMS_M_IDP_Employee_Search();
+            //criteria.PageNum = int.Parse(Request.Form["start"]) / int.Parse(Request.Form["length"]) + 1;
+            //criteria.PageSize = int.Parse(Request.Form["length"]);
+            criteria.EmployeeID = EmployeeID;
+            criteria.EmployeeName = EmployeeName;
+            criteria.DepartmentID = DepartmentID;
+            criteria.DivisionID = DivisionID;
+            criteria.CenterID = CenterID;
+            criteria.PlantID = PlantID;
+
+            var employees = _MyTeamIDPService.GetEmployee(criteria);
+            //ViewData["Instructor"] = instructor.Results;
+            return Json(employees);
+        }
+        //[AuthorizeRole(UserRole.All)]
+        //[HttpGet]
+        //[Route("MyTeamIDP/MyTeamDetail/{i?}")]
+        //// [AutoValidateAntiforgeryToken]
+        //public IActionResult MyTeamIDPDetail(string ID_Employee)
+        //{
+
+        //  //  var myIDP = _MyTeamIDPService.GetMyIDP();
+
+        //    return View("/Views/MyTeamIDP/MyTeamIDPDetail.cshtml");
+
+        //}
+        public IActionResult MyTeamIDPDetail()
+        {
+            // var MyTeamIDP = MyTeamIDPService.GetMy_Team_IDP();
             return View();
         }
         public IActionResult _EmployeeSearch()
@@ -62,4 +109,8 @@ namespace LDMS.WEB.Controllers
             return Json(myTeamIDP);
         }
     }
+    
+
+       
+
 }

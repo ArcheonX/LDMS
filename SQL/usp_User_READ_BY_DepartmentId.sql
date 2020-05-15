@@ -24,7 +24,8 @@ BEGIN
 	SET NOCOUNT ON;  
 
 	SELECT  
-	ROW_NUMBER() OVER(ORDER BY muser.EmployeeID ASC)  as RowIndex,
+		ROW_NUMBER() OVER(ORDER BY muser.ID_User ASC)  as RowIndex,
+	muser.ID_User,
 	muser.DateOfBirth,muser.DriverLicenseID,muser.email,muser.EmployeeID,muser.Gender,muser.IDCardNumber,
 	isnull(muser.IsAD,0) AS IsAD  , 
 	muser.JoinDate ,muser.Name,

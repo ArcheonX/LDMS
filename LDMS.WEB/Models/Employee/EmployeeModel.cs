@@ -41,5 +41,6 @@ namespace LDMS.WEB.Models.Employee
         public string SectionName { get; set; }
         public string JobGrade { get; set; }
         public string JobTitle { get; set; }
+        public int Id_Employee { get; set; }
     }
 }

@@ -10,23 +10,28 @@
         <input type="hidden" id="analytic_id" value="@ViewBag.ID_Analytic" />
         <div class="form-horizontal">
             <div class="row form-group">
-                <div class="col-sm-1 col-md-1 offset-10">
-                    <button id="btnEditCompetence" class="btn btn-outline-primary waves-effect waves-light" style="width:100%">
-                        <img style="width:25px;height:20px" src="~/assets/images/svg/icon-edit-blue.svg" />&nbsp;Edit
-                    </button>
+                <div class="col-sm-12 col-md-12">
+                    <span class="pull-left" style="vertical-align:middle">
+                        <label class="LabelCaption"><b>Last Update </b><label id="lastUpdate"></label> </label>
+                    </span>
                 </div>
-                <div class="col-sm-1 col-md-1" style="margin-left:-25px">
-                    <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%">
-                        <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
-                    </button>
+                    <div class="col-sm-1 col-md-1 offset-10">
+                        <button id="btnEditCompetence" class="btn btn-outline-primary waves-effect waves-light" style="width:100%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-edit-blue.svg" />&nbsp;Edit
+                        </button>
+                    </div>
+                    <div class="col-sm-1 col-md-1" style="margin-left:-25px">
+                        <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
         <div class="row">
             <div class="col-sm-4 col-md-4">
                 <div class="form-horizontal">
                     <div class="row form-group">
-                        <div class="col-sm-12 col-md-12">
+                        <div class="col-sm-12 col-md-12"> 
                             <span class="pull-left" style="vertical-align:middle">
                                 <label class="LabelCaption"><b>Competence Platform Name </b></label>
                             </span>

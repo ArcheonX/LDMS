@@ -6,6 +6,7 @@ using LDMS.Services;
 using LDMS.WEB.Filters;
 using LDMS.WEB.Models.Employee;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LDMS.WEB.Controllers
@@ -44,37 +45,16 @@ namespace LDMS.WEB.Controllers
         [Route("Organization/Employees")]
         public async Task<IActionResult> Employees(int departmentId, int sectionId, string keyword)
         {
-            var grades = (await MasterService.GetAllJobGrades()).Data as List<ViewModels.LDMS_M_JobGrade>;
-            var titles = (await MasterService.GetAllJobTitles()).Data as List<ViewModels.LDMS_M_JobTitle>;
-            var sections = (await MasterService.GetAllSections(departmentId)).Data as List<ViewModels.LDMS_M_Section>;
-            var users = (await UserService.GetAllEmployeeByDepartmentId(departmentId)).Data as List<ViewModels.LDMS_M_User>;
-            var employees = users.Select(emp => new EmployeeSectionView(emp)
-            {
-                JobGrade = grades.FirstOrDefault(e => e.ID_JobGrade == emp.ID_JobGrade)?.JobGradeName_EN,
-                JobTitle = titles.FirstOrDefault(e => e.ID_JobTitle == emp.ID_JobTitle)?.JobTitleName_EN,
-                LDMS_M_Sections = sections
-            }).ToList();
-            if (sectionId > 0)
-            {
-                employees = employees.Where(e => e.ID_Section == sectionId).ToList();
-            }
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                employees = employees.Where(e =>
-                (e.Name != null && e.Name.ToLower().StartsWith(keyword.ToLower()))
-                || (e.Surname != null && e.Surname.ToLower().StartsWith(keyword.ToLower()))
-                || (e.Email != null && e.Email.ToLower().StartsWith(keyword.ToLower()))
-                || (e.EmployeeID != null && e.EmployeeID.ToLower().StartsWith(keyword.ToLower()))
-                ).ToList();
-            }
-            int index = 1;
-            employees.ForEach(item =>
-            {
-                item.RowIndex = index;
-                index++;
-            });
-            //return Json(employees);
-            return PartialView("section/_employeeList", employees);
+            var result = await UserService.SearchOrganizationEmployee(departmentId,sectionId,keyword); 
+            return PartialView("section/_employeeList", result.Data);
+        }
+        [AuthorizeRole(UserRole.All)]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.None)]
+        [HttpGet]
+        [Route("Organization/ExportEmployees")]
+        public async Task<IActionResult> ExportEmployees(int departmentId, int sectionId, string keyword)
+        {
+            return Response(await UserService.ExportOrganizationEmployee(departmentId, sectionId, keyword));
         }
 
         [AuthorizeRole(UserRole.All)]
@@ -124,5 +104,16 @@ namespace LDMS.WEB.Controllers
             }).ToList();
             return Response(await UserService.UpdateUserSection(userRoles));
         }
+
+        [HttpPost, DisableRequestSizeLimit]
+        [Route("Organization/ImportSection")]
+        [AuthorizeRole(UserRole.AdminHR, UserRole.SuperAdmin)]
+        public IActionResult ImportOrganizationEmployee(IFormFile file)
+        {
+            int.TryParse(Request.Form.FirstOrDefault(x => x.Key == "divisionId").Value, out int divisionId);
+            int.TryParse(Request.Form.FirstOrDefault(x => x.Key == "departmentId").Value, out int departmentId);
+            return Response(UserService.ImportEmployeeSection(file, divisionId, departmentId).Result);
+        }
+
     }
 }
