@@ -270,6 +270,14 @@ namespace LDMS.WEB.Controllers
         public IActionResult InsertSubPlatformCourse(string model, string ID_SubPlatform, string ID_Platform)
         {
             ResultMessage result = new ResultMessage();
+
+            if (model == "[]") {
+                result.message = "Please Select Course !!!";
+                result.result = false;
+                return Json(result);
+            }
+
+
             List<LDMS_M_SubPlatformCourse> ls = _PlatFormService.SelectLDMS_M_SubPlatformCourse(ID_Platform);
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(model);
             string message = " มีรายการ Subplatform และ Course ซ้ำดังนี้ ";
