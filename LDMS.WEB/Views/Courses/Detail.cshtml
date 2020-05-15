@@ -885,6 +885,10 @@
         function LoadData(ID) {
             if (ID !== "null") {
 
+                document.getElementById("selectLearnMethod").disabled = true;
+                document.getElementById("selectCourseType").disabled = true;
+
+
                 loadPlant();
                 LoadCourseLearnMethod();
                 LoadCourseType();

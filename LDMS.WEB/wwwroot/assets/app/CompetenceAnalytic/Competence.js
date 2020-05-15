@@ -23,7 +23,7 @@ function Search() {
                 'columns': [
                     { data: 'RowIndex', title: '#', "className": "text-center"}, 
                     { data: 'CompetenceAnalyticName', title: 'Competence Platform' },
-                    { data: 'ID_JobGrade', title: 'Level', "className": "text-center" },
+                    { data: 'JobGrade', title: 'Level', "className": "text-center" },
                     {
                         "mData": "ID_Analytic",
                         "className": "text-center",

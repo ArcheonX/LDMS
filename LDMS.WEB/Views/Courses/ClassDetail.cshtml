@@ -34,6 +34,7 @@
                 {
                     <input type="hidden" id="hID" name="hID" value=@Model.ID />
                     <input type="hidden" id="hID_Class" name="hID_Class" value=@Model.ClassID />
+                    <input type="hidden" id="hID_LMS_PACD_courseID" name="hID_LMS_PACD_courseID" value=@Model.LMS_PACD_courseID />
                     <input type="hidden" id="hID_Course" name="hID_Course" value=@Model.ID_Course />
                     <input type="hidden" id="hID_CourseName" name="hID_CourseName" value=@Model.CourseName />
                     <input type="hidden" id="hID_LearnTimeStart" name="hID_LearnTimeStart" value=@Model.LearnTimeStart />
@@ -73,6 +74,18 @@
                                value="Auto Genarate"
                                asp-for="ClassID"
                                disabled="disabled"
+                               style="width: 100%"
+                               class="form-control input-sm" />
+                    </div>
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">LDMS/PACD Course ID</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <input type="text"
+                               id="txtLDMSCourseID"
+                               asp-for="LMS_PACD_courseID"
                                style="width: 100%"
                                class="form-control input-sm" />
                     </div>
@@ -606,13 +619,31 @@
         loadPlant();
         LoadClass();
         validation();
-        /*$('select').select2({
-            allowClear: true,
-            closeOnSelect: true,
-            theme: "bootstrap"
-        });*/
+       
 
         GetClassRemain($('#hID').val());
+
+
+        if ($('#hID_ClassStatus').val() === '30') {
+            
+            document.getElementById("chkAttend").disabled = true;
+            document.getElementById("chkTest").disabled = true;
+            document.getElementById("chkSkill").disabled = true;
+            document.getElementById("chkCoaching").disabled = true;
+            document.getElementById("chkCert").disabled = true;
+            document.getElementById("txtAttendNum").disabled = true;
+            document.getElementById("txtTestFullScore").disabled = true;
+            document.getElementById("txtPercentTestPass").disabled = true;
+            document.getElementById("txtSkillFullScore").disabled = true;
+            document.getElementById("txtPercentSkillPass").disabled = true;
+            document.getElementById("txtCertification").disabled = true;
+            document.getElementById("chkCertification").disabled = true;
+            document.getElementById("txtAttendNum").disabled = true;
+            document.getElementById("txtReDuratioin").disabled = true;
+            
+        }
+
+
 
         $('#txtCapacity').keyup(function() {
             $('#txtFeePerson').val($('#txtClassFee').val() / $('#txtCapacity').val());
@@ -1003,7 +1034,8 @@
                     url: "/Courses/InsertClass",
                     type: "POST",
                     data: {
-                        ID :  $('#hID').val(),
+                        ID: $('#hID').val(),
+                        LMS_PACD_courseID : $('#txtLDMSCourseID').val(),
                         ID_Course  : $('#hID_Course').val(),
                         ID_Instructor : $('#hInstructorID').val(),
                         ClassCapacity: $('#txtCapacity').val(),

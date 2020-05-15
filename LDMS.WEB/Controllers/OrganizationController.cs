@@ -104,7 +104,7 @@ namespace LDMS.WEB.Controllers
         }
 
         [AuthorizeRole(UserRole.AdminHR, UserRole.SuperAdmin)]
-        [HttpDelete]
+        [HttpPost]
         [Route("Organization/DeleteSection")]
         public async Task<IActionResult> DeleteSection(int sectionId)
         {

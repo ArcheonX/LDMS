@@ -22,18 +22,21 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT ROW_NUMBER() OVER(ORDER BY ID ASC)  as RowIndex,
-	ID as ID_Analytic,
-	ID_EmployeeManager,
-	CompetenceAnalyticName,
-	Criteria1,
-	Criteria2,
-	Criteria3,
-	Criteria4,
-	Criteria5,
-	ID_Department,
-	ID_JobGrade
-	FROM LDMS_T_CompetenceAnalytic WITH (NOLOCK) WHERE Is_Active=1;
+	SELECT ROW_NUMBER() OVER(ORDER BY al.ID ASC)  as RowIndex,
+	al.ID as ID_Analytic,
+	al.ID_EmployeeManager,
+	al.CompetenceAnalyticName,
+	al.Criteria1,
+	al.Criteria2,
+	al.Criteria3,
+	al.Criteria4,
+	al.Criteria5,
+	al.ID_Department,
+	al.ID_JobGrade,
+	JobGrade.JobGradeName_EN as JobGrade
+	FROM LDMS_T_CompetenceAnalytic al WITH (NOLOCK) 
+	LEFT OUTER JOIN LDMS_M_JobGrade JobGrade on JobGrade.ID = al.ID_JobGrade
+	WHERE al.Is_Active=1;
 END
 GO
 

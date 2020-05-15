@@ -15,7 +15,7 @@ namespace LDMS.ViewModels
         public string Criteria5 { get; set; } 
         public int? ID_Department { get; set; }
         public int? ID_JobGrade { get; set; }
-
+        public string JobGrade { get; set; }
         public List<TCompetenceAnalyticEmployee> Employees { get; set; }
         public List<TCompetenceAnalyticTopic> Topics { get; set; }
         public List<TCompetenceAnalyticScore> Scores { get; set; }

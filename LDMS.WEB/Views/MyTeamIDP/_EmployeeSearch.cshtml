@@ -1,0 +1,385 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<div class="panel panel-default" style="width:100%;border-width:thin;border-style:solid;">
+    <div class="panel-body" style="width:100%;">
+        <form method="post">
+            @Html.AntiForgeryToken()  @*CSRF Protected*@
+            <input type="hidden" name="PlantData" id="PlantData" value="" />
+            <input type="hidden" name="CenterData" id="CenterData" value="" />
+            <input type="hidden" name="DivisionData" id="DivisionData" value="" />
+            <input type="hidden" name="DepartmentData" id="DepartmentData" value="" />
+            <div class="form-horizontal" style="margin-top:25px">
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Employee ID</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-2 col-md-3">
+                        <input type="text" id="txtEmployeeID" class="form-control input-sm" />
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Employee Name</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <input type="text" id="txtEmployeeName" class="form-control input-sm" />
+                    </div>
+                </div>
+
+                <div class="form-horizontal" style="margin-top:25px">
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Plant ID</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectPlantEmp"
+                                    name="selectPlantEmp"
+                                    title="Please Enter Plant"
+                                    class="form-control required"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Center</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
+                            <select id="selectCenterEmp"
+                                    name="selectCenterEmp"
+                                    title="Please Enter Center"
+                                    class="form-control required"
+                                    style="width: 100%"
+                                    disabled="disabled">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Divison</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectDivisionEmp"
+                                    name="selectDivisionEmp"
+                                    title="Please Enter Division"
+                                    class="form-control required"
+                                    style="width: 100%"
+                                    disabled="disabled">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Department</label>
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <select id="selectDepartmentEmp"
+                                    name="selectDepartmentEmp"
+                                    title="Please Enter Department"
+                                    class="form-control required"
+                                    style="width: 100%"
+                                    disabled="disabled">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2 offset-9" style="padding-right:25px;">
+                            <button id="btnSearchEmployee" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel panel-default" style="margin-top:-15px;width:100%;">
+        <div class="panel-body" style="width:100%;margin-top:25px;border-width: thin; border-style: solid;">
+            <table class="display dataTable" id="dtUserList">
+                <thead>
+                    <tr>
+
+                        <th>#</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Plant</th>
+                        <th>Center</th>
+                        <th>Devision</th>
+                        <th>Department</th>
+                        <th>&nbsp;</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <style type="text/css">
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('select').select2({
+                allowClear: true,
+                closeOnSelect: true,
+                theme: "bootstrap"
+            });
+
+            loadPlant();
+            //loadPlatform();
+            //LoadCourseLearnMethod();
+           // Search();
+
+
+            $('select[name="selectPlantEmp"]').on('change', function () {
+                var plantid = $(this).val();
+
+                ReloadCenter($, plantid, null);
+            });
+
+            $('select[name="selectCenterEmp"]').on('change', function () {
+                var centerId = $(this).val();
+                ReloadDivision($, centerId, null);
+            });
+
+            $('select[name="selectDivisionEmp"]').on('change', function () {
+                var divisionId = $(this).val();
+                ReloadDepartment($, divisionId, null);
+            });
+
+
+            //$('#selectPlant').change(function() {
+            //   changePlant(this);
+            //});
+
+            //$('#selectCenter').change(function() {
+            //    changeCenter(this);
+            //});
+
+            //$('#selectDivision').change(function() {
+
+            //    changeDivision(this);
+            //});
+
+        });
+
+
+
+        function loadPlant() {
+            //alert(' loadPlant : ' + @HttpContextAccessor.HttpContext.Request.Cookies["PLANTID"]);
+            $.ajax({
+                type: "GET",
+                url: "/Master/GetAllPlants",
+                success: function (response) {
+                    var options = $('#selectPlantEmp');
+                    options.append($("<option />").val(null).text("Please select"));
+                    $.each(response.Data, function () {
+                        options.append($("<option />").val(this.ID_Plant).text(this.PlantName_EN));
+                    });
+
+                    $('select[name="selectPlantEmp"]').val("#PlantData").trigger('change');
+                    //$('select[name="selectPlant"]').val(1).trigger('change');
+                },
+                failure: function (response) {
+                    MessageController.Error(response.responseText, "Error");
+                },
+                error: function (response) {
+                    MessageController.Error(response.responseText, "Error");
+                }
+            });
+            }
+        function ReloadCenter($, plantId, callback) {
+            //alert('ReloadCenter ' + plantId);
+            var options = $('#selectCenterEmp');
+            options.empty();
+            if (plantId && plantId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllCentersByPlant",
+                    data: {
+                           plantId : plantId
+                           },
+                        success: function (response) {
+                        options.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+                            //if (this.ID_Plant == plantId) {
+                               options.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
+                            //}
+                        });
+                            $('select[name="selectCenterEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["CENTERID"]).trigger('change');
+                            document.getElementById("selectCenterEmp").disabled = false;
+
+                        if (callback) {
+                            //callback($("#userDivisionId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+
+
+
+            }
+        }
+
+        function ReloadDivision($, centerId, callback) {
+            var options = $('#selectDivisionEmp');
+            options.empty();
+            if (centerId && centerId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllDivisionsByCenter",
+                    data: {
+                        centerId : centerId
+                    },
+                    success: function (response) {
+                        options.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+                            //if (this.ID_Center == centerId) {
+                                options.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
+                            //}
+                        });
+                        $('select[name="selectDivisionEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DIVISIONID"]).trigger('change');
+                        document.getElementById("selectDivisionEmp").disabled = false;
+
+
+                        if (callback) {
+                            //callback($("#userDivisionId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+            }
+        }
+
+        function ReloadDepartment($, divisionId, callback) {
+            var options = $('#selectDepartmentEmp');
+            options.empty();
+            if (divisionId && divisionId != "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/Master/GetAllDepartmentsByDivision",
+                    data: {
+                        divisionId : divisionId
+                    },
+                    success: function (response) {
+                        options.append($("<option />").val(null).text("Please select"));
+                        $.each(response.Data, function () {
+                            //if (this.ID_Division == divisionId) {
+                                options.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+                            //}
+                        });
+
+                        $('select[name="selectDepartmentEmp"]').val(@HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"]).trigger('change');
+                        document.getElementById("selectDepartmentEmp").disabled = false;
+
+
+                        if (callback) {
+                            //callback($("#userDepartmentId").val());
+                        }
+                    },
+                    failure: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    },
+                    error: function (response) {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                });
+            }
+                }
+        @*function Search() {
+            var icon = '@Url.Content("~/assets/images/svg/icon-edit.svg")';
+            dtData = $('#dtMyTeamIDPList').DataTable({
+                'processing': true,
+                'serverSide': true,
+                'paging': true,
+                "ordering": false,
+                "searching": false,
+                "lengthChange": false,
+                "bAutoWidth": false,
+                "Filter": false,
+                "info": false,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bJQueryUI": true, //Enable smooth theme
+                "sPaginationType": "full_numbers", //Enable smooth theme
+                "sDom": 'lfrtip',
+                destroy: true,
+                'ajax': {
+                    'url': '@Url.Action("Search", "MyTeamIDP")',
+                    'type': 'POST',
+                    'data': {
+                        ID_Plant: $('#selectPlant').val(),
+                        ID_Center: $('#selectCenter').val(),
+                        ID_Division: $('#selectDivision').val(),
+                        ID_Department: $('#selectDepartment').val(),
+                        ID_Status: $('#selectIDPStatus').val(),
+                        ID_Employee: $('#txtEmployeeID').val(),
+
+
+                        "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
+                    },
+                },
+                'columns': [
+                    {
+                        data: "ProfilePath",
+                        "mRender": function (data, type, row) {
+                            return "<img src='" + data + "' class='img-fluid img-thumbnail' alt='virgil' width='137' height='165'>"
+                        }
+                    },
+                    {
+                        data: null,
+                        "mRender": function (data, type, row) {
+                            return "<strong>" + row.EmployeeName + "</strong> </br>" +
+                                "<strong>Position : </strong>" + row.JobTitleName_EN + "</br>" +
+                                "<strong>Service  :</strong>" + row.Service_TimeLine + "</br>" +
+                                "<strong>IDP Start:</strong> " + row.IDP_StartDate + "</br>" +
+                                "<strong>IDP End  :</strong> " + row.IDP_EndDate + "</br>"
+
+                        }
+
+
+                    },
+                    {
+                        data: null,
+                        "mRender": function (data, type, row) {
+                            return "<strong>Objective</strong> <br><textarea rows='4' cols='50' readonly>" + row.Objective +
+                                "</textarea > <br> <strong>Total Review: </strong>" + row.TotalReview + "<br> <strong> IDP Status: </strong >" +
+                                row.statename + "<br> <strong>Update Date: </strong>" + row.UpdateDate
+                        }
+
+                    }],
+                "columnDefs": [
+                    { "orderable": false, "targets": 0, "className": "text-center", "width": "30%" },
+                    { "orderable": false, "targets": 1, "className": "text-Left", "width": "70%"},
+                    { "orderable": false, "targets": 2, "className": "text-Left", "width": "100%" },
+
+
+                ]
+            });
+        }*@
+    </script>
+}

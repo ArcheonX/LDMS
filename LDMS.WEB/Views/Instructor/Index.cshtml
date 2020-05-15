@@ -65,14 +65,22 @@
             </div>
             <div class="col-2">
             </div>
-            <div class="col-4">
-                <button id="btnEmpSeacrh" class="btn btn-success waves-effect waves-light btn-command">Search</button>
-                <button id="btnAdd" class="btn btn-info waves-effect waves-light btn-command" onclick="window.location.href = '@Url.Action("Detail", "Instructor")'; return false;">Add</button>
+            <div class="col-4 form-group row pt-5">
+                <div class="col-5">
+                    <button id="btnEmpSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                        <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                    </button>
+                </div>
+                <div class="col-5">
+                    <button id="btnAdd" class="btn btn-outline-success waves-effect waves-light" style="width:100%" onclick="window.location.href = '@Url.Action("Detail", "Instructor")'; return false;">
+                        <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add Instrutor
+                    </button>
+                </div>
             </div>
         </div>
     </form>
 
-    <div class="table-responsive m-t-40">
+    <div class="table-responsive m-t-20">
         <table id="txtData" class="display dataTable" style="width: 99% !important;">
             <thead>
                 <tr>
@@ -131,7 +139,7 @@
                         "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
                     },
                  },
-
+                 "order": [],
                 'columns': [
                     { data: 'rownumber' },
                     { data: 'Instructor_ID' },

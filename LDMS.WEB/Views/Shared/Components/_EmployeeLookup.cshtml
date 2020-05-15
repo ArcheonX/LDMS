@@ -28,12 +28,14 @@
             </div>
             <div class="modal-body" style="min-height: 80px;">
                 <div class="row" style="margin-bottom:10px;">
-                    <label class="col-3 col-form-label" style="text-align:right">Employee Name</label>
+                    <span class="col-3" style="text-align:right">Employee Name</span>
                     <div class="col-5">
                         <input type="text" id="txtEmp_MName" name="refName" class="form-control" maxlength="100">
                     </div>
-                    <div class="col-md-4">
-                        <button id="btnEmp_MSeacrh" class="btn btn-success waves-effect waves-light btn-command">Search</button>
+                    <div class="col-md-4 pt-1">
+                        <button id="btnEmp_MSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:140px;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                        </button>
                     </div>
                 </div>
                 <div class="col-12" style="overflow-y:auto;height:400px;">
@@ -42,9 +44,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Employee ID</th>
-                                <th>Employee Name</th>
+                                <th style="width:150px;">Employee Name</th>
                                 <th>Department</th>
-                                <th>&nbsp;</th>
+                                <th style="width:56px;height:45px;">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

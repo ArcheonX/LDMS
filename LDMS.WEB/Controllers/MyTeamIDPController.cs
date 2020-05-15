@@ -34,6 +34,11 @@ namespace LDMS.WEB.Controllers
            // var MyTeamIDP = MyTeamIDPService.GetMy_Team_IDP();
             return View();
         }
+        public IActionResult _EmployeeSearch()
+        {
+            // var MyTeamIDP = MyTeamIDPService.GetMy_Team_IDP();
+            return View();
+        }
         public IActionResult Search(string ID_Plant, string ID_Center, string ID_Division, string ID_Department, string ID_Status, string ID_Employee)
         {
             ViewModels.Paging_Result ret = new ViewModels.Paging_Result();

@@ -294,7 +294,7 @@ namespace LDMS.WEB.Controllers
         [HttpPost]
         [Route("Courses/InsertClass")]
         //[AutoValidateAntiforgeryToken]
-        public IActionResult InsertClass( string ID, string ID_Course, string ID_Instructor, string ClassCapacity, string ClassFee,
+        public IActionResult InsertClass( string ID, string LMS_PACD_courseID, string ID_Course, string ID_Instructor, string ClassCapacity, string ClassFee,
                                             string LearnDateStart, string LearnTimeStart, string LearnDateEnd, string LearnTimeEnd,
                                             string RegisterDateStart, string RegisterDateEnd, string ID_PlantVenue,
                                             string ID_VenueRoom, string PlaceAndLocation, string ClassStatus,
@@ -309,7 +309,7 @@ namespace LDMS.WEB.Controllers
             LDMS_T_Class t_class = new LDMS_T_Class();
             if (ID == "0")
             {
-                t_class = _CourseService.CreateClass( ID_Course,  ID_Instructor,  ClassCapacity,  ClassFee,
+                t_class = _CourseService.CreateClass(LMS_PACD_courseID, ID_Course,  ID_Instructor,  ClassCapacity,  ClassFee,
                                                      LearnDateStart,  LearnTimeStart,  LearnDateEnd,  LearnTimeEnd,
                                                      RegisterDateStart,  RegisterDateEnd,  ID_PlantVenue,
                                                      ID_VenueRoom,  PlaceAndLocation,  ClassStatus,
@@ -322,7 +322,7 @@ namespace LDMS.WEB.Controllers
             }
             else
             {
-                t_class =  _CourseService.UpdateClass( ID, ID_Course, ID_Instructor, ClassCapacity, ClassFee,
+                t_class =  _CourseService.UpdateClass( ID, LMS_PACD_courseID, ID_Course, ID_Instructor, ClassCapacity, ClassFee,
                                                      LearnDateStart, LearnTimeStart, LearnDateEnd, LearnTimeEnd,
                                                      RegisterDateStart, RegisterDateEnd, ID_PlantVenue,
                                                      ID_VenueRoom, PlaceAndLocation, ClassStatus,

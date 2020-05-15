@@ -428,6 +428,28 @@ namespace LDMS.Services
                 {
                     throw new Exception("Unauthorized");
                 }
+
+                UserLevel userLevel = UserLevel.User;
+                if(user.ID_Plant>0 && user.ID_Center<=0 && user.ID_Division<=0 && user.ID_Department<=0 && user.ID_Section <= 0)
+                {
+                    userLevel = UserLevel.PlantManager;
+                }
+                else if (user.ID_Plant > 0 && user.ID_Center > 0 && user.ID_Division <= 0 && user.ID_Department <= 0 && user.ID_Section <= 0)
+                {
+                    userLevel = UserLevel.CenterManager;
+                }
+                else if (user.ID_Plant > 0 && user.ID_Center > 0 && user.ID_Division >0 && user.ID_Department <= 0 && user.ID_Section <= 0)
+                {
+                    userLevel = UserLevel.DivisionManager;
+                }
+                else if (user.ID_Plant > 0 && user.ID_Center > 0 && user.ID_Division > 0 && user.ID_Department >0 && user.ID_Section <= 0)
+                {
+                    userLevel = UserLevel.DepartmentManager;
+                }
+                else if (user.ID_Plant > 0 && user.ID_Center > 0 && user.ID_Division > 0 && user.ID_Department > 0 && user.ID_Section >0 && user.IsSectionHead)
+                {
+                    userLevel = UserLevel.SectionManager;
+                }
                 List<Claim> claims = new List<Claim>
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.EmployeeID),
@@ -441,6 +463,7 @@ namespace LDMS.Services
                             new Claim("DIVISIONID", user.ID_Division.ToString()),
                             new Claim("DEPARTMENTID", user.ID_Department.ToString()),
                             new Claim("SECTIONTID",user.ID_Section.ToString()),
+                            new Claim("USERLEVEL",userLevel.ToString()),
                             new Claim(ClaimTypes.Role,user.ID_Role.ToString()),
                         };
                 user.Token = JwtManager.Instance.GenerateJWT(claims);
@@ -456,13 +479,11 @@ namespace LDMS.Services
                 HttpContext.Response.Set("EMPLOYEEID", user.EmployeeID, 120);
                 HttpContext.Response.Set("JOINDATE", user.JoinDate.HasValue ? string.Format("{0:dd-MMM-yyyy}", user.JoinDate.GetValueOrDefault()) : "", 120);
                 HttpContext.Response.Set("DEPARTMENT", user.LDMS_M_Department != null ? string.Format("{0}", user.LDMS_M_Department.DepartmentID) : "", 120);
-
                 HttpContext.Response.Set("PLANTID", user.LDMS_M_Plant != null ? user.LDMS_M_Plant.ID_Plant.ToString() : user.ID_Plant.ToString(), 120);
                 HttpContext.Response.Set("CENTERID", user.LDMS_M_Center != null ? user.LDMS_M_Center.ID_Center.ToString() : user.ID_Center.ToString(), 120);
                 HttpContext.Response.Set("DIVISIONID", user.LDMS_M_Division != null ? user.LDMS_M_Division.ID_Division.ToString() : user.ID_Division.ToString(), 120);
                 HttpContext.Response.Set("DEPARTMENTID", user.LDMS_M_Department != null ? string.Format("{0}", user.LDMS_M_Department.ID_Department) : "", 120);
                 HttpContext.Response.Set("SECTIONTID", user.LDMS_M_Section != null ? user.LDMS_M_Section.ID_Section.ToString() : "0", 120);
-
                 HttpContext.Response.Set("JOBGRADEID", user.ID_JobGrade.ToString(), 120);
                 HttpContext.Response.Set("JOBTITLEID", user.ID_JobTitle.ToString(), 120);
                 HttpContext.Response.Set("FACEIMAGE", string.IsNullOrEmpty(user.ProfilePath) ? "~/assets/images/svg/user-icon.svg" : user.ProfilePath, 120);
@@ -470,6 +491,7 @@ namespace LDMS.Services
                 HttpContext.Response.Set("ALLOWGPP", user.IsAllowGPP.ToString(), 120);
                 HttpContext.Response.Set("ISAD", user.IsAD.ToString(), 120);
                 HttpContext.Response.Set("JWToken", user.Token, 120);
+                HttpContext.Response.Set("USERLEVEL", userLevel.ToString(), 120);
                 CheckRedirectPage(user);
                 HttpContext.Session.SetString("JWToken", user.Token);
                 CreateDataLog(DataLogType.LoginSuccess, username, "user signin.");
@@ -488,10 +510,10 @@ namespace LDMS.Services
             {
                 HttpContext.Response.Set("REDIRECTPAGE", "/Account/ForceChange", 120);
             }
-            else if (!user.IsAllowGPP&& !user.IsAD)
-            {
-                HttpContext.Response.Set("REDIRECTPAGE", "/Account/Privacy", 120);
-            }
+            //else if (!user.IsAllowGPP&& !user.IsAD)
+            //{
+            //    HttpContext.Response.Set("REDIRECTPAGE", "/Account/Privacy", 120);
+            //}
             else
             {
                 HttpContext.Response.Set("REDIRECTPAGE", "/Home/Index", 120);

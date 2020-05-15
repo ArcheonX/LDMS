@@ -74,3 +74,12 @@ namespace LDMS.ViewModels
         }
     }
 }
+public enum UserLevel
+{
+    PlantManager = 1,
+    CenterManager = 2,
+    DivisionManager = 3,
+    DepartmentManager = 4,
+    SectionManager = 5,
+    User = 6
+}

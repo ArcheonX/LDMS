@@ -97,10 +97,42 @@
                         </div>
 
                         <div class="row form-group">
-                            <div class="col-sm-2 col-md-2 offset-9">
-                                <a id="btnSeacrh" class="btn btn-info waves-effect waves-light" style="width:100%; color:white;" onclick="Search()"> Search </a>
+                            <div class="col-sm-2 col-md-2 offset-8">
+                                <a id="btnSeacrh" class="btn btn-outline-success waves-effect waves-light" style="width:70%;" onclick="Search()">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" /><br />Search
+                                </a>
                             </div>
+                            <div class="col-sm-2 col-md-2" style="margin-left:-55px">
+                                <a  data-toggle="modal" href="#myModal" class="btn btn-outline-success waves-effect waves-light" style="width:80%;" >
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" /><br />Add Topic
+                                </a>
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog modal-lg">
 
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-body " style="margin-left:auto">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Employee Search</h4>
+                                            </div>
+                                            <div class="modal-body panel-body" style="margin-left:auto">
+
+                                                @await Html.PartialAsync("_EmployeeSearch")
+
+                                            </div>
+                                                <div class="modal-header">
+                                                    <div class="col-sm-2 col-md-2 offset-10" >
+                                                        <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" data-dismiss="modal" style="width:80%">
+                                                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" /><br />Close
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>

@@ -214,6 +214,14 @@ namespace LDMS.WEB.Controllers
         {
             return Json(MasterService.GetDistricts(provinceID, amphurID));
         }
+        [AuthorizeRole(UserRole.All)]
+        [HttpGet]
+        [Route("Master/RedirectMenu")]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult GetRedirectMenuBySubmenuId(string submenuId)
+        {
+            return Json(MasterService.GetRedirectMenuBySubmenuId(submenuId));
+        }
 
     }
 }

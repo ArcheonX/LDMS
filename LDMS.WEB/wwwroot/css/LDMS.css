@@ -1089,6 +1089,14 @@ collapse-chevron .icon-barshow {
     transform: translate3d(0, 0, 0) !important;
 }
 
-    .documentation .dropdown .dropdown-menu.show {
-        transform: translate3d(0, 39px, 0) !important;
-    }
+.documentation .dropdown .dropdown-menu.show {
+    transform: translate3d(0, 39px, 0) !important;
+}
+table.dataTable thead .sorting {
+    cursor: pointer;
+}
+table.dataTable thead .sorting:after {
+    content: none !important;
+    margin-left: 0px !important;
+    cursor: pointer;
+}

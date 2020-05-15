@@ -51,7 +51,6 @@ namespace LDMS.Services
                         item.Employees = (await GetAnalyticEmployees(analyticId));
                         item.Scores = (await GetAnalyticScores(analyticId));
                         item.Topics = (await GetAnalyticKnowledgeTopics(analyticId));
-                      //  item.Expectatoins = (await GetAnalyticExpectatoins(analyticId));
                     }
                     return new ServiceResult(item);
                 }
