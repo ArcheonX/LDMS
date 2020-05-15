@@ -85,6 +85,10 @@
         $("#btnSearchEmployee").click(function (event) {
             LoadEmployees();
         }); 
+      $("#btnExportExcel").click(function (event) {
+            ExportEmployees();
+        }); 
+
         $("#btnEmpListSave").click(function (event) {
             var models = []; 
             var table = $('#dtListEmployee').DataTable(); 
@@ -189,6 +193,35 @@
     })
 })(jQuery);
 
+function ExportEmployees() { 
+    $.ajax({
+        type: "GET",
+        url: '/Organization/ExportEmployees',
+        data: {
+            'departmentId': CookiesController.getCookie("DEPARTMENTID"),
+            'sectionId': $("#selectSection").val(),
+            'keyword': $("#txtKeyword").val()
+        },
+        success: function (response) {
+            var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
+            Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
+        },
+        failure: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}
 function LoadSection() {
     MessageController.BlockUI({ boxed: true, target: '#dtSectionRows' });
     $.ajax({

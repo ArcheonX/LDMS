@@ -433,6 +433,43 @@ function DeleteEmployee(employeeId) {
     });
 }
 
+function ExportMasterReport($) {
+    var filterModel = {
+        MasterReportType: $('input[name="selectMasterType"]:checked').val(),
+        InstructorId: $("#txtInstructorId").val(),
+        CourseId: $("#selectCourse").val(),
+        PlatformId: $("#selectPlatform").val(),
+        ActiveStatus: $("#selectMasterReportStatus").val(),
+        TrainingStatus: $("#selectMasterReportTrainingStatus").val(),
+        JobGradeId: $("#selectMasterReportJobGrade").val(),
+        DepartmentId: $("#selectMasterReportDepartment").val(),
+        TrainingDateFrm: $("#dteTrainingDateFrm").val(),
+        TrainingDateTo: $("#dteTrainingDateTo").val()
+    }
+    $.ajax({
+        type: "GET",
+        url: '/Report/GetIMasterReport',
+        data: filterModel,
+        success: function (response) {
+            var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
+            Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
+        },
+        failure: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}
 function EditEmployee(employeeId) {
 
     $('#viewAllUser').attr("style", "display:none;width:100%");

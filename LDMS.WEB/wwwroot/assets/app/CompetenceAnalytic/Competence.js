@@ -25,6 +25,15 @@ function Search() {
                     { data: 'CompetenceAnalyticName', title: 'Competence Platform' },
                     { data: 'JobGrade', title: 'Level', "className": "text-center" },
                     {
+                        "mData": "LastUpdate",
+                        "bSortable": true,
+                        "title": 'Last Update',
+                        "className": "text-center",
+                        "mRender": function (data, type, row) {
+                            return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                        }
+                    }, 
+                    {
                         "mData": "ID_Analytic",
                         "className": "text-center",
                         "mRender": function (data, type, row) {

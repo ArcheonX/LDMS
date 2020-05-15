@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LDMS.WEB.Models.Employee
+namespace LDMS.ViewModels
 {
     public class EmployeeSectionView : LDMS_M_User
     {
