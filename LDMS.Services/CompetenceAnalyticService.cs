@@ -13,11 +13,14 @@ namespace LDMS.Services
     public class CompetenceAnalyticService : ILDMSService
     {
         private readonly ILogger<CompetenceAnalyticService> _logger;
+        private readonly MasterService MasterService;
         public CompetenceAnalyticService(ILogger<CompetenceAnalyticService> logger,
             ILDMSConnection iLDMSConnection,
+            MasterService masterService,
             IHttpContextAccessor httpContextAccessor) : base(iLDMSConnection, httpContextAccessor)
         {
             _logger = logger;
+            MasterService = masterService;
         }
         public async Task<ServiceResult> ReadAll()
         {
@@ -48,6 +51,11 @@ namespace LDMS.Services
                     var item = Connection.Query<ViewModels.TCompetenceAnalytic>(_schema + ".[usp_CompetenceAnalytic_READ_BY_AnalyticId]", param: parameter,commandType: CommandType.StoredProcedure).FirstOrDefault();
                     if (item != null)
                     {
+                        var depart = ((await MasterService.GetAllDepartments()).Data as List<ViewModels.LDMS_M_Department>).FirstOrDefault(e => e.ID_Department == item.ID_Department);
+                        if (depart != null)
+                        {
+                            item.DepartmentName = depart.DepartmentName_EN;
+                        }
                         item.Employees = (await GetAnalyticEmployees(analyticId));
                         item.Scores = (await GetAnalyticScores(analyticId));
                         item.Topics = (await GetAnalyticKnowledgeTopics(analyticId));

@@ -8,6 +8,8 @@ namespace LDMS.ViewModels
         public int? ID_Analytic { get; set; }
         public string ID_EmployeeManager { get; set; }
         public string CompetenceAnalyticName { get; set; }
+        public string DepartmentName { get; set; }
+
         public string Criteria1 { get; set; }
         public string Criteria2 { get; set; }
         public string Criteria3 { get; set; }
