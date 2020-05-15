@@ -36,6 +36,14 @@ namespace LDMS.ViewModels
             RowIndex = lDMS_M_User.RowIndex;
             IsSectionHead = lDMS_M_User.IsSectionHead;
             ID_Section = lDMS_M_User.ID_Section;
+            LDMS_M_Center = lDMS_M_User.LDMS_M_Center;
+            LDMS_M_Department = lDMS_M_User.LDMS_M_Department;
+            LDMS_M_Division = lDMS_M_User.LDMS_M_Division;
+            LDMS_M_JobGrade = lDMS_M_User.LDMS_M_JobGrade;
+            LDMS_M_JobTitle = lDMS_M_User.LDMS_M_JobTitle;
+            LDMS_M_Plant = lDMS_M_User.LDMS_M_Plant;
+            LDMS_M_Section = lDMS_M_User.LDMS_M_Section;
+            LDMS_M_Role = lDMS_M_User.LDMS_M_Role;
         }
     }
 }

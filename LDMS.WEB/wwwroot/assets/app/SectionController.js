@@ -193,7 +193,7 @@
     })
 })(jQuery);
 
-function ExportEmployees() { 
+function ExportEmployees() {
     $.ajax({
         type: "GET",
         url: '/Organization/ExportEmployees',
@@ -203,6 +203,7 @@ function ExportEmployees() {
             'keyword': $("#txtKeyword").val()
         },
         success: function (response) {
+            debugger; 
             var reportFile = Utility.base64ToArrayBuffer(response.Data.FileContents);
             Utility.ExportExcelFile(response.Data.FileDownloadName, reportFile);
         },

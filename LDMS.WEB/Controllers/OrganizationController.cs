@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using LDMS.Core;
 using LDMS.Services;
 using LDMS.WEB.Filters;
 using LDMS.WEB.Models.Employee;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +18,14 @@ namespace LDMS.WEB.Controllers
     {
         private readonly MasterService MasterService;
         private readonly UserService UserService;
-
-        public OrganizationController(MasterService masterService, UserService userService)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private string _filePath;
+        public OrganizationController(MasterService masterService, UserService userService,IHostingEnvironment hostingEnvironment)
         {
             MasterService = masterService;
             UserService = userService;
+            _hostingEnvironment = hostingEnvironment;
+            _filePath = _hostingEnvironment.WebRootPath;
         }
 
         [AuthorizeRole(UserRole.All)]
@@ -54,9 +60,59 @@ namespace LDMS.WEB.Controllers
         [Route("Organization/ExportEmployees")]
         public async Task<IActionResult> ExportEmployees(int departmentId, int sectionId, string keyword)
         {
-            return Response(await UserService.ExportOrganizationEmployee(departmentId, sectionId, keyword));
+            var result = await UserService.SearchOrganizationEmployee(departmentId, sectionId, keyword);
+            if (!result.IsOk)
+            {
+                return Response(result);
+            }
+            var list = result.Data as List<ViewModels.EmployeeSectionView>;
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Section");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Employee ID";
+                worksheet.Cell(currentRow, 2).Value = "Employee Name";
+                worksheet.Cell(currentRow, 3).Value = "Job Grade";
+                worksheet.Cell(currentRow, 4).Value = "Job Title";
+                worksheet.Cell(currentRow, 5).Value = "Section";
+                foreach (var user in list)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = user.EmployeeID;
+                    worksheet.Cell(currentRow, 2).Value = user.FullName;
+                    worksheet.Cell(currentRow, 3).Value = user.JobGrade;
+                    worksheet.Cell(currentRow, 4).Value = user.JobTitle;
+                    worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
+                }
+                string fileName = "Section.xlsx";
+                string filepath = Path.Combine(_filePath, fileName); 
+                using (FileStream fileStream = new FileStream(filepath, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    workbook.SaveAs(fileStream);
+                }
+                return Response(new ServiceResult(fileName));
+                //using (var stream = new MemoryStream())
+                //{
+                //    workbook.SaveAs(stream);
+                //    var content = stream.ToArray();
+                //    string fileName = String.Format("Section.xlsx");
+                //    Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                //    {
+                //        FileDownloadName = fileName
+                //    };
+                //    return new ServiceResult(content);
+                //}
+            }
         }
-
+        [HttpGet]
+        [Route("Organization/DownloadEmployees")]
+        public ActionResult Download(string fileName)
+        {
+            string filepath = Path.Combine(_filePath, fileName);
+            byte[] fileByteArray = System.IO.File.ReadAllBytes(filepath);
+            System.IO.File.Delete(filepath);
+            return File(fileByteArray, "application/vnd.ms-excel", fileName);
+        }
         [AuthorizeRole(UserRole.All)]
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.None)]
         [HttpGet]

@@ -93,76 +93,76 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-        public async Task<ServiceResult> ExportOrganizationEmployee(int departmentId, int sectionId, string keyword)
-        {
-            try
-            {
-                var result = (await SearchOrganizationEmployee(departmentId, sectionId, keyword));
-                if (!result.IsOk) return result;
-                var list = result.Data as List<ViewModels.EmployeeSectionView>;
+        //public async Task<ServiceResult> ExportOrganizationEmployee(int departmentId, int sectionId, string keyword)
+        //{
+        //    try
+        //    {
+        //        var result = (await SearchOrganizationEmployee(departmentId, sectionId, keyword));
+        //        if (!result.IsOk) return result;
+        //        var list = result.Data as List<ViewModels.EmployeeSectionView>;
 
-                using (var workbook = new XLWorkbook())
-                {
-                    var worksheet = workbook.Worksheets.Add("Section");
-                    var currentRow = 1;
-                    worksheet.Cell(currentRow, 1).Value = "Employee ID";
-                    worksheet.Cell(currentRow, 2).Value = "Employee Name";
-                    worksheet.Cell(currentRow, 3).Value = "Job Grade";
-                    worksheet.Cell(currentRow, 4).Value = "Job Title";
-                    worksheet.Cell(currentRow, 5).Value = "Section";
-                    foreach (var user in list)
-                    {
-                        currentRow++;
-                        worksheet.Cell(currentRow, 1).Value = user.EmployeeID;
-                        worksheet.Cell(currentRow, 2).Value = user.FullName;
-                        worksheet.Cell(currentRow, 3).Value = user.JobGrade;
-                        worksheet.Cell(currentRow, 4).Value = user.JobTitle;
-                        worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
-                    }
-                    using (var stream = new MemoryStream())
-                    {
-                        workbook.SaveAs(stream);
-                        var content = stream.ToArray();
-                        string fileName = String.Format("Section.xls");
-                        Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                        {
-                            FileDownloadName = fileName
-                        };
-                        return new ServiceResult(fileContentResult);
-                    }
-                }
-                //DataSet ds = new DataSet();
-                //DataTable dt = new DataTable("Section");
-                //dt.Columns.Add("Employee ID");
-                //dt.Columns.Add("Employee Name");
-                //dt.Columns.Add("Job Grade");
-                //dt.Columns.Add("Job Title");
-                //dt.Columns.Add("Section");
-                //foreach (var item in list)
-                //{
-                //    var row = dt.NewRow();
-                //    row["Employee ID"] = item.EmployeeID;
-                //    row["Employee Name"] = item.FullName;
-                //    row["Job Grade"] = item.JobGrade;
-                //    row["Job Title"] = item.JobTitle;
-                //    row["Section"] = item.LDMS_M_Section.SectionID;
-                //    dt.Rows.Add(row);
-                //}
-                //ds.Tables.Add(dt);
-                //var buffer = ds.ToExcelDynamicReport("", "");
-                //string fileName = String.Format("Section.xls");
-                //Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                //{
-                //    FileDownloadName = fileName
-                //};
-                //return new ServiceResult(fileContentResult);
-            }
-            catch (Exception x)
-            {
-                _logger.LogError(x.Message);
-                return new ServiceResult(x);
-            }
-        }
+        //        using (var workbook = new XLWorkbook())
+        //        {
+        //            var worksheet = workbook.Worksheets.Add("Section");
+        //            var currentRow = 1;
+        //            worksheet.Cell(currentRow, 1).Value = "Employee ID";
+        //            worksheet.Cell(currentRow, 2).Value = "Employee Name";
+        //            worksheet.Cell(currentRow, 3).Value = "Job Grade";
+        //            worksheet.Cell(currentRow, 4).Value = "Job Title";
+        //            worksheet.Cell(currentRow, 5).Value = "Section";
+        //            foreach (var user in list)
+        //            {
+        //                currentRow++;
+        //                worksheet.Cell(currentRow, 1).Value = user.EmployeeID;
+        //                worksheet.Cell(currentRow, 2).Value = user.FullName;
+        //                worksheet.Cell(currentRow, 3).Value = user.JobGrade;
+        //                worksheet.Cell(currentRow, 4).Value = user.JobTitle;
+        //                worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
+        //            }
+        //            using (var stream = new MemoryStream())
+        //            {
+        //                workbook.SaveAs(stream);
+        //                var content = stream.ToArray();
+        //                string fileName = String.Format("Section.xlsx"); 
+        //                Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        //                {
+        //                    FileDownloadName = fileName
+        //                };
+        //                return new ServiceResult(content);
+        //            }
+        //        }
+        //        //DataSet ds = new DataSet();
+        //        //DataTable dt = new DataTable("Section");
+        //        //dt.Columns.Add("Employee ID");
+        //        //dt.Columns.Add("Employee Name");
+        //        //dt.Columns.Add("Job Grade");
+        //        //dt.Columns.Add("Job Title");
+        //        //dt.Columns.Add("Section");
+        //        //foreach (var item in list)
+        //        //{
+        //        //    var row = dt.NewRow();
+        //        //    row["Employee ID"] = item.EmployeeID;
+        //        //    row["Employee Name"] = item.FullName;
+        //        //    row["Job Grade"] = item.JobGrade;
+        //        //    row["Job Title"] = item.JobTitle;
+        //        //    row["Section"] = item.LDMS_M_Section.SectionID;
+        //        //    dt.Rows.Add(row);
+        //        //}
+        //        //ds.Tables.Add(dt);
+        //        //var buffer = ds.ToExcelDynamicReport("", "");
+        //        //string fileName = String.Format("Section.xlsx");
+        //        //Microsoft.AspNetCore.Mvc.FileContentResult fileContentResult = new Microsoft.AspNetCore.Mvc.FileContentResult(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        //        //{
+        //        //    FileDownloadName = fileName
+        //        //};
+        //        //return new ServiceResult(fileContentResult);
+        //    }
+        //    catch (Exception x)
+        //    {
+        //        _logger.LogError(x.Message);
+        //        return new ServiceResult(x);
+        //    }
+        //}
 
 
         public async Task<ServiceResult> GetAll( string employeeId = null, string employeeName = null,
