@@ -29,23 +29,40 @@
     })(jQuery);
 
     function ReLoadMenu() {
-        if (localStorage.menuId == null && localStorage.menuId == undefined) {
-            var menuId = "MD10000";
-            $(".toggle").each(function () { 
-                if (menuId > this.id) {
-                    menuId = this.id;
-                }               
+        debugger;
+        var menuId = null;
+        if (localStorage.menuId == null && localStorage.menuId == undefined) {         
+            $(".toggle").each(function () {
+                if (menuId == null) {
+                    menuId = this.id
+                } else
+                    if (menuId > this.id) {
+                        menuId = this.id;
+                    }
             });
             localStorage.menuId = menuId;
         }
         var cdoc = document.getElementById("collapse_" + localStorage.menuId);
-        cdoc.classList.toggle('collapse');
-        var ico = document.getElementById("icon-" + localStorage.menuId);
-        if (ico != null) {
-            ico.classList.remove('fa-angle-down');
-            ico.classList.add('fa-angle-up');
+        if (!cdoc) {
+            $(".toggle").each(function () {
+                if (menuId == null) {
+                    menuId = this.id
+                } else
+                    if (menuId > this.id) {
+                        menuId = this.id;
+                    }
+            });
+            cdoc = document.getElementById("collapse_" + menuId);
+            localStorage.menuId = menuId;
         }
-        //ico.setAttribute("class", "fas fa-angle-double-up"); 
+        if (cdoc) {
+            cdoc.classList.toggle('collapse');
+            var ico = document.getElementById("icon-" + localStorage.menuId);
+            if (ico != null) {
+                ico.classList.remove('fa-angle-down');
+                ico.classList.add('fa-angle-up');
+            }
+        }
     }
 
     function SelectMenu(menuId) {
