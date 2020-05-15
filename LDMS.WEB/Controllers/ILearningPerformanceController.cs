@@ -150,19 +150,13 @@ namespace LDMS.WEB.Controllers
         [Route("ILearningPerform/GetLearningProgress")]
         public IActionResult GetLearningProgress(string platformID, string courseID, string year, string q1, string q2, string q3, string q4)
         {
-            if (platformID == "null") platformID = ""; if (courseID == "null") courseID = "";
-            List<dynamic> ret = _lService.GetCostSpend(platformID, courseID, year, q1, q2, q3, q4, JwtManager.Instance.GetUserId(HttpContext.Request));
-
             StringBuilder sb = new StringBuilder();
             StringBuilder sbCate = new StringBuilder();
             StringBuilder sbInvest = new StringBuilder();
             StringBuilder sbQ = new StringBuilder();
             StringBuilder sbL = new StringBuilder();
 
-            if (ret.Count > 0)
-            {
-
-                sb.Append(@"Highcharts.chart('divLearningProgress', {
+            sb.Append(@"Highcharts.chart('divLearningProgress', {
                 chart: {
                     height: 320,
                     plotBackgroundColor: null,
@@ -220,7 +214,240 @@ namespace LDMS.WEB.Controllers
                     ]
                 }]
             });");
-            }
+
+            return new JavaScriptResult(sb.ToString());
+        }
+
+        [AuthorizeRole(UserRole.All)]
+        [HttpGet]
+        [Route("ILearningPerform/GetGPlatform")]
+        public IActionResult GetGPlatform(string sort)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbCate = new StringBuilder();
+            StringBuilder sbNotStart = new StringBuilder();
+            StringBuilder sbOnProgress = new StringBuilder();
+            StringBuilder sbComplete = new StringBuilder();
+            StringBuilder sbOverDue = new StringBuilder();
+
+            sbCate.Append("'Effective Meeting', 'Human Relation', 'Problem Solving', 'TWI-JI', 'Analytical'");
+            sbNotStart.Append("10, 10, 5, 20, 0");
+            sbOnProgress.Append("15, 5, 0, 0, 0");
+            sbComplete.Append("5, 5, 0, 0, 0");
+            sbOverDue.Append("70, 80, 90, 80, 100");
+
+            sb.Append(@"Highcharts.chart('divPlatform', {
+                  chart: {
+                    height: 320,
+                    type: 'bar'
+                  },
+                  title: {
+                    text: ''
+                  },
+                 exporting: {
+                    enabled: false
+                 },
+                 credits: {
+                    enabled: false
+                 },
+                  xAxis: {
+                    categories: [" + sbCate.ToString()+ @"]
+                  },
+                  yAxis: {
+                    min: 0,
+                    title: {
+                      text: ''
+                    }
+                  },
+                  stackLabels: {
+                      enabled: true,
+                  },
+                  tooltip: {
+                    pointFormat: '<span style=\""color:{ series.color}\"">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                    shared: true
+                  },
+                  plotOptions: {
+                    bar: {
+                      stacking: 'percent',
+                      dataLabels: {
+                            enabled: true
+                      }
+                    }
+                },
+                  series: [{
+                    name: 'Not Start',
+                    color: '#d0cece', index: 1,
+                    data: [" + sbNotStart.ToString() + @"]
+                  }, {
+                    name: 'On Progress',
+                    color: '#ffff00', index: 2,
+                    data: [" + sbOnProgress.ToString() + @"]
+                  }, {
+                    name: 'Completed',
+                    color: '#00b050', index: 3,
+                    data: [" + sbComplete.ToString() + @"]
+                  }, {
+                    name: 'Over Due',
+                    color: '#ff0000', index : 4,
+                    data: [" + sbOverDue.ToString() + @"]
+                  }]
+                });");
+
+            return new JavaScriptResult(sb.ToString());
+        }
+
+        [AuthorizeRole(UserRole.All)]
+        [HttpGet]
+        [Route("ILearningPerform/GetGArea")]
+        public IActionResult GetGArea(string sort)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbCate = new StringBuilder();
+            StringBuilder sbNotStart = new StringBuilder();
+            StringBuilder sbOnProgress = new StringBuilder();
+            StringBuilder sbComplete = new StringBuilder();
+            StringBuilder sbOverDue = new StringBuilder();
+
+            sbCate.Append("'DI Engineer', 'ATM Engineer', 'HROD'");
+            sbNotStart.Append("0, 35, 30");
+            sbOnProgress.Append("0, 20, 42");
+            sbComplete.Append("100, 35, 28");
+            sbOverDue.Append("0, 10, 0");
+
+            sb.Append(@"Highcharts.chart('divArea', {
+                  chart: {
+                    height: 320,
+                    type: 'bar'
+                  },
+                  title: {
+                    text: ''
+                  },
+                 exporting: {
+                    enabled: false
+                 },
+                 credits: {
+                    enabled: false
+                 },
+                  xAxis: {
+                    categories: [" + sbCate.ToString() + @"]
+                  },
+                  yAxis: {
+                    min: 0,
+                    title: {
+                      text: ''
+                    }
+                  },
+                  stackLabels: {
+                      enabled: true,
+                  },
+                  tooltip: {
+                    pointFormat: '<span style=\""color:{ series.color}\"">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                    shared: true
+                  },
+                  plotOptions: {
+                    bar: {
+                      stacking: 'percent',
+                      dataLabels: {
+                            enabled: true
+                      }
+                    }
+                },
+                  series: [{
+                    name: 'Not Start',
+                    color: '#d0cece', index: 1,
+                    data: [" + sbNotStart.ToString() + @"]
+                  }, {
+                    name: 'On Progress',
+                    color: '#ffff00', index: 2,
+                    data: [" + sbOnProgress.ToString() + @"]
+                  }, {
+                    name: 'Completed',
+                    color: '#00b050', index: 3,
+                    data: [" + sbComplete.ToString() + @"]
+                  }, {
+                    name: 'Over Due',
+                    color: '#ff0000', index : 4,
+                    data: [" + sbOverDue.ToString() + @"]
+                  }]
+                });");
+
+            return new JavaScriptResult(sb.ToString());
+        }
+
+        [AuthorizeRole(UserRole.All)]
+        [HttpGet]
+        [Route("ILearningPerform/GetGJobLevel")]
+        public IActionResult GetGJobLevel()
+        {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbCate = new StringBuilder();
+            StringBuilder sbNotStart = new StringBuilder();
+            StringBuilder sbOnProgress = new StringBuilder();
+            StringBuilder sbComplete = new StringBuilder();
+            StringBuilder sbOverDue = new StringBuilder();
+
+            sbCate.Append("'I2', 'I3', 'I3A', 'I4'");
+            sbNotStart.Append("100, 10, 30, 50");
+            sbOnProgress.Append("0, 30, 30, 10");
+            sbComplete.Append("0, 30, 30, 10");
+            sbOverDue.Append("0, 30, 10, 30");
+
+            sb.Append(@"Highcharts.chart('divJobLevel', {
+                  chart: {
+                    height: 320,
+                    type: 'column'
+                  },
+                  title: {
+                    text: 'By Job Level'
+                  },
+                 exporting: {
+                    enabled: false
+                 },
+                 credits: {
+                    enabled: false
+                 },
+                  xAxis: {
+                    categories: [" + sbCate.ToString() + @"]
+                  },
+                  yAxis: {
+                    min: 0,
+                    title: {
+                      text: ''
+                    }
+                  },
+                  stackLabels: {
+                      enabled: true,
+                  },
+                  tooltip: {
+                    pointFormat: '<span style=\""color:{ series.color}\"">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                    shared: true
+                  },
+                  plotOptions: {
+                    column: {
+                      stacking: 'percent',
+                      dataLabels: {
+                            enabled: true
+                      }
+                    }
+                },
+                  series: [{
+                    name: 'Not Start',
+                    color: '#d0cece', index: 1,
+                    data: [" + sbNotStart.ToString() + @"]
+                  }, {
+                    name: 'On Progress',
+                    color: '#ffff00', index: 2,
+                    data: [" + sbOnProgress.ToString() + @"]
+                  }, {
+                    name: 'Completed',
+                    color: '#00b050', index: 3,
+                    data: [" + sbComplete.ToString() + @"]
+                  }, {
+                    name: 'Over Due',
+                    color: '#ff0000', index : 4,
+                    data: [" + sbOverDue.ToString() + @"]
+                  }]
+                });");
 
             return new JavaScriptResult(sb.ToString());
         }

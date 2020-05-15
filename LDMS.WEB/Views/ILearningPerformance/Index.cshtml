@@ -7,9 +7,9 @@
 
 @section Header{
     @*<link href="~/lib/highcharts/css/highcharts.css" rel="stylesheet" />
-    <script src="~/lib/highcharts/highcharts.js"></script>
-    <script src="~/lib/highcharts/modules/exporting.js"></script>
-    <script src="~/lib/highcharts/modules/export-data.js"></script>*@
+        <script src="~/lib/highcharts/highcharts.js"></script>
+        <script src="~/lib/highcharts/modules/exporting.js"></script>
+        <script src="~/lib/highcharts/modules/export-data.js"></script>*@
 
     <style>
         .ui-widget-header {
@@ -200,15 +200,28 @@
 
         </div>
 
-        <div class="form-group row" style="margin-top:15px; ">
-            <div class="col-7 card card-block">
+        <div class="form-group row" style="margin-top:12px;margin-bottom:2px; padding-bottom:7px; ">
+            <div class="card card-block" style="margin-bottom:5px; width:60%;">
                 <div id="divCostSpend"></div>
             </div>
-            <div class="col-4 card card-block" style="margin-left:9px;">
+            <div class="card card-block" style="margin-left:9px;margin-bottom:5px;width:37%;">
                 <h5 class="text-center" style="padding-top:5px;color: #333333;font-size: 18px;">Learning Progress</h5>
                 <div id="divLearningProgress"></div>
             </div>
         </div>
+
+        <div class="form-group row" style="margin-top:0px; ">
+            <div class="card card-block" style="width:32%">
+                <div id="divPlatform"></div>
+            </div>
+            <div class="card card-block" style="margin-left:9px;width:32%">
+                <div id="divArea"></div>
+            </div>
+            <div class="card card-block" style="margin-left:9px;width:32%">
+                <div id="divJobLevel"></div>
+            </div>
+        </div>
+
 
     </div>
 </form>
@@ -287,6 +300,9 @@
             LoadTotal();
             LoadCostSpend();
             LoadLearningProgress();
+            LoadGPlatform();
+            LoadGArea();
+            LoadGJobLevel();
         }
 
         function LoadTotal() {
@@ -329,9 +345,19 @@
                 "&Year=" + ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()) + "&q1=" + ($('#chkQ1').is(":checked") ? "1" : "0") +
                 "&q2=" + ($('#chkQ2').is(":checked") ? "1" : "0") + "&q3=" + ($('#chkQ3').is(":checked") ? "1" : "0") +
                 "&q4="+ ($('#chkQ4').is(":checked") ? "1" : "0") );
-
         }
 
+        function LoadGPlatform() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGPlatform")" );
+        }
+
+        function LoadGArea() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGArea")" );
+        }
+
+        function LoadGJobLevel() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGJobLevel")" );
+        }
     </script>
 }
 
