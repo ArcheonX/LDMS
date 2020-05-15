@@ -623,11 +623,11 @@
 
                          if (e[0].IsAttend == "1")
                          {
-                             f(e[0].Attend_Count == 0) $("#lblSAttend").attr('class', "label label-white");
-                            else {
-                             if (e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class', "label label-success");
-                             else if (e[0].Attend_Count > 0) $("#lblSAttend").attr('class', "label label-warning");
-                             else $("#lblSAttend").attr('class', "label label-gray");
+                             if(e[0].Attend_Count == 0) $("#lblSAttend").attr('class', "label label-white");
+                             else {
+                                 if (e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class', "label label-success");
+                                 else if (e[0].Attend_Count > 0) $("#lblSAttend").attr('class', "label label-warning");
+                                 else $("#lblSAttend").attr('class', "label label-gray");
                          }
                         }
                         else{ $("#lblSAttend").attr('class',"label label-inverse"); }
