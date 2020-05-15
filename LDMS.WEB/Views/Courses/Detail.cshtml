@@ -1371,7 +1371,7 @@
             }
             $('#dtEmployee').DataTable({
                 'processing': true,
-                'paging': true,
+                'paging': false,
                 "ordering": false,
                 "searching": false,
                 "lengthChange": false,
@@ -1403,6 +1403,13 @@
 
             //alert(employeelist);
             //employeelist = employeelist.remove(employeelist.length);
+            /*alert('employeelist : ' + employeelist);
+            alert('txtEmployeeID : ' + $('#txtEmployeeID').val());
+            if ($('#txtEmployeeID').val().indexOf(employeelist) > 0) {
+
+                alert('xxxxxxxxxxx');
+            }//*/
+
 
             $('#txtEmployeeID').val( $('#txtEmployeeID').val() + employeelist);
 
@@ -1611,13 +1618,17 @@
                         IsActive : $('#selectCourseStatus').val()
                 },
                 success: function (e) {
-                        //debugger;
-                        //alert('ID : ' + $('#hID').val());
-                        $('#hID').val(e.ID);
-                        $('#txtCourseID').val(e.CourseID);
+
+                    if (e.result == true) {
+                        $('#hID').val(e.data.ID);
+                        $('#txtCourseID').val(e.data.CourseID);
                         $('#divClass').attr("style", "display:block");
-                        MessageController.UnblockUI('#frmCourseDetailEditor');
-                        alert('Save Complete');
+                    }
+                    
+                       
+                     MessageController.UnblockUI('#frmCourseDetailEditor');
+                     alert(e.message);
+                        //alert('Save Complete');
                 },
                 }
             )

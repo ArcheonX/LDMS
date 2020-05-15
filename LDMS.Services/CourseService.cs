@@ -145,6 +145,8 @@ namespace LDMS.Services
 
         private DataTable CreateData(string value, string column)
         {
+            if (value == null) return null;
+
             List<String> element = value.Split(',').ToList();
             element.Remove("");
             DataTable dt = new DataTable();
@@ -693,6 +695,23 @@ namespace LDMS.Services
                 }
             }
         }
-         
+
+
+        public List<ViewModels.vEmployeeResult> CheckEmployee(string TargetEmployeeID)
+        {
+            List<ViewModels.vEmployeeResult> EmployeeList = new List<vEmployeeResult>();
+            using (IDbConnection conn = Connection)
+            {
+                var p = new DynamicParameters();
+               
+                p.Add("@paramEmpID", CreateData(TargetEmployeeID, "EmployeeID"), DbType.Object);
+
+                var grid = conn.QueryMultiple("[dbo].[sp_V_Employee_List]", p, commandType: CommandType.StoredProcedure);
+                EmployeeList = grid.Read<ViewModels.vEmployeeResult>().ToList();
+
+                return EmployeeList;
+            }
+        }
+
     }
 }
