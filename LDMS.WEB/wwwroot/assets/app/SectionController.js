@@ -27,6 +27,16 @@
                 }
             })
         });
+        //$("#btnAllowImport").click(function () {
+        //    console.log("AA");
+        //    //MessageController.WarningCallback("Are you sure you want to dicard changes'?", "Confirm Delete!", function (res) {
+        //    //    if (res) {
+        //    //        $("#txtSectionId").val(null);
+        //    //        $("#txtSectionName").val(null);
+        //    //    }
+        //    //})
+        //});
+
         $("#btnCancel").click(function (event) {
             MessageController.ConfirmCallback("Are you sure you want to cancel changes", "Confirm Cancel Change", function (res) {
                 if (!res) {
@@ -75,6 +85,10 @@
         $("#btnSearchEmployee").click(function (event) {
             LoadEmployees();
         }); 
+      $("#btnExportExcel").click(function (event) {
+            ExportEmployees();
+        }); 
+
         $("#btnEmpListSave").click(function (event) {
             var models = []; 
             var table = $('#dtListEmployee').DataTable(); 
@@ -116,6 +130,12 @@
                 }
             });
         });  
+        $('.custom-file input').change(function (e) {
+            if (e.target.files.length) {
+                $(this).next('.custom-file-label').html(e.target.files[0].name);
+            }
+            uploadFiles();
+        });
     $.ajax({
         type: "GET",
         url: "/Master/Division",
@@ -169,8 +189,45 @@
     }); 
         LoadEmployees(); 
         LoadDepartmentSection();  
+        CreatePopupImportFile();
     })
 })(jQuery);
+
+function ExportEmployees() {
+    MessageController.BlockUI({ boxed: true, target: '#dtListEmployee' });
+    $.ajax({
+        type: "GET",
+        url: '/Organization/ExportEmployees',
+        data: {
+            'departmentId': CookiesController.getCookie("DEPARTMENTID"),
+            'sectionId': $("#selectSection").val(),
+            'keyword': $("#txtKeyword").val()
+        },
+        success: function (response) { 
+            data = response.Data;
+            if (data != "") {
+                window.location.href = "/Organization/Download/?fileName=" + data;
+            }
+            MessageController.UnblockUI('#dtListEmployee'); 
+        },
+        failure: function (response) {
+            MessageController.UnblockUI('#dtListEmployee');
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            MessageController.UnblockUI('#dtListEmployee');
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}
 
 function LoadSection() {
     MessageController.BlockUI({ boxed: true, target: '#dtSectionRows' });
@@ -198,10 +255,14 @@ function LoadSection() {
                     "Filter": false,
                     "info": false,
                     "bPaginate": false,
-                    "bLengthChange": false, 
+                    "bLengthChange": false,
                     "bJQueryUI": true, //Enable smooth theme
                     "sPaginationType": "full_numbers", //Enable smooth theme
-                    "sDom": 'lfrtip'
+                    "sDom": 'lfrtip',
+                    "pageLength": 10,
+                    "language": {
+                        "zeroRecords": "No data"
+                    }
                 });
                 $('.dataTables_length').addClass('bs-select');
                 CreateSectionPopup();
@@ -210,7 +271,7 @@ function LoadSection() {
             }
             MessageController.UnblockUI('#dtSectionRows');
         },
-        failure: function (response) { 
+        failure: function (response) {
             MessageController.UnblockUI('#dtSectionRows');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
@@ -218,7 +279,7 @@ function LoadSection() {
                 MessageController.Error(response.responseText, "Error");
             }
         },
-        error: function (response) { 
+        error: function (response) {
             MessageController.UnblockUI('#dtSectionRows');
             if (JSON.parse(response.responseText).Errors.length > 0) {
                 MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
@@ -299,22 +360,22 @@ function LoadDepartmentSection() {
             var options = $('#selectSection');
             options.empty();
             options.append($("<option />").val(null).text("---All---"));
-            $.each(response.Data, function () {
+            $.each(response.Data, function () { 
                 options.append($("<option />").val(this.ID_Section).text('(' + this.SectionID + ') ' + this.SectionName_EN));
             });
             Array.prototype.slice.call(document.querySelectorAll('select[id*="selectSection"]'))
                 .forEach(function (element) { 
-                    var selectValue = element.value;
-                    var options = $("#" + element.id);
-                    options.empty();
                     if (element.id != 'selectSection') {
-                        options.append($("<option />").val(null).text("---None---"));
+                        var selectValue = element.value;
+                        var options2 = $("#" + element.id);
+                        options2.empty();
+                        options2.append($("<option />").val(null).text("---None---"));
                         $.each(response.Data, function () {
-                            options.append($("<option />").val(this.ID_Section).text('(' + this.SectionID + ') ' + this.SectionName_EN));
+                            options2.append($("<option />").val(this.ID_Section).text('(' + this.SectionID + ') ' + this.SectionName_EN));
                         });
                         $("#" + element.id).val(selectValue).trigger('change');
-                    }   
-                });
+                    }
+                }); 
         },
         failure: function (response) {
             if (JSON.parse(response.responseText).Errors.length > 0) {
@@ -340,10 +401,10 @@ function EditSection(id, code, name) {
 }
 
 function DeleteSection(id, code, name) {
-    MessageController.WarningCallback("Are you sure you want to delete Section '" + code + ' ' + name + "'?", "Confirm Delete!", function (res) {
+    MessageController.ConfirmCallback("Are you sure you want to delete Section '" + code + ' ' + name + "'?", "Confirm Delete!", function (res) {
         if (res) { 
             $.ajax({
-                type: "Delete",
+                type: "POST",
                 url: '/Organization/DeleteSection',
                 data: { 'sectionId': id },
                 success: function (response) {
@@ -452,4 +513,154 @@ function CreateSectionPopup() {
         $.magnificPopup.close();
     });
 }
- 
+
+function CreatePopupImportFile() {
+    $('.import-excel-modal').magnificPopup({
+        type: 'inline',
+        preloader: false,
+        modal: true,
+        callbacks: {
+            beforeOpen: function () {
+                if ($.fn.dataTable.isDataTable('#dtImportExcel')) {
+                    var table = $('#dtImportExcel').DataTable();
+                    table.destroy();
+                }
+                $('#dtImportExcel').DataTable({
+                    'processing': true,
+                    'paging': true,
+                    "ordering": true,
+                    "searching": false,
+                    "lengthChange": false,
+                    "bAutoWidth": false,
+                    "Filter": false,
+                    "info": false,
+                    "bPaginate": false,
+                    "pageLength": 10, 
+                    "bLengthChange": false,
+                    "bJQueryUI": true, //Enable smooth theme
+                    "sPaginationType": "full_numbers", //Enable smooth theme
+                    "sDom": 'lfrtip'
+                });
+                $('.dataTables_length').addClass('bs-select');
+                $("#inputGroupFile01").val(null);
+                $('#lblFileName').html("Choose file");
+            },
+            beforeClose: function () {
+                $('#dtImportExcel').empty(); 
+                $("#inputGroupFile01").val(null);
+                $('#lblFileName').html("Choose file");
+            }
+        }
+    });
+
+    $(document).on('click', '.popup-modal-dismiss', function (e) {
+        e.preventDefault();
+        $.magnificPopup.close();
+    });
+} 
+
+function uploadFiles() { 
+    var input = document.getElementById("inputGroupFile01");
+    var files = input.files;
+    if (files.length <= 0) return;
+    MessageController.BlockUI({ boxed: true, target: '#import-excel-modal' }); 
+    var formData = new FormData(); 
+    formData.append("file", files[0]); 
+    formData.append('divisionId', CookiesController.getCookie("DIVISIONID"));
+    formData.append('departmentId', CookiesController.getCookie("DEPARTMENTID"));
+    //for (var i = 0; i != files.length; i++) {
+    //    formData.append("files", files[i]); 
+    $.ajax({
+        url: '/Organization/ImportSection',
+        type: 'post',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (response) { 
+            LoadEmployees();
+            if ($.fn.dataTable.isDataTable('#dtImportExcel')) {
+                var table = $('#dtImportExcel').DataTable();
+                table.destroy();
+            }
+            $('#dtImportExcel').DataTable({
+                'data': response.Data,
+                'columns': [
+                    { "data": 'EmployeeID', title: 'Employee ID', "className": 'text-center'}, 
+                    { "data": 'FullName', title: 'Employee Name', "className": 'text-center' },
+                    { "data": 'JobGrade', title: 'Job Grade', "className": 'text-center' },
+                    { "data": 'JobTitle', title: 'Job Title', "className": 'text-center' },
+                    { "data": 'Section', title: 'Section', "className": 'text-center'  }, 
+                    {
+                        "data": 'IsValid',
+                        "sTitle": 'Is Valid',
+                        "className": 'text-center',
+                        "mRender": function (data, type, row) {
+                            if (data == true) {
+                                return '<img src="../assets/images/svg/icon-check-green.svg" class="light-logo" />'
+                            } else {
+                                return '<img src="../assets/images/svg/icon-cross-red.svg" class="light-logo" />'
+                            }
+                        }
+                    },
+                     { "data": 'Remark', title: 'Remark' }
+                ],
+                'processing': true,
+                'paging': true,
+                "ordering": true,
+                "searching": false,
+                "lengthChange": false,
+                "bAutoWidth": false,
+                "Filter": false,
+                "info": false,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bJQueryUI": true, //Enable smooth theme
+                "sPaginationType": "full_numbers", //Enable smooth theme
+                "sDom": 'lfrtip',
+                "pageLength": 10,
+                "language": {
+                    "zeroRecords": "No data"
+                }
+            });
+            $('.dataTables_length').addClass('bs-select');
+            //var isfound = response.Data.any((item) => {
+            //    return item.IsValid == false;
+            //});
+            //if (isfound == true) {
+            //    $("#btnAllowImport").attr("disabled", "disabled");
+            //} else {
+            //    $("#btnAllowImport").removeAttr("disabled");
+            //} 
+            MessageController.UnblockUI('#import-excel-modal');
+            var isDupicatTopicName = response.Data.any((item) => {
+                return item.IsValid == false;
+            });
+            if (isDupicatTopicName == true) {
+                MessageController.Error("Import faild. some data has invalid infomation", "Import Failed.");
+            } else {
+                MessageController.Success("Import Success.", "Import Success.");
+            }
+        },
+        failure: function (response) {
+            MessageController.UnblockUI('#import-excel-modal');
+            $("#inputGroupFile01").val(null);
+            $('#lblFileName').html("Choose file");
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            MessageController.UnblockUI('#import-excel-modal');
+            $("#inputGroupFile01").val(null);
+            $('#lblFileName').html("Choose file");
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+}

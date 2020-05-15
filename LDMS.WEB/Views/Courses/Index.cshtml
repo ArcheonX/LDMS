@@ -60,11 +60,15 @@
                     </div>
 
                     <div class="row form-group">
-                        <div class="col-sm-1 col-md-1 offset-9">
-                            <a id="btnSeacrh" class="btn btn-info waves-effect waves-light" style="width:100%; color:white;" onclick="Search()"> Search </a>
+                        <div class="col-sm-2 col-md-2 offset-8">
+                            <a id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%" onclick="Search()">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                            </a>
                         </div>
-                        <div class="col-sm-1 col-md-2" style="margin-left:-25px">
-                            <a id="btnAdd" onclick="window.location.href = '@Url.Action("Add", "Courses")';" class="btn btn-success waves-effect waves-light" style="width:60%; color:white">Add Course</a>
+                        <div class="col-sm-2 col-md-2" style="margin-left:-25px">
+                            <a id="btnAdd" onclick="window.location.href = '@Url.Action("Add", "Courses")';" class="btn btn-outline-success waves-effect waves-light" style="width:90%;">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add Course
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -76,7 +80,7 @@
         <table class="display dataTable" width="100%" id="dtCourseList">
             <thead>
                 <tr>
-                    <th style="text-align:center;width:100px">#</th>
+                    <th style="text-align:center;width:100px">No</th>
                     <th style="text-align:center;width:150px">Course ID</th>
                     <th style="text-align:center;width:150px">Course Name</th>
                     <th style="text-align:center;width:150px">Learn Method</th>
@@ -130,7 +134,7 @@
                  'processing': true,
                  'serverSide': true,
                  'paging': true,
-                 "ordering": false,
+                 "ordering": true,
                  "searching": false,
                  "lengthChange": false,
                  "bAutoWidth": false,
@@ -177,23 +181,48 @@
                     },
                     {
                         "mData": "ID",
-                        "mRender": function (data, type, row) { return "<a href='#'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>"; }
+                        "mRender": function (data, type, row) {
+                            //return "<a href='#'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>";
+                            var name = row['CourseName'];
+                            return "<a href='#' onclick=\"DeleteCourse('"+data+"','"+name+"')\"'><img src='@Url.Content("~/assets/images/svg/icon-delete-red.svg")' class='light-logo' alt='homepage' /></a>";
+                        }
+                        
                     }
 
                  ],
                  "columnDefs": [
-                     { "orderable": false, "targets": 0, "className": "text-center",  "width": "4%" },
-                     { "orderable": false, "targets": 1, "className": "text-center" },
-                     { "orderable": false, "targets": 2, "className": "text-center" },
-                     { "orderable": false, "targets": 3, "className": "text-center" },
-                     { "orderable": false, "targets": 4, "className": "text-center" },
+                     { "orderable": false, "targets": 0, "className": "text-center", "width": "4%" },
+                     { "orderable": true, "targets": 1, "className": "text-center" },
+                     { "orderable": true, "targets": 2, "className": "text-center" },
+                     { "orderable": true, "targets": 3, "className": "text-center" },
+                     { "orderable": true, "targets": 4, "className": "text-center" },
                      { "orderable": false, "targets": 5, "className": "text-center" },
                      { "orderable": false, "targets": 6, "className": "text-center" },
                      //{ "orderable": false, "targets": 7, "className": "text-center" }
 
                  ]
-            });
+             });
         }
+
+        function DeleteCourse(ID, name) {
+             MessageController.ConfirmCallback("Are you sure you want to delete Course '" + name + "' ?", "Confirm Delete!", function (res) {
+            if (res) {
+                $.ajax({
+                    url: "/Courses/DeleteCourse",
+                    type: "Post",
+                    data: {
+                        ID_Course: ID
+
+                    },
+                    success: function (e) {
+                        Search();
+                    },
+
+                }
+                )
+            }
+        });
+    }
 
     </script>
 }

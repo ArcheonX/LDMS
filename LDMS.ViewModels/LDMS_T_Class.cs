@@ -6,6 +6,7 @@ namespace LDMS.ViewModels
     {
         public int ID { get; set; }
         public string ClassID { get; set; }
+        public string LMS_PACD_courseID { get; set; }
         public int ID_Course { get; set; }
         public string CourseName { get; set; }
         public int ID_Instructor { get; set; }
@@ -46,5 +47,6 @@ namespace LDMS.ViewModels
 
         public string RegisterDateStart_Show { get; set; }
         public string RegisterDateEnd_Show { get; set; }
+        public int ID_LearnMethod { get; set; }
     }
 }

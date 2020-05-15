@@ -29,16 +29,10 @@ namespace LDMS.WEB
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(120);
             });
-            services.AddAuthorization(options =>
-            {
-                //options.AddPolicy("defaultpolicy", b =>
-                //{
-                //    b.RequireAuthenticatedUser();
-                //});
-            });
+            services.AddAuthorization();
 
             services.AddMvc(config =>
-            { 
+            {
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             AppSettings appSettings = new AppSettings();
@@ -55,7 +49,7 @@ namespace LDMS.WEB
             services.AddSingleton(jwtSettings);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCache();
-            services.AddControllers(); 
+            services.AddControllers();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -84,15 +78,6 @@ namespace LDMS.WEB
               options.SlidingExpiration = true;
           });
             services.AddControllersWithViews();
-           
-            //services.ConfigureApplicationCookie(options =>
-            //{ 
-            //    options.Events.OnRedirectToLogin = context => {
-            //        context.Response.Headers["Location"] = context.RedirectUri;
-            //        context.Response.StatusCode = 401;
-            //        return Task.CompletedTask;
-            //    };
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,11 +1,14 @@
 ﻿using LDMS.Core;
 using LDMS.Services;
 using LDMS.ViewModels;
+using LDMS.ViewModels.SearchModel;
 using LDMS.WEB.Filters;
 using LDMS.WEB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace LDMS.WEB.Controllers
@@ -115,6 +118,17 @@ namespace LDMS.WEB.Controllers
         public IActionResult InsertPlatform( string ID_Platform, string PlatformID, string PlatformName_EN, string PlatformName_TH,
                                              string ID_PlatformType, string PlatformDescription, string ID_Department_Create, string PlatformStatus)
         {
+
+            ResultMessage result = new ResultMessage();
+
+            int count = _PlatFormService.SelectPlatform(PlatformID/*, PlatformName_EN*/);
+            if(count > 0)
+            {
+                result.message = "มีรายการ Platform ID : " + PlatformID /* + ", Platform Name : " + PlatformName_EN*/ + " ในระบบแล้ว กรุณาเปลี่ยนแปลงข้อมูล";
+                return Json(result);
+            }
+
+
             int _id = -1;
             LDMS_M_Platform platform = new LDMS_M_Platform();
             if (ID_Platform == "null")
@@ -255,9 +269,48 @@ namespace LDMS.WEB.Controllers
         [AutoValidateAntiforgeryToken]
         public IActionResult InsertSubPlatformCourse(string model, string ID_SubPlatform, string ID_Platform)
         {
-            bool res = _PlatFormService.CreateSubPlatformCourse(model, ID_SubPlatform);
-            
-            return Json(ID_SubPlatform);
+            ResultMessage result = new ResultMessage();
+
+            if (model == "[]") {
+                result.message = "Please Select Course !!!";
+                result.result = false;
+                return Json(result);
+            }
+
+
+            List<LDMS_M_SubPlatformCourse> ls = _PlatFormService.SelectLDMS_M_SubPlatformCourse(ID_Platform);
+            DataTable dt = JsonConvert.DeserializeObject<DataTable>(model);
+            string message = " มีรายการ Subplatform และ Course ซ้ำดังนี้ ";
+            int checkCount = 0;
+            for( int i=0; i < dt.Rows.Count; i++ )
+            {
+                foreach(LDMS_M_SubPlatformCourse s in ls)
+                {
+                    //if( dt.Rows[i]["ID_Subplatform"].ToString() == s.ID_SubPlatform.ToString() 
+                    //    && dt.Rows[i]["ID_Course"].ToString() == s.ID_Course.ToString() )
+                    if (dt.Rows[i]["ID_Course"].ToString() == s.ID_Course.ToString())
+                    {
+                        message +=   "\n " + (i + 1).ToString() + " : Subplatform " + s.SubPlatformName_EN + "  Course : " + s.CourseName;
+                        checkCount++;
+                    }
+                }
+            }
+
+            if(checkCount > 0)
+            {
+                result.message = message;
+                result.result = false;
+            }
+            else
+            {
+                bool res = _PlatFormService.CreateSubPlatformCourse(model, ID_SubPlatform);
+                result.message = "Save Course Complete";
+                result.result = true;
+            }
+
+            //bool res = _PlatFormService.CreateSubPlatformCourse(model, ID_SubPlatform);
+
+            return Json(result);
         }
 
         [AuthorizeRole(UserRole.All)]

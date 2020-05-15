@@ -1,0 +1,193 @@
+﻿
+@{
+    ViewData["Title"] = "ClassRegister";
+    ViewData["MainTitle"] = "My-Team Class Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model LDMS.ViewModels.ModelSearchClass;
+<div class="panel panel-primary" style="margin-top:-15px;width:100%;">
+    <div class="panel panel-default" style="width:100%;border-width:thin;border-style:solid;">
+        <div class="panel-body" style="width:100%;">
+            <form id="frmMain" class="form" method="get" enctype="multipart/form-data" style="width:100%">
+                @Html.AntiForgeryToken()
+                @if (Model != null)
+                {
+                    <input type="hidden" id="hID_Department" name="hID_Department" value=@Model.ID_Department />
+                    <input type="hidden" id="hID_Course" name="hID_Course" value=@Model.ID_Course />
+                    <input type="hidden" id="hID_Month" name="hID_Month" value=@Model.Month />
+
+                }
+                else
+                {
+                    <input type="hidden" id="hID_Department" name="hID_Department" value="1234" />
+                    <input type="hidden" id="hID_Course" name="hID_Course" value="3" />
+                    <input type="hidden" id="hID_Month" name="hID_Month" value="4" />
+                }
+                <div class="form-horizontal" style="margin-top:25px">
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2" style="margin-left:10px; margin-top:20px">
+                            <span class="pull-left">
+                                <label class="LabelCaption" style="font-weight:bold;">My Class-Detail</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-2 col-md-2 offset-6" style="margin-top:20px;">
+                            <a id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:70%;" onclick="window.location.href = '@Url.Action("TeamSchedule", "Schedule")';">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div style="border-width:thin; border-style:solid; margin-left:0px; margin-top: 15px; margin-bottom:5px; width:100%;display:block"></div>
+
+                <div id="divRender"></div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+@section Scripts{
+    <style type="text/css">
+        .form-group {
+            position: relative;
+            background-size: cover;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            alert('TeamClassDetail hID_Course : ' + $('#hID_Course').val() + ', hID_Month : ' + $('#hID_Month').val() );
+            LoadClassScheduleDetail();
+        });
+
+        function LoadClassScheduleDetail() {
+             $.ajax(
+                    {
+                        url: "/Schedule/GetClassEmployee",
+                        type: "POST",
+                         data: {
+                            'ID_Department' : CookiesController.getCookie("DEPARTMENTID"),
+                            'ID_Course': $('#hID_Course').val(),
+                            'Month' : $('#hID_Month').val(), //month
+                    },
+                     success: function (e) {
+                        //alert('RenderClass : ' + e.length);
+                        RenderClass(e);
+                     
+                    },
+                }
+            )
+        }
+
+        function RenderClass(e) {
+
+            var html = '';
+            for (var i = 0; i < e.length; i++) {
+                html =
+                        '<div id="divBorder" style="border-width:thin; border-style:solid;">'+
+                        '<div id="divCourseDetail">' +
+                            '<div class="form-group row" style="margin-top:20px;">'+
+                                '<div class="col-sm-3 col-md-3" style="margin-top:20px; margin-left:2em">'+
+                                    '<div class="profile-text">'+
+                                        '<a aria-expanded="false">Course Name :' + e[i].CourseName + '</a>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'+
+                        '<div class="form-group row">'+
+                            '<div class="col-sm-3 col-md-3" style="margin-top:20px; margin-left:2em">'+
+                                '<div class="profile-text">'+
+                                    '<a aria-expanded="false">Class ID : '+ e[i].ClassID + '</a>'+
+                                '</div>'+
+                        '</div>' +
+                        '<div class="col-sm-2 col-md-2" style="margin-top:20px;">'+
+                            '<div class="profile-text pull-right" >'+
+                                '<a aria-expanded="false">Learning Date : ' + e[i].LearnDateStart + '</a>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-sm-2 col-md-2 offset-1" style="margin-top:20px;">'+
+                            '<div class="profile-text pull-right">'+
+                                '<a aria-expanded="false" class="btn btn-outline-primary">Capacity : ' + e[i].Capacity + '</a>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-sm-1 col-md-1" style="margin-top:20px;">'+
+                            '<div class="profile-text pull-right">'+
+                                '<a aria-expanded="false" class="btn btn-outline-secondary" >Register : ' + e[i].Registered + '</a>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-sm-1 col-md-1" style="margin-top:20px;">'+
+                            '<div class="profile-text pull-right">'+
+                                '<a aria-expanded="false" class="btn btn-outline-warning" >Waiting : ' + e[i].Waiting + '</a>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-sm-1 col-md-1" style="margin-top:20px;">'+
+                        '<div class="profile-text pull-right">'+
+                                '<a aria-expanded="false" class="btn btn-outline-success">Approve : ' + e[i].Approved + '</a>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '</div>' +
+                    ' <div id="divLine" style="border-width:thin; border-style:solid; margin-left:20px; display:block; margin-top: 5px; margin-bottom:20px; width:95%;display:block"></div>' +
+                        ' <div class="table-responsive m-t-0">'+
+                        ' <table class="display dataTable bJQueryUI" width="100%" id="dtClass_'+ i +'">' +
+                        '<thead>'+
+                                '<tr>'+
+                                    '<th style="text-align:center;width:25%">Employee ID</th>'+
+                                    '<th style="text-align:center;width:25%">Employee Name</th>'+
+                                    '<th style="text-align:center;width:25%">JobGrade</th>'+
+                                    '<th style="text-align:center;width:25%">Jobtitle</th>'+
+                                '</tr>' +
+                            '</thead>'+
+                            '<tbody>' +
+                                ''
+                        '</tbody>' +
+                        '</table>' +
+                        '</div> ' +
+                   '</div> ';
+                $("#divRender").append(html);
+                var row = $("<tr />");
+                $("#dtClass_" + i + " tbody").append(row);
+               
+                row.append('<td style="text-align:center">'+e[i].EmployeeID+'</td>');
+                row.append('<td style="text-align:center">'+e[i].EmployeeName+'</td>');
+                row.append('<td style="text-align:center">'+e[i].JobGradeName_EN+'</a></td>');
+                row.append('<td style="text-align:center">'+e[i].JobTitleName_EN+'</td>');
+                
+                for (var j = 0; j < e[i].lsEmployee.length; j++) {
+                    
+                  row = $("<tr />");
+                  $("#dtClass_" + i + " tbody").append(row);
+               
+                    row.append('<td style="text-align:center">'+e[i].lsEmployee[j].EmployeeID+'</td>');
+                    row.append('<td style="text-align:center">'+e[i].lsEmployee[j].EmployeeName+'</td>');
+                    row.append('<td style="text-align:center">'+e[i].lsEmployee[j].JobGradeName_EN+'</a></td>');
+                    row.append('<td style="text-align:center">'+e[i].lsEmployee[j].JobTitleName_EN+'</td>');
+                  
+
+                }
+
+                 dtData = $('#dtClass_' + i).DataTable({
+                     'processing': true,
+                     'serverSide': false,
+                    'paging': false,
+                    "ordering": false,
+                    "searching": false,
+                    //"lengthChange": false,
+                    "bAutoWidth": false,
+                    "Filter": false,
+                    "info": false,
+                    "bPaginate": false,
+                    "bLengthChange": false,
+                    "bJQueryUI": true, //Enable smooth theme
+                    //"sPaginationType": "full_numbers", //Enable smooth theme
+                    "sDom": 'lfrtip',
+                    destroy: true
+                });
+    
+             }
+        }
+
+    </script>
+}

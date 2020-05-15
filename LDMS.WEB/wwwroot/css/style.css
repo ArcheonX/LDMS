@@ -1966,11 +1966,10 @@ a.mytooltip{font-weight:500;color:#009efb}
 .slimScrollBar{z-index:10 !important}
 .carousel-item-next,.carousel-item-prev,.carousel-item.active{display:block}
 .user-profile {
-    position: sticky;
+    position: relative;
     background-size: cover;
     width: 350px;
-    background-image: url("../assets/images/background/user-info.jpg");
-    /*height:300px;*/
+    background-image: url("../assets/images/background/user-info.jpg"); 
 }
     .user-profile .profile-img {
         width: 120px;
@@ -1999,26 +1998,32 @@ a.mytooltip{font-weight:500;color:#009efb}
                 position: absolute;
                 right: 20px;
                 top: 20px
-            } 
+            }
+    /*.user-profile .dropdown-menu {
+        left: 0px;
+        right: 0px;
+        width: 180px;
+        margin: 0 auto
+    }*/ 
 .scroll-sidebar {
-    padding-bottom: 60px; 
-    width: 350px;
+    padding-bottom: 60px;
+    overflow-y: scroll;
 } 
 .collapse.in {
     display: block
-}
-.sidebar-nav {
+} 
+.sidebar-nav { 
     padding: 15px;
-    width: 350px;
-    /*overflow-y:scroll;*/ 
-    /*height:calc(100%);*/
+    padding-right:10px;
+    width:330px;  
 }
-    .sidebar-nav ul {
+.sidebar-nav ul {
         margin: 0px;
         padding: 0px;
-    }
+}
     .sidebar-nav ul li {
-        list-style: none
+        list-style: none;
+        font-size: 16px;
     }
 
 .sidebar-nav ul li a {

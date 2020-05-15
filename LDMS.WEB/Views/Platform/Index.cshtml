@@ -6,106 +6,109 @@
 
 @model LDMS.ViewModels.LDMS_M_Platform_Search
 
-    <div class="panel panel-primary" style="margin-top:-15px;width:100%;">
-        <div class="panel-body" style="width:100%;">
-            <form method="post">
-                @Html.AntiForgeryToken()
-                <div class="form-horizontal" style="margin-top:25px">
-                    <div class="row form-group">
-                        <div class="col-sm-2 col-md-2">
-                            <span class="pull-right">
-                                <label class="LabelCaption">Platform ID</label>
-                            </span>
-                        </div>
-                        <div class="col-sm-4 col-md-4">
-                            <input type="text" id="txtFilterPlatformID" class="form-control input-sm" />
-                        </div>
+<div class="panel panel-primary" style="margin-top:-15px;width:100%;">
+    <div class="panel-body" style="width:100%;">
+        <form method="post" id="frmPlatformList">
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal" style="margin-top:25px">
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Platform ID</label>
+                        </span>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-sm-2 col-md-2">
-                            <span class="pull-right">
-                                <label class="LabelCaption">Platform Name</label>
-                            </span>
-                        </div>
-                        <div class="col-sm-4 col-md-4">
-                            <input type="text" id="txtFilterPlatformName" class="form-control input-sm" />
-                        </div>
+                    <div class="col-sm-4 col-md-4">
+                        <input type="text" id="txtFilterPlatformID" class="form-control input-sm" />
                     </div>
-                    <div class="row form-group">
-                        <div class="col-sm-2 col-md-2">
-                            <span class="pull-right">
-                                <label class="LabelCaption">Platform Type</label>
-                            </span>
-                        </div>
-                        <div class="col-sm-4 col-md-4">
-                            <select id="selectPlatformType"
-                                    name="selectPlatformType"
-                                    title="Please Select Platform Type"
-                                    class="form-control"
-                                    style="width: 100%">
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Platform Name</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <input type="text" id="txtFilterPlatformName" class="form-control input-sm" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Platform Type</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <select id="selectPlatformType"
+                                name="selectPlatformType"
+                                title="Please Select Platform Type"
+                                class="form-control"
+                                style="width: 100%">
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">Platform Status</label>
+                        </span>
+                    </div>
+                    <div class="col-4">
+                        <div class="btn-group">
+                            <select id="selectPlatformtStatus" name="selectPlatformtStatus" class="form-control" style="width: 100%">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-sm-2 col-md-2">
-                            <span class="pull-right">
-                                <label class="LabelCaption">Platform Status</label>
-                            </span>
-                        </div>
-                        <div class="col-4">
-                            <div class="btn-group">
-                                <select id="selectPlatformtStatus" name="selectPlatformtStatus" class="form-control" style="width: 100%">
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2 col-md-2 offset-8">
+                        <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                        </button>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-sm-2 col-md-2 offset-8">
-                            <button id="btnSeacrh" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%">
-                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
-                            </button>
-                        </div>
-                        <div class="col-sm-2 col-md-2" style="margin-left:-55px">
-                            <a id="btnAdd" onclick="window.location.href = '@Url.Action("AddPlatform", "Platform")';" class="btn btn-outline-success waves-effect waves-light" style="width:90%;">
-                                <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add Platform
-                            </a>
-                        </div>
+                    <div class="col-sm-2 col-md-2" style="margin-left:-55px">
+                        <a id="btnAdd" onclick="window.location.href = '@Url.Action("AddPlatform", "Platform")';" class="btn btn-outline-success waves-effect waves-light" style="width:90%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add Platform
+                        </a>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="panel-body" style="width:100%;">
-            <div class="table-responsive m-t-40">
-                <table class="display dataTable" width="100%" id="dtPlatformList">
-                    <thead>
-                        <tr>
-                            <th style="text-align:center;width:100px">No</th>
-                            <th style="text-align:center;width:150px">Platform ID</th>
-                            <th style="text-align:center;width:150px">Platform Name</th>
-                            <th style="text-align:center;width:150px">Platform Type</th>
-                            <th style="text-align:center;width:150px">Platform Status</th>
-                            <th style="text-align: center;width:50px">Edit</th>
-                            <!--<th style="text-align:center;width:50px">Delete</th>-->
-                            <th style="text-align:center;width:50px">Export</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
             </div>
+        </form>
+    </div>
+    <div class="panel-body" style="width:100%;">
+        <div class="table-responsive m-t-40">
+            <table class="display dataTable" width="100%" id="dtPlatformList">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;width:100px">No</th>
+                        <th style="text-align:center;width:150px">Platform ID</th>
+                        <th style="text-align:center;width:150px">Platform Name</th>
+                        <th style="text-align:center;width:150px">Platform Type</th>
+                        <th style="text-align:center;width:150px">Platform Status</th>
+                        <th style="text-align: center;width:50px">Edit</th>
+                        <!--<th style="text-align:center;width:50px">Delete</th>-->
+                        <th style="text-align:center;width:50px">Export</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
-@section Scripts{ 
-  <script type="text/javascript">
-        
-
+</div>
+@section Scripts{
+    <style type="text/css">
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+    <script type="text/javascript">
         $(document).ready(function () {
 
             LoadPlatformType();
             Search();
-            
+
             var dtData;
             $("#btnSeacrh").click(function (e) {
                 //alert('search');
@@ -129,7 +132,7 @@
       }
 
         function Search() {
-             
+
               $('#dtPlatformList').DataTable({
                   'processing': true,
                   'serverSide': true,
@@ -199,9 +202,11 @@
                      //{ "orderable": false, "targets": 7, "className": "text-center" }
 
                  ]
-            });
+              });
+
+
         }
 
 
-            </script>
-        }
+    </script>
+}

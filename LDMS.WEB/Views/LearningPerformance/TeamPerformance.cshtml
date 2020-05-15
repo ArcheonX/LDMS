@@ -1,0 +1,225 @@
+﻿
+@{
+    ViewData["Title"] = "My Team Learning Performance";
+    ViewData["MainTitle"] = "My Team";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-default" style="width:100%;">
+    <div class="panel-body panel-body-begin">
+        <div class="form-horizontal" style="margin-top:15px;width:98%;">
+            <div class="row form-group">
+                <div class="col-sm-6" style="margin-top:15px;">
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Plant</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectPlant"
+                                    name="selectPlant"
+                                    class="form-control"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Center</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectCenter"
+                                    name="selectCenter"
+                                    class="form-control"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Division</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectDivision"
+                                    name="selectDivision"
+                                    class="form-control"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Department</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectDepartment"
+                                    name="selectDepartment"
+                                    class="form-control"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right">
+                                <label class="LabelCaption">Section</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectSection"
+                                    name="selectSection"
+                                    class="form-control"
+                                    style="width: 100%">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="col-sm-10">
+                        <span class="pull-right">
+                            <input type='radio' name='FixicalYear' class="FixicalYear" value='2017' id="FY1" /><label id="lblFY1" for="FY1">FY2017</label>
+                            <input type='radio' name='FixicalYear' class="FixicalYear" value='2018' id="FY2" /><label id="lblFY2" for="FY2">FY2018</label>
+                            <input type='radio' name='FixicalYear' class="FixicalYear" value='2019' id="FY3" checked="checked" /><label id="lblFY3" for="FY3">FY2019</label>
+                            <input type='checkbox' name='Quater' value='1' id="Quater1" /><label for="Quater1">Q1</label>
+                            <input type='checkbox' name='Quater' value='2' id="Quater2" /><label for="Quater2">Q2</label>
+                            <input type='checkbox' name='Quater' value='3' id="Quater3" /><label for="Quater3">Q3</label>
+                            <input type='checkbox' name='Quater' value='4' id="Quater4" /><label for="Quater4">Q4</label>
+                            <button id="btnQueryProgress" class="btn btn-outline-secondary waves-effect waves-light" style="width:75px;">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />
+                            </button>
+                        </span>
+                    </div>
+                    @*<div class="col-sm-2">
+                            <button id="btnQueryProgress" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />
+                            </button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-primary" style="padding-top:25px;width:100%;" id="pn-result">
+    <div class="panel-body">
+        <div class="form-horizontal" style="margin-top:15px;width:98%;">
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <div class="row form-group">
+                        <div class="col-sm-6">
+                            <div class="row form-group" style="border:solid;margin-left:10px;border-color:#808080">
+                                <div class="col-sm-12">
+                                    <span class="pull-left">Total Course</span>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label id="txtTotalCourse" style="width:100%;text-align:center;vertical-align:middle;font-size:60px;"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row form-group" style="border:solid;margin-left:1px;border-color:#808080">
+                                <div class="col-sm-12">
+                                    <span class="pull-left">Target Group</span>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label id="txtTarget" style="width:100%;text-align:center;vertical-align:middle;font-size:60px;"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="border:solid;margin-left:10px;border-color:#808080">
+                        <div class="col-sm-12">
+                            <span class="pull-left">Learning Progress</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <figure class="highcharts-figure" style="width:100%;">
+                                <div id="learningProgressContainer"></div>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="border:solid;margin-left:10px;border-color:#808080">
+                        <div class="col-sm-12">
+                            <span class="pull-left">By Section</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <figure class="highcharts-figure" style="width:100%;">
+                                <div id="BySectionContainer"></div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row form-group" style="border:solid;margin-left:1px;border-color:#808080;margin-top:-30px;">
+                        <div class="col-sm-12">
+                            <span class="pull-left">Total Learning Cost Spending</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <figure class="highcharts-figure" style="width:100%;">
+                                <div id="LearningCostSpendingContainer"></div>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="border:solid;margin-left:1px;border-color:#808080">
+                        <div class="col-sm-12">
+                            <span class="pull-left">By Platform</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <figure class="highcharts-figure" style="width:100%;">
+                                <div id="ByPlatformContainer"></div>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="border:solid;margin-left:1px;border-color:#808080">
+                        <div class="col-sm-12">
+                            <span class="pull-left">By Job Level</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <figure class="highcharts-figure" style="width:100%;">
+                                <div id="ByJobLevelContainer"></div>
+                            </figure>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/assets/app/TeamPerformance.js"></script>
+<style>
+    .highcharts-figure, .highcharts-data-table table {
+        margin: 1em auto;
+    }
+    .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #EBEBEB;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+    }
+
+    .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+    }
+    .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+
+    .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+    }
+</style>
+

@@ -63,7 +63,7 @@
     <script type="text/javascript" src="~/lib/crypto-js/enc-utf16.js?v=bd93153bf9375d66780f086cda347bfb"></script>
     <script type="text/javascript" src="~/lib/crypto-js/aes.js?v=bd93153bf9375d66780f086cda347bfb"></script>
     <script type="text/javascript" src="~/lib/crypto-js/pbkdf2.js?v=bd93153bf9375d66780f086cda347bfb"></script>
-
+    <script type="text/javascript" src="~/lib/moment.js/moment.min.js?v=bd93153bf9375d66780f086cda347bfb"></script>
     @*<script type="text/javascript" src="~/js/waves.js?v=bd93153bf9375d66780f086cda347bfb"></script>*@
     @*<script type="text/javascript" src="~/js/sidebarmenu.js?v=bd93153bf9375d66780f086cda347bfb"></script>*@
     @*<script type="text/javascript" src="~/js/custom.js?v=bd93153bf9375d66780f086cda347bfb"></script>*@
@@ -87,6 +87,7 @@
     <link href="~/lib/magnific-popup/dist/magnific-popup.css?v=bd93153bf9375d66780f086cda347bfb" type="text/css" rel="stylesheet">
     <link href="~/css/light-bootstrap-dashboard.css?v=2.0.0 " rel="stylesheet" />
 
+
     @RenderSection("Header", required: false)
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 </head>
@@ -97,8 +98,7 @@
                 <nav class="navbar top-navbar navbar-toggleable-sm navbar-light">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="index.html">
-                            <b>
-                                @*<img src="~/assets/images/logo-light-icon.png" class="light-logo" alt="homepage" />*@
+                            <b> 
                                 <img src="~/assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
                             </b>
                         </a>
@@ -112,7 +112,7 @@
             <div class="sidebar-wrapper">
                 <ul class="nav">
                     <li>
-                        <div class="user-profile" style="margin-top:75px;">
+                        <div class="user-profile" style="margin-top:75px;height: 300px;">
                             <div class="profile-img">
                                 <img src='@Url.Content(@HttpContextAccessor.HttpContext.Request.Cookies["FACEIMAGE"])' alt="user" />
                             </div>
@@ -120,9 +120,11 @@
                                 <a href='@Url.Action("MyProfile", "Account")' aria-expanded="false">I am : @HttpContextAccessor.HttpContext.Request.Cookies["FULLNAME"]</a>
                                 <a href='@Url.Action("MyProfile", "Account")' aria-expanded="false">My ID : @HttpContextAccessor.HttpContext.Request.Cookies["EMPLOYEEID"]</a>
                                 <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Join Date : @HttpContextAccessor.HttpContext.Request.Cookies["JOINDATE"]</a>
-                                <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Department : @HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENT"]</a>
-                                <a href="/Account/Logout" aria-expanded="false">Sign Out</a>
+                                <a href="#" style="pointer-events: none; display: inline-block;" aria-expanded="false">Department : @HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTNAME"]</a>
                             </div>
+                            <span class="pull-right" style="padding-right:25px;">
+                                <a href="/Account/Logout" style="color:#ffffff" aria-expanded="false">Sign Out</a>
+                            </span>                          
                         </div>
                     </li>
                     <li>
@@ -132,10 +134,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        @*<div class="main-panel-arrow">
-            <i class="fas fa-angle-double-left" id="arrowSlideLeft" onclick="ToggleMenu(this)" style="cursor:pointer">dadasd</i>
-        </div>*@
+        </div> 
         <div class="main-panel" id="pnAreaAction">
             <div class="content">
                 <div class="container-fluid">
@@ -194,8 +193,7 @@
             }
         })
     })(jQuery);
-    function ToggleMenu(mn) {
-        debugger;
+    function ToggleMenu(mn) { 
         if (localStorage.MenuStage == null || localStorage.MenuStage == undefined || localStorage.MenuStage == "show") {
             $(".sidebar").hide();
             $("#pnAreaAction").attr("style", "width:100%;");

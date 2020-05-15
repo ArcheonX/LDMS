@@ -9,6 +9,7 @@ namespace LDMS.ViewModels
         public string Total { get; set; }
         public string ClassCapacity { get; set; }
         public string Remain { get; set; }
+       
 
     }
 }

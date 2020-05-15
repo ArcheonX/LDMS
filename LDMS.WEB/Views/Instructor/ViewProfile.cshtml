@@ -17,21 +17,34 @@
         .btn-command {
             width: 140px;
         }
+
         thead th {
             text-align: center !important;
         }
+
+        . {
+            font-size: 12pt !important;
+        }
+
+            .card .card-category, .card span {
+                color: #212529;
+            }
     </style>
 }
 
-<div style="width:100%">
+<div style="width: 100%">
     <div class="card">
         <div class="form-group m-2 row">
-            <div class="col-7">
+            <div class="col-9">
                 <h4 class="card-title">General Information</h4>
             </div>
-            <div class="col-5" style="text-align:right">
-                <button id="btnEdit" class="btn btn-success waves-effect waves-light btn-command" onclick="window.location.href = '@Url.Action("Detail", "Instructor")/@Model.ID'; return false;">Edit</button>
-                <button id="btnBack" class="btn btn-danger waves-effect waves-light  btn-command" onclick="window.location.href = '@Url.Action("Index", "Instructor")'; return false;">Back</button>
+            <div class="col-3 form-group row mt-2" style="text-align: right">
+                <button id="btnEdit" class="btn btn-outline-success waves-effect waves-light" style="width:140px;" onclick="window.location.href = '@Url.Action("Detail", "Instructor")/@Model.ID'; return false;">
+                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-edit-blue.svg" />&nbsp;&nbsp;Edit
+                </button>&nbsp;&nbsp;
+                <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:140px;" onclick="window.location.href = '@Url.Action("Index", "Instructor")'; return false;">
+                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                </button>
             </div>
         </div>
     </div>
@@ -39,7 +52,7 @@
         <form class="form">
             @Html.AntiForgeryToken()
             <div class="card-block collapse show b-t">
-                <div class="m-t-30 text-center">
+                <div class="m-t-30 text-left pl-3">
                     @if (Model.Path_Image != null & Model.Path_Image != "")
                     {
                         <img src="@Model.Path_Image" class="img-circle" width="120">
@@ -49,73 +62,73 @@
                 </div>
             </div>
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Instructor ID</label>
+                <span class="col-2 " style="text-align:right">Instructor ID</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Instructor_ID</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Instructor_ID</span>
                 </div>
-                <label class="col-2 col-form-label" style="text-align:right">Organization</label>
+                <span class="col-2 " style="text-align:right">Organization</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Organization</label>
-                </div>
-            </div>
-            <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Instructor Name</label>
-                <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Instructor_Name</label>
-                </div>
-                <label class="col-2 col-form-label" style="text-align:right">Address</label>
-                <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Address</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Organization</span>
                 </div>
             </div>
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Type</label>
+                <span class="col-2 " style="text-align:right">Instructor Name</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.TypeName</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Instructor_Name</span>
                 </div>
-                <label class="col-2 col-form-label" style="text-align:right">District</label>
+                <span class="col-2 " style="text-align:right">Address</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.DISTRICT_NAME</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Address</span>
                 </div>
             </div>
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Status</label>
+                <span class="col-2 " style="text-align:right">Type</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@(Model.IsActive? LDMS.WEB.Resources.Enum.e_Status_Active: LDMS.WEB.Resources.Enum.e_Status_Inactive)</label>
+                    <span class=" text-primary" style="text-align:left">@Model.TypeName</span>
                 </div>
-                <label class="col-2 col-form-label" style="text-align:right">Sub Province</label>
+                <span class="col-2 " style="text-align:right">District</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.AMPHUR_NAME</label>
+                    <span class=" text-primary" style="text-align:left">@Model.DISTRICT_NAME</span>
+                </div>
+            </div>
+            <div class="form-group m-2 row">
+                <span class="col-2 " style="text-align:right">Status</span>
+                <div class="col-4">
+                    <span class=" text-primary" style="text-align:left">@(Model.IsActive? LDMS.WEB.Resources.Enum.e_Status_Active: LDMS.WEB.Resources.Enum.e_Status_Inactive)</span>
+                </div>
+                <span class="col-2 " style="text-align:right">Sub Province</span>
+                <div class="col-4">
+                    <span class=" text-primary" style="text-align:left">@Model.AMPHUR_NAME</span>
                 </div>
 
             </div>
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Department</label>
+                <span class="col-2 " style="text-align:right">Department</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.DepartmentName_EN</label>
+                    <span class=" text-primary" style="text-align:left">@Model.DepartmentName_EN</span>
                 </div>
-                <label class="col-2 col-form-label" style="text-align:right">Province</label>
+                <span class="col-2 " style="text-align:right">Province</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.PROVINCE_NAME</label>
+                    <span class=" text-primary" style="text-align:left">@Model.PROVINCE_NAME</span>
                 </div>
 
             </div>
 
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Phone</label>
+                <span class="col-2 " style="text-align:right">Phone</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Phone</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Phone</span>
                 </div>
-                <label class="col-2 col-form-label" style="text-align:right">Post Code</label>
+                <span class="col-2 " style="text-align:right">Post Code</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Post_Code</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Post_Code</span>
                 </div>
 
             </div>
             <div class="form-group m-2 row">
-                <label class="col-2 col-form-label" style="text-align:right">Email</label>
+                <span class="col-2 " style="text-align:right">Email</span>
                 <div class="col-4">
-                    <label class="col-form-label text-primary" style="text-align:left">@Model.Email</label>
+                    <span class=" text-primary" style="text-align:left">@Model.Email</span>
                 </div>
             </div>
         </form>
@@ -127,73 +140,71 @@
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Attach File</label>
+            <span class="col-3 " style="text-align:right">Attach File</span>
             @if (Model.Path_Certificate != null && Model.Path_Certificate != "")
             {
-                <label class="col-2 col-form-label text-primary" style="text-align:left"><a href="@Model.Path_Certificate" target="_blank">Cerfiticate</a></label>
+                <span class="col-2  text-primary" style="text-align:left"><a href="@Model.Path_Certificate" target="_blank">Cerfiticate</a></span>
             }
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Education Level</label>
+            <span class="col-3 " style="text-align:right">Education Level</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Education_Level</label>
+                <span class=" text-primary" style="text-align:left">@Model.Education_Level</span>
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Major</label>
+            <span class="col-3 " style="text-align:right">Major</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Major</label>
+                <span class=" text-primary" style="text-align:left">@Model.Major</span>
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Course Expperience</label>
+            <span class="col-3 " style="text-align:right">Course Expperience</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Course_Experience</label>
+                <span class=" text-primary" style="text-align:left">@Model.Course_Experience</span>
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Skill & Profressional</label>
+            <span class="col-3 " style="text-align:right">Skill & Profressional</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Skill_Professional</label>
+                <span class=" text-primary" style="text-align:left">@Model.Skill_Professional</span>
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Customer Reference</label>
+            <span class="col-3 " style="text-align:right">Customer Reference</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Customer_Reference</label>
+                <span class=" text-primary" style="text-align:left">@Model.Customer_Reference</span>
             </div>
         </div>
         <div class="form-group m-2 row">
-            <label class="col-3 col-form-label" style="text-align:right">Manufacturing Area</label>
+            <span class="col-3 " style="text-align:right">Manufacturing Area</span>
             <div class="col-8">
-                <label class="col-form-label text-primary" style="text-align:left">@Model.Manufacturing_Area</label>
+                <span class=" text-primary" style="text-align:left">@Model.Manufacturing_Area</span>
             </div>
         </div>
     </div>
     <div class="card">
         <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-block">
-                        <div class="col-6"> <h4 class="card-title">Courses</h4> </div>
-                        <div class="table-responsive m-t-40" style="padding-left:10px;">
-                            <table id="tdClass" class="table table-hover table-striped table-bordered color-table info-table" cellspacing="0" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Course ID</th>
-                                        <th>Course Name</th>
-                                        <th>Platform</th>
-                                        <th>AVG.Score</th>
-                                        <th>Lasted</th>
-                                        <th>Status</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="card-block">
+                    <div class="col-6"> <h4 class="card-title">Courses</h4> </div>
+                    <div class="table-responsive m-t-40" style="padding-left:10px;">
+                        <table id="tdClass" class="table table-hover table-striped table-bordered color-table info-table" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Course ID</th>
+                                    <th>Course Name</th>
+                                    <th>Platform</th>
+                                    <th>AVG.Score</th>
+                                    <th>Lasted</th>
+                                    <th>Status</th>
+                                    <th>View</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -13,13 +13,13 @@ namespace LDMS.Services
     public class MasterService : ILDMSService
     {
         private readonly ILogger<MasterService> _logger;
-        public MasterService(ILogger<MasterService> logger, 
-            ILDMSConnection iLDMSConnection, 
+        public MasterService(ILogger<MasterService> logger,
+            ILDMSConnection iLDMSConnection,
             IHttpContextAccessor httpContextAccessor) : base(iLDMSConnection, httpContextAccessor)
         {
             _logger = logger;
         }
-         
+
         public async Task<ServiceResult> GetAllPlants()
         {
             try
@@ -45,7 +45,6 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-
         public async Task<ServiceResult> GetAllCenters()
         {
             try
@@ -66,29 +65,29 @@ namespace LDMS.Services
                 using (System.Data.IDbConnection conn = Connection)
                 {
                     DynamicParameters parameter = new DynamicParameters();
-                    parameter.Add("@paramTrainingDateFrm", model.TrainingDateFrm,System.Data.DbType.DateTime);
-                    parameter.Add("@paramTrainingDateTo",model.TrainingDateTo, System.Data.DbType.DateTime);
+                    parameter.Add("@paramTrainingDateFrm", model.TrainingDateFrm, System.Data.DbType.DateTime);
+                    parameter.Add("@paramTrainingDateTo", model.TrainingDateTo, System.Data.DbType.DateTime);
                     parameter.Add("@paramDepartmentId", model.DepartmentId, System.Data.DbType.Int32);
                     parameter.Add("@paramJobGradeId", model.JobGradeId, System.Data.DbType.Int32);
-                    parameter.Add("@paramStatus",model.ActiveStatus, System.Data.DbType.Int32);
-                    parameter.Add("@paramTrainingStatus ", model.TrainingStatus, System.Data.DbType.Int32); 
+                    parameter.Add("@paramStatus", model.ActiveStatus, System.Data.DbType.Int32);
+                    parameter.Add("@paramTrainingStatus ", model.TrainingStatus, System.Data.DbType.Int32);
                     string commad = "";
 
                     System.Data.DataSet dataSet = new System.Data.DataSet();
                     if (model.MasterReportType == MasterReportType.Instructor)
                     {
                         parameter.Add("@paramInstructorId ", model.InstructorId, System.Data.DbType.String);
-                        commad = _schema + ".[usp_Instructor_Master_Report]"; 
+                        commad = _schema + ".[usp_Instructor_Master_Report]";
                     }
                     else if (model.MasterReportType == MasterReportType.Course)
                     {
                         parameter.Add("@paramCourseId ", model.CourseId, System.Data.DbType.Int32);
-                        commad = _schema + ".[usp_Course_Master_Report]"; 
+                        commad = _schema + ".[usp_Course_Master_Report]";
                     }
                     else if (model.MasterReportType == MasterReportType.Platform)
                     {
                         parameter.Add("@paramPlaformId ", model.PlatformId, System.Data.DbType.Int32);
-                        commad = _schema + ".[usp_Plaform_Master_Report]"; 
+                        commad = _schema + ".[usp_Plaform_Master_Report]";
                     }
 
                     using (var reader = Connection.ExecuteReader(
@@ -153,7 +152,7 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-        
+
         public async Task<ServiceResult> GetAllCenters(int plantId)
         {
             try
@@ -262,8 +261,6 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-       
-        
         public async Task<ServiceResult> GetAllJobTitles()
         {
             try
@@ -324,8 +321,6 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-        
-
 
         public async Task<ServiceResult> DeleteSection(int sectionId)
         {
@@ -413,7 +408,7 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-         
+
         public List<ViewModels.LDMS_M_CodeLookUp> GetCodeLookups(string tableName, string fieldName)
         {
             List<ViewModels.LDMS_M_CodeLookUp> result = new List<ViewModels.LDMS_M_CodeLookUp>();
@@ -471,5 +466,17 @@ namespace LDMS.Services
             }
         }
 
+        public string GetRedirectMenuBySubmenuId(string submeuId)
+        {
+            using (System.Data.IDbConnection conn = Connection)
+            {
+                var p = new DynamicParameters();
+                p.Add("@submenuId", submeuId);
+
+                var result = conn.Query<ViewModels.LDMS_M_SubModule>("[dbo].[usp_MenuRedirectByMenuId]", p, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                if (result != null && !string.IsNullOrEmpty(result.SubModule_URL)) return result.SubModule_URL;
+                return string.Empty;
+            }
+        }
     }
 }

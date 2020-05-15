@@ -14,11 +14,15 @@
                     <div class="col-sm-1 col-md-3">
                         <h4><span class="pull-right">Course Infomation</span></h4>
                     </div>
-                    <div class="col-sm-1 col-md-1 offset-7">
-                        <a id="btnSaveCourse" onclick="SaveCourse();" class="btn btn-success waves-effect waves-light" style="width:90%; color:white">Save</a>
+                    <div class="col-sm-2 col-md-2 offset-5">
+                        <a id="btnSaveCourse" onclick="SaveCourse();" class="btn btn-outline-success waves-effect waves-light" style="width:90%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/save.svg" />&nbsp;&nbsp;Save
+                        </a>
                     </div>
-                    <div class="col-sm-1 col-md-1" style="margin-left:-25px">
-                        <a id="btnBack" onclick="window.location.href = '@Url.Action("Index", "Courses")';" class="btn btn-danger inactive waves-effect waves-light" style="width:90%; color:white">Back</a>
+                    <div class="col-sm-2 col-md-2" style="margin-left:-25px">
+                        <a id="btnBack" onclick="window.location.href = '@Url.Action("Index", "Courses")';" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:90%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                        </a>
                     </div>
                 </div>
             </div>
@@ -67,7 +71,7 @@
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Course Name</label>
+                        <label class="LabelCaption">Course Name <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -82,7 +86,7 @@
             <div class="row form-group">
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Course Type</label>
+                        <label class="LabelCaption">Course Type <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
@@ -95,7 +99,7 @@
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <span class="pull-right">
-                        <label class="LabelCaption">Learn Method</label>
+                        <label class="LabelCaption">Learn Method <font color="#f60b0b">*</font></label>
                     </span>
                 </div>
                 <div class="col-sm-2 col-md-4">
@@ -157,7 +161,7 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-10">
-                    <textarea id="txtOutline"
+                    <textarea id="txt_Outline"
                               name="OutLine"
                               asp-for="OutLine"
                               rows="5" style="width:100%"></textarea>
@@ -347,7 +351,7 @@
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
-                        <input type="text" id="txtJobgrade" name="txtJobgrade"
+                        <input type="text" id="txtJobgrade" name="txtJobgrade" disabled="disabled"
                                asp-for="JobGradeTargetID" class="form-control" />
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -363,7 +367,7 @@
                         </span>
                     </div>
                     <div class="col-sm-4 col-md-4">
-                        <input type="text" id="txtJobTitle" name="txtJobTitle"
+                        <input type="text" id="txtJobTitle" name="txtJobTitle" disabled="disabled"
                                asp-for="JobTitleTargetID" class="form-control" />
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -378,17 +382,21 @@
             <div class="panel-body" style="width:100%;">
                 <div class="row form-group" style="margin-top:20px;">
                     <div class="col-sm-1 col-md-2 offset-8">
-                        <a id="btnAddClass" class="btn btn-primary waves-effect waves-light" onclick="AddClass();" style="width:80%; color:white">Add Class</a>
+                        <a id="btnAddClass" class="btn btn-outline-success waves-effect waves-light" onclick="AddClass();" style="width:80%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add Class
+                        </a>
                     </div>
                     <div class="col-sm-1 col-md-2">
-                        <a id="btnDelClass" class="btn btn-danger waves-effect waves-light" onclick="DeleteClass();" style="width:80%; color:white">Delete</a>
+                        <a id="btnDelClass" class="btn btn-outline-danger inactive waves-effect waves-light" onclick="DeleteClass();" style="width:80%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-delete-red.svg" />&nbsp;&nbsp;Delete
+                        </a>
                     </div>
                 </div>
                 <div class="table-responsive m-t-40">
                     <table class="display dataTable" width="100%" id="dtClassList">
-                        <thead style="background-color:#1e88e5;color:#ffffff">
+                        <thead style="background-color:#f6f6f6;color:#1c94c4">
                             <tr>
-                                <th style="text-align:center;width:100px">#</th>
+                                <th style="text-align:center;width:100px">No</th>
                                 <th style="text-align:center;width:150px">Class ID</th>
                                 <th style="text-align:center;width:150px">Instructor</th>
                                 <th style="text-align:center;width:150px">Learning</th>
@@ -505,8 +513,10 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-sm-1 col-md-2 offset-10" style="margin-left:25rem; margin-top:20px">
-                                <a id="btnSearch" class="btn btn-sm btn-primary waves-effect waves-light" style="width:100%; color:white" onclick="SearchEmployee();"> Search </a>
+                            <div class="col-sm-3 col-md-3" style="margin-left:25rem; margin-top:20px">
+                                <a id="btnSearch" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%" onclick="SearchEmployee();">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -539,10 +549,14 @@
                 </div>
                 <div class="row form-group" style="align-items:center">
                     <div class="col-sm-1 col-md-2 offset-10" style="margin-left:20rem; margin-top:20px">
-                        <a id="btnSave" class="btn btn-sm btn-success waves-effect waves-light" style="width:100%; color:white" onclick="return SelectEmployee();"> Select </a>
+                        <a id="btnSave" class="btn btn-outline-primary waves-effect waves-light" style="width:100%" onclick="return SelectEmployee();">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Select
+                        </a>
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
-                        <a id="btnClose" class="btn btn-sm btn-danger inactive waves-effect waves-light" style="width:90%; color:white" onclick="ClosedEmployee()">Close</a>
+                        <a id="btnClose" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="ClosedEmployee()">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;close
+                        </a>
                     </div>
                 </div>
             </div>
@@ -580,10 +594,14 @@
                 </div>
                 <div class="row form-group" style="align-items:center">
                     <div class="col-sm-1 col-md-2 offset-10" style="margin-left:20rem; margin-top:20px">
-                        <a id="btnSelJobGrade" class="btn btn-sm btn-success waves-effect waves-light" style="width:100%; color:white" onclick="SelectJobGrade()"> Select </a>
+                        <a id="btnSelJobGrade" class="btn btn-outline-primary waves-effect waves-light" style="width:100%" onclick="SelectJobGrade()">
+                        <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Select 
+                        </a>
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
-                        <a id="btnCloseJobGrade" class="btn btn-sm btn-danger inactive waves-effect waves-light" style="width:90%; color:white" onclick="CloseModalJobGrade()">Close</a>
+                        <a id="btnCloseJobGrade" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalJobGrade()">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
+                        </a>
                     </div>
                 </div>
             </div>
@@ -621,10 +639,14 @@
                 </div>
                 <div class="row form-group" style="align-items:center">
                     <div class="col-sm-1 col-md-2 offset-10" style="margin-left:20rem; margin-top:20px">
-                        <a id="btnSelJobTitle" class="btn btn-sm btn-success waves-effect waves-light" style="width:100%; color:white" onclick="return SelectJobTitle()"> Select </a>
+                        <a id="btnSelJobTitle" class="btn btn-outline-primary waves-effect waves-light" style="width:100%" onclick="return SelectJobTitle()">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Select
+                        </a>
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
-                        <a id="btnCloseJobTitle" class="btn btn-sm btn-danger inactive waves-effect waves-light" style="width:90%; color:white" onclick="CloseModalJobTitle()">Close</a>
+                        <a id="btnCloseJobTitle" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalJobTitle()">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
+                        </a>
                     </div>
                 </div>
             </div>
@@ -805,11 +827,11 @@
         function validation() {
             $("#selRefresh").change( function(){
            if( $(this).is(':checked') ) {
-
+                $(this).val('1');
                 document.getElementById("txtRefreshmentPeriod").disabled = false;
                 document.getElementById("selectRefreshmentUnit").disabled = false;
             }else{
-
+               $(this).val('0');
                document.getElementById("txtRefreshmentPeriod").disabled = true;
                document.getElementById("selectRefreshmentUnit").disabled = true;
            }
@@ -842,6 +864,7 @@
         function OpenEmployee() {
             LoadEmpJobGrade();
             LoadEmpJobTitle();
+            loadEmpDepartment(); 
             $('#modSearhEmployee').modal('toggle');
             SearchEmployee();
            // SetDataTableModal('#dtEmployee');
@@ -861,6 +884,9 @@
 
         function LoadData(ID) {
             if (ID !== "null") {
+
+                document.getElementById("selectLearnMethod").disabled = true;
+                document.getElementById("selectCourseType").disabled = true;
 
                 loadPlant();
                 LoadCourseLearnMethod();
@@ -971,7 +997,7 @@
                         optionsMod.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
                     });
                     $('select[name="selectDepartment"]').val($('#hID_DepartmentTarget').val()).trigger('change');
-                    $('select[name="selectEmpDepartment"]').val(null).trigger('change');
+                    //$('select[name="selectEmpDepartment"]').val(null).trigger('change');
                 },
                 failure: function (response) {
                     alert(response.responseText);
@@ -1007,6 +1033,29 @@
                 },
                 error: function (response) {
                     MessageController.Error(response.responseText, "Error");
+                }
+            });
+        }
+
+        function loadEmpDepartment() {
+             //alert('loadDepartment');
+            $.ajax({
+                type: "GET",
+                url: "/Master/GetAllDepartments",
+                success: function (response) {
+                    var optionsMod = $('#selectEmpDepartment');
+                    optionsMod.append($("<option />").val(null).text("Please select"));
+
+                    $.each(response.Data, function () {
+                        optionsMod.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+                    });
+                  
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
                 }
             });
         }
@@ -1167,7 +1216,7 @@
                         options.append($("<option />").val(null).text("Please select"));
                         $.each(response.Data, function () {
                             if (this.ID_Department == departmentId) {
-                                options.append($("<option />").val(this.ID).text('(' + this.SectionID + ') ' + this.SectionName_EN));
+                                options.append($("<option />").val(this.ID_Section).text('(' + this.SectionID + ') ' + this.SectionName_EN));
                             }
                         });
                         //options.val($("#userSectionId").val()).trigger('change');
@@ -1192,7 +1241,7 @@
                 type: "GET",
                     }).done(function (items) {
                         var options = $('#selectLearnMethod');
-                        options.append($("<option />").val(null).text("--- Select All---"));
+                        options.append($("<option />").val(null).text("--- Please Select ---"));
                         $.each(items, function () {
                             options.append($("<option />").val(this.ID).text(this.Course_LearnMethodName_EN));
                         });
@@ -1223,7 +1272,7 @@
                     var options = $('#selectEmpJobgrade');
                     options.append($("<option />").val(null).text("Please select"));
                     $.each(response.Data, function () {
-                        options.append($("<option />").val(this.ID).text(this.JobGradeName_EN));
+                        options.append($("<option />").val(this.ID_JobGrade).text(this.JobGradeName_EN));
                     });
                     $('select[name="selectEmpJobgrade"]').val(null).trigger('change');
                 },
@@ -1244,7 +1293,7 @@
                     var options = $('#selectEmpJobTitle');
                     options.append($("<option />").val(null).text("Please select"));
                     $.each(response.Data, function () {
-                        options.append($("<option />").val(this.ID).text(this.JobTitleName_EN));
+                        options.append($("<option />").val(this.ID_JobTitle).text(this.JobTitleName_EN));
                     });
                     $('select[name="selectEmpJobTitle"]').val(null).trigger('change');
                 },
@@ -1269,8 +1318,8 @@
         }
 
         function SearchEmployee() {
-           // alert('SearchEmployee');
-           /* var searchmodel = {
+           //alert('SearchEmployee');
+            /*var searchmodel = {
                 EmployeeID: $("#txtFilterEmployeeID").val(),
                 EmployeeName: $("#txtFilterEmployeeName").val(),
                 DepartmentID: $("#selectEmpDepartment").val(),
@@ -1294,6 +1343,7 @@
                      "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
                 },
                 success: function (e) {
+                    //alert(JSON.stringify(e));
                     RenderEmplooyee(e);
                     MessageController.UnblockUI('#dtEmployee');
                 }
@@ -1519,6 +1569,21 @@
 
         function SaveCourse() {
             //alert('Save Click Outline : ' + $('#txtOutLine').val());
+
+             if ($("#txtCourseName").val() == '') {
+                 MessageController.Error('Please Enter Course Name', "Error");
+                 return;
+             }
+             if ($("#selectCourseType").val() == '') {
+                 MessageController.Error('Please Select CourseType', "Error");
+                 return;
+             }
+             if ($("#selectLearnMethod").val() == '') {
+                 MessageController.Error('Please Select LearnMethod', "Error");
+                 return;
+             }
+
+
             MessageController.BlockUI({ boxed: true, target: '#frmCourseDetailEditor' });
             $.ajax({
                     url: "/Courses/InsertCourse",
@@ -1531,7 +1596,7 @@
                         ID_CourseType : $('#selectCourseType').val(),
                         Objective : $('#txtObjective').val(),
                         Description : $('#txtDescription').val(),
-                        OutLine : $('#txtOutLine').val(),
+                        OutLine : $('#txt_Outline').val(),
                         IsRefreshment : $('#selRefresh').val(),
                         RefreshmentPeriod : $('#txtRefreshmentPeriod').val(),
                         RefreshmentUnit : $('#selectRefreshmentUnit').val(),
@@ -1546,8 +1611,8 @@
                         IsActive : $('#selectCourseStatus').val()
                 },
                 success: function (e) {
-                    //debugger;
-                        alert('ID : ' + $('#hID').val());
+                        //debugger;
+                        //alert('ID : ' + $('#hID').val());
                         $('#hID').val(e.ID);
                         $('#txtCourseID').val(e.CourseID);
                         $('#divClass').attr("style", "display:block");
@@ -1561,10 +1626,14 @@
         function LoadCourse(ID) {
 
             $('#txtCourseID').val($('#hCourseID').val());
-            $('#selRefresh').val($('#hIsRefreshment').val());
-            $('#txtRefreshmentPeriod').val($('#RefreshmentPeriod').val());
+            $('#txtRefreshmentPeriod').val($('#hRefreshmentPeriod').val());
             $('select[name="selectRefreshmentUnit"]').val($('#hRefreshmentUnit').val());
             $('#selectCourseStatus').val($('#hIsActive').val());
+
+            if ($('#hIsRefreshment').val() == '1') {
+                $('#selRefresh').val('1');
+                $('#selRefresh').attr('checked', true);
+            }
 
             $('#divClass').attr("style", "display:block");
 
@@ -1602,7 +1671,14 @@
                 row.append('<td style="text-align:center">' + e[i].Capacity + '</td>');
                 row.append('<td style="text-align:center">' + e[i].RoomName_EN + '</td>');
                 row.append('<td style="text-align:center">' + e[i].ClassStatus + '</td>');
-                row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle.svg") width="28" height="28" onclick="LoadClassRegister('+ e[i].ID + ')" ></img></a></td>');
+
+                if (e[i].ClassStatus == 'Register') {
+                    row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle-green.svg") width="28" height="28" onclick="LoadClassRegister(' + e[i].ID + ')" ></img></a></td>');
+                }
+                else {
+                    row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-check-cycle.svg") width="28" height="28" onclick="LoadClassRegister('+ e[i].ID + ')" ></img></a></td>');
+                }
+                
                 row.append('<td class="text-center"><a href="#"><img src=@Url.Content("~/assets/images/svg/icon-edit-blue.svg") width="28" height="28" onclick="LoadClassEdit('+ e[i].ID +')" ></a></td>');
                 //row.append('<td class="text-center"><img src=@Url.Content("~/assets/images/svg/icon-delete-red.svg") class="btn"></img></td>');
                 row.append('<td style="text-align:center"><input type="checkbox" class="chkSingleClass" style="text-align:center; name="selectClass_' + i + '" value="selectClass_' + i + '" id="selectClass_' + i + '"/><label for="selectClass_'+ i +'"> </label> </td>');
@@ -1611,7 +1687,6 @@
         }
 
         function DeleteClass() {
-            alert('DeleteClass');
             var classList = '';
             var i = 0;
 
@@ -1623,20 +1698,30 @@
                 i++;
             }
 
-            alert(classList);
+            if (classList === '') {
+                 alert('กรุณาเลือก class');
+            }
+            else {
 
-            $.ajax({
-                url: "/Courses/DeleteClass",
-                type: "POST",
-                data: {
-                    ID_Class: classList,
-                   
-                },
-                success: function (e) {
-                    alert('Delete Complete');
-                    window.location.href = '@Url.Content("~/Courses/Detail/")' + $('#hID').val();
-                }
-            });
+                MessageController.ConfirmCallback("Are you sure you want to delete Class Selected ? ", "Confirm Delete!", function (res) {
+                    if (res) {
+                        $.ajax({
+                            url: "/Courses/DeleteClass",
+                            type: "POST",
+                            data: {
+                                ID_Class: classList,
+
+                            },
+                            success: function (e) {
+                                alert('Delete Complete');
+                                window.location.href = '@Url.Content("~/Courses/Detail/")' + $('#hID').val();
+                            }
+                        })
+
+                    }
+                });
+            }
+            
             
         }
 

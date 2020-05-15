@@ -24,6 +24,22 @@ namespace LDMS.Services
             _logger = logger;
         }
 
+        public int SelectPlatform(string PlatformID/*, string PlatformName*/)
+        {
+
+            using (System.Data.IDbConnection conn = Connection)
+            {
+                var p = new DynamicParameters();
+                p.Add("@PlatformID", PlatformID);
+                //p.Add("@PlatformName", PlatformName);
+
+                int ret = conn.Query<int>(_schema + ".[sp_M_PlatformByPlatformID_AndName]", p, commandType: System.Data.CommandType.StoredProcedure).Single();
+
+                return ret;
+            }
+        }
+
+
         public int CreatePlatform(string PlatformID, string PlatformName_EN, string PlatformName_TH, 
                                   string ID_PlatformType, string PlatformDescription, string ID_Department_Create,
                                   string PlatformStatus)
@@ -321,6 +337,27 @@ namespace LDMS.Services
                 {
                     throw new Exception(e.Message);
                 }
+            }
+        }
+
+
+
+
+        public List<LDMS_M_SubPlatformCourse> SelectLDMS_M_SubPlatformCourse(string ID_Platform)
+        {
+            List<LDMS_M_SubPlatformCourse> listSubPlatformCourse = new List<LDMS_M_SubPlatformCourse>();
+            using (System.Data.IDbConnection conn = Connection)
+            {
+                var p = new DynamicParameters();
+                //p.Add("@ID_Course", ID_Course);
+                p.Add("@ID_Platform", ID_Platform);
+                
+                var grid = conn.QueryMultiple("[dbo].[sp_M_SubPlatformCourseJson_Select_with_ID_Platfrom]", p, commandType: System.Data.CommandType.StoredProcedure);
+
+                listSubPlatformCourse = grid.Read<LDMS_M_SubPlatformCourse>().ToList();
+
+
+                return listSubPlatformCourse;
             }
         }
 

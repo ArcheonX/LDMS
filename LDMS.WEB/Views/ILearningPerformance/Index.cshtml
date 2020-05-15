@@ -1,0 +1,363 @@
+﻿
+@{
+    ViewData["Title"] = "Learning Performance";
+    ViewData["MainTitle"] = "I-Manage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Header{
+    @*<link href="~/lib/highcharts/css/highcharts.css" rel="stylesheet" />
+        <script src="~/lib/highcharts/highcharts.js"></script>
+        <script src="~/lib/highcharts/modules/exporting.js"></script>
+        <script src="~/lib/highcharts/modules/export-data.js"></script>*@
+
+    <style>
+        .ui-widget-header {
+            border-color: transparent !important;
+            background-color: transparent !important;
+            background-image: none !important;
+        }
+
+        .btn-command {
+            width: 130px !important;
+        }
+
+        .chk {
+            color: transparent !important;
+        }
+
+        .text-grid {
+            width: 90px;
+        }
+
+        .modal-dialog {
+            -webkit-transform: translate(0,-50%);
+            -o-transform: translate(0,-50%);
+            transform: translate(0,-50%);
+            margin: 0 auto;
+        }
+
+        .hide-cell {
+            border-width: 0px !important;
+        }
+
+        thead th {
+            text-align: center;
+        }
+
+        .label-gray {
+            background-color: #b3b3b3;
+        }
+
+        .small, small {
+            font-size: 100%;
+            font-weight: 400;
+        }
+
+        .card-header {
+            background-color: #1e88e5 !important;
+        }
+
+        .label-success {
+            color: #04b92d !important;
+            background-color: #04b92d !important;
+        }
+
+        .h4 {
+            margin-top: 7px !important;
+            padding-bottom: 10px !important;
+        }
+
+        .card label {
+            font-size: 11pt;
+            color: #6c757d !important
+        }
+
+        .switch label .lever {
+            margin-left: 2px;
+        }
+
+        .card-block {
+            padding-left: 12px;
+        }
+
+        .font-inverse {
+            color: rgba(255,255,255,.8) !important;
+        }
+    </style>
+
+}
+
+<form method="post" id="frmMain">
+    @Html.AntiForgeryToken()
+    <div class="col-12 p-3">
+        <div class="form-group row pt-4 pb-1">
+            <div class="col-2">
+                <small>Platform</small>
+                <select id="ddlPlatForm" class="form-control"></select>
+            </div>
+            <div class="col-2">
+                <small>Course</small>
+                <select id="ddlCourse" class="form-control">
+                    <option value=''>@LDMS.WEB.Resources.Enum.e_Select_All</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <small>Fiscal Year</small><br />
+                <input type="radio" id="chkPre" name="year" class="radio-col-light-blue">
+                <label id="lblPre" for="chkPre">2018</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" id="chkCur" name="year" class="radio-col-light-blue" checked="">
+                <label id="lblCur" for="chkCur">2019</label>
+            </div>
+            <div class="col-3 form-group row pt-3">
+                <div class="col-sm-3">
+                    <div class="demo-switch-title">Q1</div>
+                    <div class="switch">
+                        <label>
+                            <input id="chkQ1" type="checkbox" checked=""><span class="lever switch-col-light-blue"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="demo-switch-title">Q2</div>
+                    <div class="switch">
+                        <label>
+                            <input id="chkQ2" type="checkbox" checked=""><span class="lever switch-col-light-blue"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="demo-switch-title">Q3</div>
+                    <div class="switch">
+                        <label>
+                            <input id="chkQ3" type="checkbox" checked=""><span class="lever switch-col-light-blue"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="demo-switch-title">Q4</div>
+                    <div class="switch">
+                        <label>
+                            <input id="chkQ4" type="checkbox" checked=""><span class="lever switch-col-light-blue"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3" style="padding-top: 15px;">
+                <button type="button" id="btnCSearch" class="btn btn-outline-secondary waves-effect waves-light btn-command">
+                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-6">
+                <div class="card-group">
+                    <div class="card" style="background-color:#7460ee; border-color:#7460ee;">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-12 d-flex">
+                                    <div><h1 class="text-white"><i class="ti-book"></i></h1></div>
+                                    <div style="padding-left:12px;">
+                                        <h3 class="font-inverse" id="lblTotalCourse">--</h3>
+                                        <h5 class="font-inverse">Total Course</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background-color:#1e88e5; border-color:#1e88e5;">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-12 d-flex">
+                                    <div><h1 class="text-white"><i class="ti-pin2"></i></h1></div>
+                                    <div style="padding-left:12px;">
+                                        <h3 class="font-inverse" id="lblTargetGroup">--</h3>
+                                        <h5 class="font-inverse">Target Group</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background-color:#26c6da; border-color:#26c6da;">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-12 d-flex">
+                                    <div><h1 class="text-white"><i class="mdi mdi-chart-line"></i></h1></div>
+                                    <div style="padding-left:12px;">
+                                        <h3 class="font-inverse" id="lblAvg">--</h3>
+                                        <h5 class="font-inverse">Avg. Course Satisfaction</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group row" style="margin-top:12px;margin-bottom:2px; padding-bottom:7px; ">
+            <div class="card card-block" style="margin-bottom:5px; width:60%;">
+                <div id="divCostSpend"></div>
+            </div>
+            <div class="card card-block" style="margin-left:9px;margin-bottom:5px;width:37%;">
+                <h5 class="text-center" style="padding-top:5px;color: #333333;font-size: 18px;">Learning Progress</h5>
+                <div id="divLearningProgress"></div>
+            </div>
+        </div>
+
+        <div class="form-group row" style="margin-top:0px; ">
+            <div class="card card-block" style="width:32%">
+                <div id="divPlatform"></div>
+            </div>
+            <div class="card card-block" style="margin-left:9px;width:32%">
+                <div id="divArea"></div>
+            </div>
+            <div class="card card-block" style="margin-left:9px;width:32%">
+                <div id="divJobLevel"></div>
+            </div>
+        </div>
+
+
+    </div>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        Highcharts.setOptions({
+            lang: {
+                decimalPoint: '.',
+                thousandsSep: ','
+            }
+        });
+
+        $(document).ready(function () {
+            LoadYear();
+            LoadPlatform();
+
+            SearchData();
+        });
+
+        function LoadYear() {
+            var cYear = new Date().getFullYear();
+            if (cYear > 2500) cYear = cYear - 543;
+
+            $('#lblPre').html(cYear -1);
+            $('#lblCur').html(cYear);
+        }
+
+        function LoadPlatform()
+        {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("Platforms", "Platform")',
+                data: { "PlatformStatus": "1" },
+                success: function (e) {
+                    $("#ddlPlatForm").empty();
+                    $("#ddlPlatForm").append("<option value=''>@LDMS.WEB.Resources.Enum.e_Select_All</option>");
+                    for (i = 0; i < e.Data.length; i++) {
+                        $("#ddlPlatForm").append("<option value='" + e.Data[i].ID + "'>" + e.Data[i].PlatformName_TH+"</option>");
+                    }
+                    $("#ddlPlatForm").trigger('change');
+                 },
+                 error: function (xhr, status, error) {
+                     var err = eval("(" + xhr.responseText + ")");
+                     alert(err.Message);
+                 }
+            });
+        }
+
+        $("#ddlPlatForm").change(function () {
+            if ($("#ddlPlatForm").val()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetCourse", "ILearningPerform")',
+                    data: { "platformID": $("#ddlPlatForm").val(), "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() },
+                    success: function (e) {
+                        $("#ddlCourse").empty();
+                        $("#ddlCourse").append("<option value=''>@LDMS.WEB.Resources.Enum.e_Select_All</option>");
+                        for (i = 0; i < e.length; i++) {
+                            $("#ddlCourse").append("<option value='" + e[i].ID + "'>" + e[i].CourseName + "</option>");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var err = eval("(" + xhr.responseText + ")");
+                        alert(err.Message);
+                    }
+                });
+            }
+        });
+
+        $("#btnCSearch").click(function(){
+            SearchData();
+        });
+
+        function SearchData() {
+            LoadTotal();
+            LoadCostSpend();
+            LoadLearningProgress();
+            LoadGPlatform();
+            LoadGArea();
+            LoadGJobLevel();
+        }
+
+        function LoadTotal() {
+            var criteria = {
+                "platformID": $("#ddlPlatForm").val(),
+                "courseID": $("#ddlCourse").val(),
+                "Year": ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()),
+                "q1": ($('#chkQ1').is(":checked") ? "1" : "0"),
+                "q2": ($('#chkQ2').is(":checked") ? "1" : "0"),
+                "q3": ($('#chkQ3').is(":checked") ? "1" : "0"),
+                "q4": ($('#chkQ4').is(":checked") ? "1" : "0"),
+                "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetTotal", "ILearningPerform")',
+                data: criteria,
+                success: function (e) {
+                    $('#lblTotalCourse').html(e[0].TotalCourse);
+                    $('#lblTargetGroup').html(e[0].TargetGroup);
+                    $('#lblAvg').html(e[0].AvgScore.toFixed(2));
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    alert(err.Message);
+                }
+            });
+        }
+
+        function LoadCostSpend()
+        {
+            $.getScript("@Url.Content("~/ILearningPerform/GetCostSpend")?platformID=" + $("#ddlPlatForm").val() + "&courseID=" + $("#ddlCourse").val() +
+                "&Year=" + ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()) + "&q1=" + ($('#chkQ1').is(":checked") ? "1" : "0") +
+                "&q2=" + ($('#chkQ2').is(":checked") ? "1" : "0") + "&q3=" + ($('#chkQ3').is(":checked") ? "1" : "0") +
+                "&q4="+ ($('#chkQ4').is(":checked") ? "1" : "0") );
+        }
+
+        function LoadLearningProgress() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetLearningProgress")?platformID=" + $("#ddlPlatForm").val() + "&courseID=" + $("#ddlCourse").val() +
+                "&Year=" + ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()) + "&q1=" + ($('#chkQ1').is(":checked") ? "1" : "0") +
+                "&q2=" + ($('#chkQ2').is(":checked") ? "1" : "0") + "&q3=" + ($('#chkQ3').is(":checked") ? "1" : "0") +
+                "&q4="+ ($('#chkQ4').is(":checked") ? "1" : "0") );
+        }
+
+        function LoadGPlatform() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGPlatform")" );
+        }
+
+        function LoadGArea() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGArea")" );
+        }
+
+        function LoadGJobLevel() {
+             $.getScript("@Url.Content("~/ILearningPerform/GetGJobLevel")" );
+        }
+    </script>
+}
+

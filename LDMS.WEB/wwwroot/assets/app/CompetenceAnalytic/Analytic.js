@@ -40,16 +40,13 @@ function validate(control, evt) {
 
 function RenderChart() {
     var AnalyticCategories = [];
-    var Analyticseries = [];
-
-    //if (topics.length >= 6 && employees.length >= 10) {
-    //    return;
-    //}
-    var topicScore = [];
-
+    var Analyticseries = []; 
+    if (topics.length > 6 || employees.length > 6) {
+        return;
+    }
+    var topicScore = []; 
     topics.forEach(tp => { 
         AnalyticCategories.push(tp.Topic);
-
         var score = scores.where((sc) => {
             return sc.ID_CompetenceKnowledgeTopic == tp.TopicId;
         });
@@ -74,7 +71,7 @@ function RenderChart() {
                 data: AnalyticScores,
                 pointPlacement: 'on'
             });
-    });
+    }); 
     Highcharts.chart('container', {
         chart: {
             polar: true,
@@ -105,7 +102,7 @@ function RenderChart() {
             gridLineInterpolation: 'polygon',
             lineWidth: 0,
             min: 0,
-            tickPositions: [0,1, 2, 3,4, 5]
+            tickPositions: [0, 1, 2, 3, 4, 5]
         },
         tooltip: {
             shared: true,
@@ -136,14 +133,15 @@ function LoadCompetence(analytic_id) {
         type: "GET",
         url: "/Competence/Competence",
         data: { "competenceId": analytic_id },
-        success: function (response) { 
-            
+        success: function (response) {
+
             $("#txtCompetenceName").val(response.Data.CompetenceAnalyticName);
-            $("#txtExpectatoin5").val("5 = " +response.Data.Criteria5);
-            $("#txtExpectatoin4").val("4 = " +response.Data.Criteria4);
-            $("#txtExpectatoin3").val("3 = " +response.Data.Criteria3);
-            $("#txtExpectatoin2").val("2 = " +response.Data.Criteria2);
-            $("#txtExpectatoin1").val("1 = " +response.Data.Criteria1);
+            $("#txtExpectatoin5").val("5 = " + response.Data.Criteria5);
+            $("#txtExpectatoin4").val("4 = " + response.Data.Criteria4);
+            $("#txtExpectatoin3").val("3 = " + response.Data.Criteria3);
+            $("#txtExpectatoin2").val("2 = " + response.Data.Criteria2);
+            $("#txtExpectatoin1").val("1 = " + response.Data.Criteria1);
+            $("#lastUpdate").text(moment(response.Data.LastUpdate).format("DD/MM/YYYY HH:mm:ss"));
             $("#selectLevel").val(response.Data.ID_JobGrade).trigger('change');             
             $.each(response.Data.Topics, function () {
                 topics.push({

@@ -122,6 +122,10 @@
     {
       "library": "crypto-js@4.0.0",
       "destination": "wwwroot/lib/crypto-js/"
+    },
+    {
+      "library": "moment.js@2.25.3",
+      "destination": "wwwroot/lib/moment.js/"
     }
   ]
 }

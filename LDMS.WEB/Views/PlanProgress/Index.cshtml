@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewData["Title"] = "My Plan and Progress";
+    ViewData["MainTitle"] = "My Plan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-default" style="width:100%;">
+    <div class="panel-body panel-body-begin">
+        <div class="form-horizontal" style="margin-top:15px;width:98%;">
+            <div class="row form-group">
+                <div class="col-sm-6 offset-5">
+                    <span class="pull-right">
+                        <input type='radio' name='FixicalYear' class="FixicalYear" value='2017' id="FY1" /><label id="lblFY1" for="FY1">FY2017</label>
+                        <input type='radio' name='FixicalYear' class="FixicalYear" value='2018' id="FY2" /><label id="lblFY2" for="FY2">FY2018</label>
+                        <input type='radio' name='FixicalYear' class="FixicalYear" value='2019' id="FY3" checked="checked" /><label id="lblFY3" for="FY3">FY2019</label>
+                        <input type='checkbox' name='Quater' value='1' id="Quater1" /><label for="Quater1">Q1</label>
+                        <input type='checkbox' name='Quater' value='2' id="Quater2" /><label for="Quater2">Q2</label>
+                        <input type='checkbox' name='Quater' value='3' id="Quater3" /><label for="Quater3">Q3</label>
+                        <input type='checkbox' name='Quater' value='4' id="Quater4" /><label for="Quater4">Q4</label>
+                        <button id="btnQueryProgress" class="btn btn-outline-secondary waves-effect waves-light" style="width:75px;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />
+                        </button>
+                    </span>
+                </div>
+                @*<div class="col-sm-1">
+                    <button id="btnQueryProgress" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                        <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />
+                    </button>
+                </div>*@
+            </div> 
+        </div>
+    </div>
+</div> 
+<div class="panel panel-primary" style="margin-top:15px;width:100%;" id="pn-result">
+    <div class="panel-body">
+        <div class="form-horizontal" style="margin-top:15px;width:100%;">
+            <div class="row form-group" style="width:100%;">
+                <div class="col-sm-6">
+                    <span class="pull-left">Overall My Learning Progress</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="pull-left">By Platform</span>
+                </div>
+            </div>
+            <div class="row form-group" style="width:100%;">
+                <div class="col-sm-6">
+                    <figure class="highcharts-figure" style="width:100%;">
+                        <div id="container"></div>
+                    </figure>
+                </div>
+                <div class="col-sm-6">
+                    <figure class="highcharts-figure" style="width:100%;">
+                        <div id="container2"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="display dataTable" id="dtProgress" style="width:100%;">
+            <thead>
+                <tr>
+                    <th style="text-align:center;width:20%">Platform</th>
+                    <th style="text-align:center;width:20%">Course Name</th>
+                    <th style="text-align:center;width:20%">Learn Method</th>
+                    <th style="text-align:center;width:20%">Target Date</th>
+                    <th style="text-align:center;width:10%">Remain Day</th>
+                    <th style="text-align:center;width:10%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div id="open-course-modal" class="white-popup-block mfp-hide" style="width:1024px;background-color:#ffffff;margin-left:25%;border:thin;">
+        <div class="panel panel-primary" style="width:100%;">
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="row form-group" style="padding-top:25px;">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Platform :</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-10">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label id="txtPlatform">xxxxxxxxx</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Course :</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-10">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label id="txtCourse">xxxxxxxxx</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Start Date :</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="LabelCaption" id="txtDateStart">20/05/2020</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="LabelCaption">Time :</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label class="LabelCaption" id="txtTimeStart">12:00</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">End Date :</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="LabelCaption" id="txtDateEnd">20/05/2020</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="LabelCaption">Time :</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label class="LabelCaption" id="txtTimeEnd">12:00</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Venue :</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-10">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label id="txtVenue"></label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Description :</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-10 offset-1">
+                            <textarea rows="5" id="txtDescription" style="width:100%;resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Objective :</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-10 offset-1">
+                            <textarea rows="5" id="txtObjective" style="width:100%;resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption" style="font:bold">Outline :</label>
+                            </span>
+                        </div>
+                    </div> 
+                    <div class="row form-group">
+                        <div class="col-sm-10 offset-1"> 
+                            <textarea rows="5" id="txtOutline" style="width:100%;resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-top:25px;padding-bottom:25px;">
+                        <div class="col-sm-2 offset-9">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light popup-modal-dismiss" style="width:100%">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-cross-red-2.svg" />&nbsp;&nbsp;Close
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<script src="~/assets/app/PlanAndProgress.js"></script>
+<style>
+    .highcharts-figure, .highcharts-data-table table {
+        margin: 1em auto;
+    }
+
+    .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #EBEBEB;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+    }
+
+    .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+    }
+
+    .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+
+    .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+    }
+</style>

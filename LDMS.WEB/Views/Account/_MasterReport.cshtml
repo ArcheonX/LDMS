@@ -2,14 +2,14 @@
     <div class="panel-body" style="width:100%;">
         <div class="form-horizontal" style="margin-top:25px">
             <div class="row form-group">
-                <div class="col-sm-2 col-md-2 offset-2"> 
-                    <input type='radio' name='reportType' checked="checked" onchange="OnChangeMasterType(this);" value='Instructor' id="Instructor" /><label for="Instructor">Instructor</label> 
+                <div class="col-sm-2 col-md-2 offset-2">
+                    <input type='radio' name='reportType' checked="checked" onchange="OnChangeMasterType(this);" value='Instructor' id="Instructor" /><label for="Instructor">Instructor</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type='radio' name='reportType' onchange="OnChangeMasterType(this);" value='Platform' id="Platform" /><label for="Platform">Platform</label> 
+                    <input type='radio' name='reportType' onchange="OnChangeMasterType(this);" value='Platform' id="Platform" /><label for="Platform">Platform</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type='radio' name='reportType' onchange="OnChangeMasterType(this);" value='Course' id="Course" /><label for="Course">Course</label> 
+                    <input type='radio' name='reportType' onchange="OnChangeMasterType(this);" value='Course' id="Course" /><label for="Course">Course</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -29,7 +29,13 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select id="selectPlatform" name="selectPlatform"  disabled title="Please Enter Section" class="form-control" style="width: 100%">
+                    <select id="selectPlatform" 
+                            name="selectPlatform" 
+                            disabled 
+                            multiple
+                            title="Please Enter Section" 
+                            class="form-control" 
+                            style="width: 100%">
                     </select>
                 </div>
             </div>
@@ -40,7 +46,7 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select id="selectCourse" name="selectCourse"   disabled title="Please Enter Course" class="form-control" style="width: 100%">
+                    <select id="selectCourse" name="selectCourse" disabled title="Please Enter Course" class="form-control" style="width: 100%">
                     </select>
                 </div>
             </div>
@@ -51,7 +57,7 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select required id="selectMasterReportDepartment" name="selectMasterReportDepartment" title="Please Enter Department" class="form-control" style="width: 100%"> 
+                    <select required id="selectMasterReportDepartment" name="selectMasterReportDepartment" title="Please Enter Department" class="form-control" style="width: 100%">
                     </select>
                 </div>
             </div>
@@ -62,7 +68,9 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select id="selectMasterReportJobGrade" name="selectMasterReportJobGrade" class="form-control" style="width: 100%"> 
+                    <select id="selectMasterReportJobGrade" 
+                            name="selectMasterReportJobGrade" 
+                            class="form-control" style="width: 100%">
                     </select>
                 </div>
             </div>
@@ -73,10 +81,12 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select id="selectMasterReportStatus" name="selectMasterReportStatus" class="form-control" style="width: 100%">
+                    <select id="selectMasterReportStatus" 
+                            name="selectMasterReportStatus" 
+                            class="form-control" style="width: 100%">
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
-                    </select>
+                    </select> 
                 </div>
             </div>
             <div class="row form-group">
@@ -86,10 +96,10 @@
                     </span>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input id="dteTrainingDateFrm" type="datetime" class="form-control"  style="width: 100%" />
+                    <input id="dteTrainingDateFrm" type="datetime" class="form-control" style="width: 100%" />
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input id="dteTrainingDateTo" class="form-control"  type="datetime" style="width: 100%" />
+                    <input id="dteTrainingDateTo" class="form-control" type="datetime" style="width: 100%" />
                 </div>
             </div>
             <div class="row form-group">
@@ -99,7 +109,9 @@
                     </span>
                 </div>
                 <div class="col-sm-4 col-md-4">
-                    <select id="selectMasterReportStatus" name="selectMasterReportStatus" class="form-control" style="width: 100%">
+                    <select id="selectMasterReportStatus" 
+                            name="selectMasterReportStatus" 
+                            class="form-control" style="width: 100%">
                         <option value="1">Qualified</option>
                         <option value="0">UnQualified</option>
                     </select>
@@ -115,3 +127,4 @@
         </div>
     </div>
 </div>
+<script src="~/assets/app/MasterReport.js"></script>

@@ -13,6 +13,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using LDMS.Daos;
+using System.Threading.Tasks;
 
 namespace LDMS.Services
 {
@@ -162,6 +163,101 @@ namespace LDMS.Services
             }
         }
 
+
+        public async Task<ServiceResult> GetEmployee(
+            string employeeId = null,
+            string employeeName = null,
+            List<int> departments = null,
+            List<int> sectionIds = null,
+            List<int> jobgrades = null,
+            List<int> jobtitles = null,
+            string id_course = null,
+            string id_class = null)
+        {
+            try
+            {
+                var roles = await All<LDMS_M_Role>("Role");
+                var jobGrades = await All<LDMS_M_JobGrade>("JobGrade");
+                var jobTitles = await All<LDMS_M_JobTitle>("JobTitle");
+                using (System.Data.IDbConnection conn = Connection)
+                {
+                    var items = Connection.Query<LDMS_M_User, LDMS_M_Plant, LDMS_M_Center, LDMS_M_Division, LDMS_M_Department, LDMS_M_Section, LDMS_M_User>
+                    (_schema + ".[usp_User_READ_ALL_C] @paramEmployeeId,@paramEmployeeName,@paramdepartments,@paramsections,@paramjobgrades,@paramjobtitles,@ID_Course,@ID_Class",
+                      map: (user, plant, center, division, depart, section) =>
+                      {
+                          if (plant != null)
+                          {
+                              user.LDMS_M_Plant = plant;
+                              user.ID_Plant = plant.ID_Plant;
+                          }
+                          if (center != null)
+                          {
+                              user.LDMS_M_Center = center;
+                              user.ID_Center = center.ID_Center;
+                          }
+                          if (division != null)
+                          {
+                              user.LDMS_M_Division = division;
+                              user.ID_Division = division.ID_Division;
+                          }
+                          if (depart != null)
+                          {
+                              user.LDMS_M_Department = depart;
+                              user.ID_Department = depart.ID_Department;
+                          }
+                          if (section != null)
+                          {
+                              user.LDMS_M_Section = section;
+                              user.ID_Section = section.ID_Section;
+                          }
+                          return user;
+                      },
+                      splitOn: "ID_Plant,ID_Center,ID_Division,ID_Department,ID_Section",
+                      param: new
+                      {
+                          @paramEmployeeId = employeeId,
+                          @paramEmployeeName = employeeName,
+                          @paramdepartments = departments != null ? string.Join(",", departments) : "",
+                          @paramsections = sectionIds != null ? string.Join(",", sectionIds) : "",
+                          @paramjobgrades = jobgrades != null ? string.Join(",", jobgrades) : "",
+                          @paramjobtitles = jobtitles != null ? string.Join(",", jobtitles) : "",
+                          @ID_Class = id_class,
+                          @ID_Course = id_course,
+                      });
+                    var users = items.ToList();
+                    users.ForEach(user =>
+                    {
+                        user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == user.ID_Role);
+                        user.LDMS_M_JobGrade = jobGrades.FirstOrDefault(e => e.ID_JobGrade == user.ID_JobGrade);
+                        user.LDMS_M_JobTitle = jobTitles.FirstOrDefault(e => e.ID_JobTitle == user.ID_JobTitle);
+                    });
+                    return new ServiceResult(users);
+                }
+            }
+            catch (Exception x)
+            {
+                //_logger.LogError(x.Message);
+                return new ServiceResult(x);
+            }
+        }
+
+        public string AddCourseRegister(string idClass, string idCourse, string employeeID, string status, string updateBy)
+        {
+            using (System.Data.IDbConnection conn = Connection)
+            {
+                var p = new DynamicParameters();
+                p.Add("@paramID_Class", idClass);
+                p.Add("@paramID_Course", idCourse);
+                p.Add("@paramID_Employee", employeeID);
+                p.Add("@paramRegisterStatus", status);
+                p.Add("@paramRemarkManager", "");
+                p.Add("@paramRegisterDate", DateTime.Now.ToString("yyyy-MM-dd"));
+                p.Add("@paramUpdateBy", updateBy);
+                p.Add("@paramRemarkAdmin", "");
+
+                return conn.ExecuteScalar("[dbo].[sp_T_ClassRegistration_Insert]", p, commandType: System.Data.CommandType.StoredProcedure).ToString();
+            }
+        }
 
     }
 }

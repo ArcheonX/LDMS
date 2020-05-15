@@ -1,8 +1,77 @@
-﻿
-@{
-    ViewData["Title"] = "MyTeamIDPDetail";
+﻿@{
+    ViewData["Title"] = "MyTeamIDP-Topic";
+    ViewData["MainTitle"] = "MyTeamIDP";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>MyTeamIDPDetail</h1>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model LDMS.ViewModels.LDMS_T_IDP
+<div class="panel panel-primary" style="margin-top:-15px;width:100%;">
+    <div class="panel panel-default" style="width:100%;border-width:thin;border-style:solid;">
+        <div class="panel-body" style="width:100%;">
+            <form id="frmMain" class="form" method="post" enctype="multipart/form-data" style="width:100%">
+                @Html.AntiForgeryToken()  @*CSRF Protected*@
+                <div class="form-horizontal" style="margin-top:25px">
+                    <div class="row form-group">
+                        <div class="col-sm-8 col-md-8">
+                            <span class="pull-left Topic">
+                                <label class="LabelCaption" style="font-weight:bold;">IDP Objective</label>
+                            </span>
+                        </div>
 
+                        <div class="col-sm-2 col-md-2 offset-10">
+                            <a id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:70%;">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/PDF.svg" />&nbsp;&nbsp;PDF
+                            </a>
+                        </div>
+
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1">
+                            <div class="user-profile-coaching">
+                                <div class="profile-img">
+                                    @*<img src='@Url.Content(@HttpContextAccessor.HttpContext.Request.Cookies["FACEIMAGE"])' alt="user" />*@
+                                    <img src="~/assets/images/users/virgil.jpg" class="img-fluid img-thumbnail" alt="virgil" width='120' height='240'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-md-4" style="margin-top:20px; margin-left:30px">
+                            <div class="profile-text">
+                                <a aria-expanded="false">Name : Mr. Virgil van Dijk </a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">Position :Center Back</a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">Service (Year) : 5 </a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">IDP Time Line : 1 year 1 month 5 Day </a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">IDP Start : 1 May 2020 </a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">IDP End : 30 April 2021</a>
+                            </div>
+                            <div class="profile-text">
+                                <a aria-expanded="false">IDP Status : On Progress </a>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-6 col-md-6" style="margin-top:20px; margin-left:10px">
+                            <textarea id="txtIDPObjective"
+                                      name="txtIDPObjective"
+                                      asp-for="IDP_Objective"
+                                      rows="5" style="width:100%"
+                                      disabled="disabled">
+                            </textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

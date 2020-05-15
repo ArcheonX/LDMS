@@ -1,0 +1,368 @@
+﻿@{
+    ViewData["Title"] = "Schedule";
+    ViewData["MainTitle"] = "My Class Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    <div class="panel panel-primary" style="margin-top:-15px;width:100%;">
+        <div class="panel panel-default" style="width:100%;border-width:thin;border-style:solid;">
+            <div class="panel-body" style="width:100%;">
+                <form id="frmMain" class="form" method="post" enctype="multipart/form-data" style="width:100%">
+                    @Html.AntiForgeryToken()
+                    @if (Model != null)
+                    {
+                        <input type="hidden" id="hID" name="hID" value=@Model.ID />
+
+                    }
+                    <div class="form-horizontal" style="margin-top:25px">
+                        <div class="row form-group">
+                            <div class="col-sm-3 col-md-3" style="margin-left:10px; margin-top:20px">
+                                <span class="pull-left">
+                                    <label class="LabelCaption" style="font-weight:bold;">My Class-Schedule</label>
+                                </span>
+                            </div>
+                            <div class="col-sm-3 col-md-3 offset-9">
+                                <a id="btnBack" class="btn btn-outline-primary waves-effect waves-light" style="width:70%;" onclick="window.location.href = '@Url.Action("ClassRegisterAll", "Schedule")';">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Class Register
+                                </a>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div style="border-width:thin; border-style:solid; margin-left:0px; margin-top: 15px; margin-bottom:5px; width:100%;display:block"></div>
+
+                    <div id="divScheduleRender" style="display:block">
+                        <div class="table-responsive m-t-40">
+                            <table class="display dataTable bJQueryUI" width="100%" id="dtSchedule">
+                                <thead>
+                                    <tr>
+                                        <!--<th style="text-align:center;"></th>-->
+                                        <th style="text-align:center;width:200px">FY 2019</th>
+                                        <th style="text-align:center;width:300px"></th>
+                                        <th style="text-align:center;width:300px"></th>
+                                        <th style="text-align:center;width:250px"></th>
+                                        <th style="text-align:center;width:150px"></th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px">Q1</th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px">Q2</th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px">Q3</th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px"></th>
+                                        <th style="text-align:center;width:100px">Q4</th>
+                                        <th style="text-align:center;width:100px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="modCourse" style="padding-top:-25px;" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-lg" style="background-color:white;border-radius:2%;width:150%">
+                <div class="modal-content" style="margin-top:100px;width:120%">
+                    <div class="modal-header card-header" style="padding-top:0px;">
+                        <h4 class="modal-title" id="lblMATiltle">Course Detail</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive" style="overflow-y:auto; height:550px">
+                            <!--<div id="divCourse"></div>-->
+                            <div class="form-group row" style="margin-top:20px">
+                                <div class="col-sm-2 col-md-2">
+                                    <span class="pull-right">
+                                        <label class="LabelCaption">Platform</label>
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-2 col-md-9">
+                                    <input type="text"
+                                           id="txtPlatform"
+                                           style="width: 100%"
+                                           class="form-control input-sm"
+                                           disabled="disabled" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-md-2">
+                                    <span class="pull-right">
+                                        <label class="LabelCaption">Course Name</label>
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-2 col-md-9">
+                                    <input type="text"
+                                           id="txtCourseName"
+                                           style="width: 100%"
+                                           class="form-control input-sm"
+                                           disabled="disabled" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-md-2">
+                                    <span class="pull-right">
+                                        <label class="LabelCaption">Description</label>
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-2 col-md-9">
+                                    <textarea id="txtDescription"
+                                              rows="4"
+                                              class="form-control input-sm"
+                                              style="width:100%" 
+                                              disabled="disabled"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-md-2">
+                                    <span class="pull-right">
+                                        <label class="LabelCaption">Objective</label>
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-2 col-md-9">
+                                    <textarea id="txtObjective"
+                                              rows="4"
+                                              class="form-control input-sm"
+                                              style="width:100%" 
+                                              disabled="disabled"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-md-2">
+                                    <span class="pull-right">
+                                        <label class="LabelCaption">Outline</label>
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-2 col-md-9">
+                                    <textarea id="txtOutline"
+                                              rows="4"
+                                              class="form-control input-sm"
+                                              style="width:100%" 
+                                              disabled="disabled"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row form-group" style="align-items:center">
+                       <!--<div class="col-sm-1 col-md-2 offset-10" style="margin-left:20rem; margin-top:20px">
+                            <a id="btnRegister" class="btn btn-outline-primary waves-effect waves-light" style="width:100%;" onclick="OpenCourseModal()">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" /> Register </a>
+                        </div>-->
+                        <div class="col-sm-1 col-md-2 offset-5" style="margin-top:20px">
+                            <a id="btnClose" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:90%;" onclick="CloseCourseModal()">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ </div>
+@section Scripts{
+    <style type="text/css">
+        .form-group {
+            position: relative;
+            background-size: cover;
+            margin-bottom: 1.5rem;
+        }
+
+   </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            LoadSchedule();
+        });
+
+        function LoadSchedule() {
+            //alert('LoadSchedule');
+            $.ajax(
+                {
+                    url: "/Schedule/GetSchedule",
+                    type: "POST",
+                    data: {
+                        ID_Employee  : ''
+                },
+                    success: function (e) {
+                    //alert('Befor RenderSchedule : ' + e.length);
+                    RenderSchedule(e);
+                    
+                },
+                }
+            )
+        }
+
+
+        function RenderSchedule(e) {
+            var html = '';
+            //alert('RenderSchedule : ' + e.length);
+            $("#dtSchedule tbody > tr").remove();
+            var row = $("<tr />");
+            $("#dtSchedule tbody").append(row);
+            row.append('<td style="text-align:center;font-weight: bold">Platform</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Sub Platform</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Course Name</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Instructor</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Status</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Apr</td>');
+            row.append('<td style="text-align:center;font-weight: bold">May</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Jun</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Jul</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Aug</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Sep</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Oct</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Nov</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Dec</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Jan</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Feb</td>');
+            row.append('<td style="text-align:center;font-weight: bold">Mar</td>');
+
+            for (var i = 0; i < e.length; i++) {
+                row = $("<tr />");
+                $("#dtSchedule tbody").append(row);
+               
+                    row.append('<td style="text-align:center">'+e[i].PlatformName_EN+'</td>');
+                    row.append('<td style="text-align:center">'+e[i].SubPlatformName_EN+'</td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="OpenCourseModal('+ e[i].ID_Course + ');">'+e[i].CourseName+'</a></td>');
+                    row.append('<td style="text-align:center">'+e[i].InstructorName+'</td>');
+                    row.append('<td style="text-align:center">' + e[i].Status + '</td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Apr+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].May+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Jun+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Jul+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Aug+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Sep+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Oct+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Nov+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Dec+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Jan+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Feb+'</a></td>');
+                    row.append('<td style="text-align:center"><a href="#" onclick="GotoClassRegister('+ e[i].ID_Course + ');">'+e[i].Mar+'</a></td>');
+
+            }
+
+             dtData = $('#dtSchedule').DataTable({
+                 'processing': true,
+                 'serverSide': false,
+                'paging': false,
+                "ordering": false,
+                "searching": false,
+                //"lengthChange": false,
+                "bAutoWidth": false,
+                "Filter": false,
+                "info": false,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bJQueryUI": true, //Enable smooth theme
+                //"sPaginationType": "full_numbers", //Enable smooth theme
+                "sDom": 'lfrtip',
+                destroy: true
+            });
+        }
+
+
+        function GotoClassRegister(ID_Course) {
+             //alert('Course : ' + ID_Course);
+             window.location.href = '@Url.Content("~/Schedule/ClassRegister/")' + ID_Course;
+        }
+
+        function OpenCourseModal(ID_Course) {
+            //alert('Course : ' + ID_Course);
+            $.ajax(
+                    {
+                        url: "/Schedule/GetCourseInfo",
+                        type: "POST",
+                        data: {
+                            'ID_Course' : ID_Course
+                    },
+                    success: function (e) {
+                        //RenderCourseDetail(e);
+                        $('#txtPlatform').val(e.PlatformName_EN);
+                        $('#txtCourseName').val(e.CourseName);
+                        $('#txtDescription').val(e.Description);
+                        $('#txtObjective').val(e.Objective);
+                        $('#txtOutline').val(e.Outline);
+                        $('#modCourse').modal('toggle');
+                    },
+                }
+            )
+        }
+
+        function CloseCourseModal() {
+             $('#modCourse').modal('hide');
+        }
+
+        function RenderCourseDetail(e) {
+
+            //alert('lenght : ' + e.length);
+
+            $('#divCourse').empty();
+            var html = '<div class="col-sm-5 col-md-10" style="margin-top:20px; margin-left:3em">'+
+                                '<div class="profile-text">' +
+                                '<a aria-expanded="false" style="font-weight: bold">Platform :</a>' + e.PlatformName_EN + ' ' +
+                                '</div>'+
+                                '<div class="profile-text">' +
+                                '<a aria-expanded="false" style="font-weight: bold">Course : </a> ' + e.CourseName + ' ' +
+                                '</div>'+
+                                //'<div class="profile-text">' +
+                                //'<a aria-expanded="false" style="font-weight: bold">Venue : </a> ' + e.RoomName_EN + ' ' +
+                                //'</div>' +
+                                 '<div class="profile-text">'+
+                                 '<a aria-expanded="false" style="font-weight: bold">Description</a>'+
+                                '</div>'+
+                                '<div class="profile-text">'+
+                                    '<a aria-expanded="false">'+ e.Description +'</a>'+
+                                '</div>' +
+                                '<div class="profile-text">'+
+                                 '<a aria-expanded="false" style="font-weight: bold">Objective</a>'+
+                                '</div>'+
+                                '<div class="profile-text">'+
+                                    '<a aria-expanded="false">'+ e.Objective +'</a>'+
+                                '</div>' +
+                                 '<div class="profile-text">'+
+                                    '<a aria-expanded="false" style="font-weight: bold">Outline</a>'+
+                                '</div>'+
+                                '<div class="profile-text">'+
+                                    '<a aria-expanded="false" style="font-weight: bold">'+ e.Outline +'</a>'+
+                                '</div>'+
+                '</div>'
+
+            $('#divCourse').append(html);
+
+            /*$("#dtClass tbody > tr").remove();
+            for (i = 0; i < e.length; i++) {
+                var row = $("<tr />");
+                $("#dtClass tbody").append(row);
+                //row.append('<td style="text-align:center">' + (i + 1) + '</td>');
+                row.append('<td style="text-align:center">' + e[i].ClassID + '</td>');
+                row.append('<td style="text-align:center">' + e[i].RoomName_EN + '</td>');
+                row.append('<td style="text-align:center">' + e[i].Instructor_Name + '</td>');
+                row.append('<td style="text-align:center">' + e[i].Capacity + '</td>');
+                row.append('<td style="text-align:center">' + e[i].Registed + '</td>');
+                row.append('<td style="text-align:center">' + e[i].LearnDateStart + '</td>');
+                row.append('<td style="text-align:center">' + e[i].Waiting + '</td>');
+                row.append('<td style="text-align:center">' + e[i].IsAttend + '</td>');
+                row.append('<td style="text-align:center">' + e[i].IsTest + '</td>');
+                row.append('<td style="text-align:center">' + e[i].IsSkill + '</td>');
+                row.append('<td style="text-align:center">' + e[i].IsCertificate + '</td>');
+                row.append('<td style="text-align:center">' + e[i].IsRefreshment + '</td>');
+               
+                row.append('<td style="text-align:center"><input type="checkbox" style="text-align:center; name="selectClass_' + i + '" value="selectClass_' + i + '" id="selectClass_' + i + '"/><label for="selectClass_'+ i +'"> </label> </td>');
+                row.append('<input type="hidden" id="hdSelect_ID_' + i + '" name="hdSelect_ID_' + i + '" value="' + e[i].ID + '" />');
+            }*/
+        }
+
+
+   </script>
+}

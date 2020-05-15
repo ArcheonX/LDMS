@@ -47,31 +47,50 @@
         .label-gray {
             background-color: #b3b3b3;
         }
+
+        .small, small {
+            font-size: 100%;
+            font-weight: 400;
+        }
+
+        .label-success {
+            color: #04b92d !important;
+            background-color: #04b92d !important;
+        }
+
+        .label-white {
+            color: #efebef !important;
+            background-color: #efebef !important;
+        }
+
+        .h4 {
+            margin-top: 7px !important;
+            padding-bottom: 10px !important;
+        }
     </style>
 }
-
 
 <div class="card card-outline-success">
     <form method="post" id="frmCR">
         @Html.AntiForgeryToken()
-        <div class="card-header">
-            <h4 class="m-b-0 text-white">Course Information</h4>
+        <div class="card-header" style="background-color: #1e88e5 !important;padding-top:8px !important; padding-bottom:8px !important;">
+            <h4 class="m-b-0 text-white" style="margin-top:6px;">Course Information</h4>
         </div>
         <div class="card-block p-4">
             <div class="form-group row">
                 <div class="col-8">
                     <small class="text-muted">Class</small>
-                    <h6 id="lblClassName"></h6>
+                    <h5 id="lblClassName"></h5>
                 </div>
                 <div class="col-4 row">
                     <div class="col-3">
                         <small class="text-muted">Status</small>
-                        <h6 id="lblStatus"></h6>
+                        <h5 id="lblStatus"></h5>
                     </div>
                 </div>
             </div>
             <hr />
-            <div class="form-group row">
+            <div class="form-group row pt-4">
                 <div class="col-1">
                     <a href="javascript:void(0)" class="link">
                         <small class="text-success font-bold">Capacity</small><br />
@@ -96,7 +115,7 @@
             </div>
 
             <hr />
-            <div class="form-group row pt-2 pb-1">
+            <div class="form-group row pt-4 pb-1">
                 <div class="col-2">
                     <small class="text-muted">Employee ID</small>
                     <input type="text" maxlength="100" class="form-control" id="txtEmpID" />
@@ -110,26 +129,52 @@
                     <input type="text" maxlength="100" class="form-control" id="txtDept" />
                 </div>
                 <div class="col-3" style="padding-top: 25px;">
-                    <button type="button" id="btnCSearch" class="btn btn-primary btn-command">Search</button>
+                    <button type="button" id="btnCSearch" class="btn btn-outline-secondary waves-effect waves-light btn-command">
+                        <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                    </button>
                 </div>
             </div>
             <div class="form-group row pt-2 pb-1">
                 <div class="col-6">
                     <div class="btn-group" role="group" aria-label="Command">
-                        <button type="button" id="btnApprove" class="btn btn-sm btn-info btn-command">Approve</button>
-                        <button type="button" id="btnReject" class="btn btn-sm btn-danger btn-command">Reject</button>
-                        <button type="button" id="btnClose" class="btn btn-warning btn-command">Close</button>
+                        <button type="button" id="btnApprove" class="btn btn-outline-info btn-command">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-check-green.svg" />&nbsp;&nbsp;Approve
+                        </button>
+                        <button type="button" id="btnReject" class="btn btn-outline-danger btn-command">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-down.svg" />&nbsp;&nbsp;Reject
+                        </button>
+                        <button type="button" id="btnClose" class="btn btn-outline-warning btn-command">
+                            <img style="width: 25px; height: 20px" src="~/assets/images/svg/closed.svg" />&nbsp;&nbsp; Close
+                        </button>
                     </div>
                 </div>
                 <div class="col-6 text-right">
                     <div class="btn-group" role="group" aria-label="Command">
-                        <button type="button" id="btnSave" class="btn btn-sm btn-primary btn-command">Save</button>
-                        <button type="button" id="btnBack" class="btn btn-sm btn-warning btn-command">Back</button>
+                        <button type="button" id="btnSave" class="btn btn-outline-success waves-effect waves-light btn-command">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/save.svg" />&nbsp;&nbsp;Save
+                        </button>
+                        <button type="button" id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light btn-command">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div class="table-responsive m-t-40">
+            <div class="form-group row pt-2 pb-1">
+                <div class="col-6">
+                    <div class="btn-group" role="group" aria-label="Command">
+                        <div class="btn-group" role="group" aria-label="Command">
+                            <button type="button" id="btnAddRegis" class="btn btn-outline-success waves-effect waves-light btn-command" onclick="SearchEmployee();">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/add-button-circle.svg" />&nbsp;&nbsp;Add
+                            </button>
+                            <button type="button" id="btnExport" class="btn btn-outline-info inactive waves-effect waves-light btn-command">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-excel-green.svg" />&nbsp;&nbsp;Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive m-t-20">
                 <table id="tbCourse" class="table table-hover table-bordered color-table info-table" cellspacing="0" width="100%">
                     <thead>
                         <tr>
@@ -139,16 +184,16 @@
                             <td class="hide-cell"></td>
                             <td class="hide-cell"></td>
                             <td class="hide-cell"></td>
-                            <td class="text-center hide-cell"><span id="lblSRegister" class="label label-success">&nbsp;</span></td>
-                            <td class="text-center hide-cell"><span id="lblSAttend" class="label label-warning">&nbsp;</span></td>
-                            <td class="text-center hide-cell"><span id="lblSPre" class="label label-gray">&nbsp;</span></td>
-                            <td class="text-center hide-cell"><span id="lblSPost" class="label label-gray">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSRegister" class="label">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSAttend" class="label">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSPre" class="label">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSPost" class="label">&nbsp;</span></td>
                             <td class="hide-cell"></td>
-                            <td class="text-center hide-cell"><span id="lblSSkill" class="label label-gray">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSSkill" class="label">&nbsp;</span></td>
                             <td class="hide-cell"></td>
-                            <td class="text-center hide-cell"><span id="lblSCoach" class="label label-gray">&nbsp;</span></td>
-                            <td class="text-center hide-cell"><span id="lblSCert" class="label label-inverse">&nbsp;</span></td>
-                            <td class="text-center hide-cell"><span id="lblSStatus" class="label label-gray">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSCoach" class="label">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSCert" class="label">&nbsp;</span></td>
+                            <td class="text-center hide-cell"><span id="lblSStatus" class="label">&nbsp;</span></td>
                         </tr>
                         <tr>
                             <th class="text-center"><input type="checkbox" id="chkAll" /><label for="chkAll" class='chk'>.</label></th>
@@ -178,11 +223,11 @@
     </form>
 </div>
 
-<div class="modal" id="modEmp_Close" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false"  data-keyboard="false">
+<div class="modal" id="modEmp_Close" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="display:table;height: 100%;width: 1200px !important;">
         <div class="modal-content">
             <div class="modal-header card-header col-12">
-                <h4 class="modal-title col-10" id="lblMATitle">Select Waiting List to Approve Register</h4>
+                <h4 class="m-b-0 text-white" style="margin-top:7px;margin-bottom:10px">Select Waiting List to Approve Register</h4>
                 <button class="close" aria-hidden="true" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body" style="min-height: 80px;">
@@ -220,11 +265,11 @@
     </div>
 </div>
 
-<div class="modal" id="modCert" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false"  data-keyboard="false">
+<div class="modal" id="modCert" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="display:table;height: 100%;">
         <div class="modal-content">
             <div class="modal-header card-header col-12">
-                <h4 class="modal-title col-10" id="lblMATitle">Confirm Certificate</h4>
+                <h4 class="m-b-0 text-white" style="margin-top:7px;margin-bottom:10px">Confirm Certificate</h4>
                 <button class="close" aria-hidden="true" type="button" data-dismiss="modal">×</button>
             </div>
             <form id="frmCert" class="form" method="post" enctype="multipart/form-data">
@@ -259,6 +304,123 @@
     </div>
 </div>
 
+<div class="modal" id="modEmp_Select" tabindex="-1" role="dialog" aria-labelledby="modAlertLabel" aria-hidden="false" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="display:table;height: 100%;width: 1200px !important;">
+        <div class="modal-content" style="width:1200px;">
+            <div class="modal-header card-header col-12">
+                <h4 class="m-b-0 text-white" style="margin-top:7px;margin-bottom:10px">Select Employee</h4>
+                <button class="close" aria-hidden="true" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body" style="min-height: 80px;">
+                <div class="form-horizontal" style="padding-top:25px;">
+                    <div class="row form-group" style="margin-right:15px;margin-left:-15px;">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Employee ID</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtEmployeeID"
+                                   style="width: 100%"
+                                   class="form-control" />
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Employee Name</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <input type="text"
+                                   title="Please Enter Employee Name"
+                                   id="txtEmployeeName"
+                                   style="width: 100%"
+                                   class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-right:15px;margin-left:-15px;">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Department</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectDepartment" name="selectDepartment" class="form-control" style="width: 100%">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Section</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectSection" name="selectSection" class="form-control" style="width: 100%">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-right:15px;margin-left:-15px;">
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Job Grade</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectJobGrade" name="selectJobGrade" class="form-control" style="width: 100%">
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <span class="pull-right" style="vertical-align:middle">
+                                <label class="LabelCaption">Job Title</label>
+                            </span>
+                        </div>
+                        <div class="col-sm-4 col-md-4">
+                            <select id="selectJobTitle" name="selectJobTitle" class="form-control" style="width: 100%">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-right:15px;margin-left:-15px;">
+                        <div class="col-sm-2 col-md-2 offset-10">
+                            <button id="btnSearchEmployee" onclick="SearchEmployee();" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="padding-top:25px;">
+                        <div class="col-sm-12 col-md-12" style="padding-left:15px;padding-right:15px;">
+                            <table class="display dataTable" id="dtSelectEmployee">
+                                <thead style="background-color:#1e88e5;color:#ffffff">
+                                    <tr>
+                                        <th style="text-align:center;width:75px">#</th>
+                                        <th style="text-align:center;width:150px">Employee Id</th>
+                                        <th style="text-align:center;width:150px">Employee Name</th>
+                                        <th style="text-align:center;width:150px">Department</th>
+                                        <th style="text-align:center;width:150px">Section</th>
+                                        <th style="text-align:center;width:150px">Job Grade</th>
+                                        <th style="text-align:center;width:150px">Job Title</th>
+                                        <th style="text-align:center;width:75px">Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-top:15px;margin-bottom:15px; padding-left:70%">
+                        <button id="btnSelectPlatform" onclick="OnSelectEmployee()" class="btn btn-outline-primary waves-effect waves-light" style="width:140px;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Select
+                        </button>
+                        &nbsp;&nbsp;
+                        <button id="btnBack" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:140px;" formnovalidate data-dismiss="modal">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <input type="hidden" id="hdClass" />
 <input type="hidden" id="hdCourse" />
@@ -279,6 +441,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             LoadClass();
+            LoadDepartment();
+            LoadJobTitle();
+            LoadJobGrades();
         });
 
         $("#txtEmpID").on('keyup', function (e) {
@@ -427,7 +592,7 @@
                     data: { "classID": "@ViewData["class"]",
                             "courseID": "@ViewData["course"]",
                             "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() },
-                    success: function (e) { LoadClass(); SearchCR();$('#modEmp_Close').modal('toggle'); },
+                    success: function (e) { LoadClass(); $('#modEmp_Close').modal('toggle'); },
                 });
             }
         });
@@ -452,27 +617,40 @@
                         $("#hdStatus").val(e[0].ClassStatus);
 
                         var all_Count = e[0].All_Count;
-                        if(e[0].Qualified_Count >= all_Count) $("#lblSStatus").attr('class',"label label-success");
+                         if (e[0].Qualified_Count >= all_Count) $("#lblSStatus").attr('class',"label text-success");
 
                         $("#hdAttend").val(e[0].IsAttend);
 
-                        if(e[0].IsAttend == "1")
-                        {   if(e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class',"label label-success");
-                            else if ( e[0].Attend_Count > 0) $("#lblSAttend").attr('class',"label label-warning");
-                            else $("#lblSAttend").attr('class',"label label-gray"); }
+                         if (e[0].IsAttend == "1")
+                         {
+                             if(e[0].Attend_Count == 0) $("#lblSAttend").attr('class', "label label-white");
+                             else {
+                                 if (e[0].Attend_Count >= all_Count) $("#lblSAttend").attr('class', "label label-success");
+                                 else if (e[0].Attend_Count > 0) $("#lblSAttend").attr('class', "label label-warning");
+                                 else $("#lblSAttend").attr('class', "label label-gray");
+                         }
+                        }
                         else{ $("#lblSAttend").attr('class',"label label-inverse"); }
 
                         $("#hdAttend1").val(e[0].AttendNum);
                         $("#hdTest").val(e[0].IsTest);
                         if(e[0].IsTest == "1")
                         {
-                            if(e[0].PreTest_Count >= all_Count) $("#lblSPre").attr('class',"label label-success");
-                            else if ( e[0].PreTest_Count > 0) $("#lblSPre").attr('class',"label label-warning");
-                            else $("#lblSPre").attr('class',"label label-gray");
+                            if (e[0].PreTest_Count == 0) $("#lblSPre").attr('class', "label label-white");
+                            else
+                            {
+                                if (e[0].PreTest_Count >= all_Count) $("#lblSPre").attr('class', "label label-success");
+                                else if (e[0].PreTest_Count > 0) $("#lblSPre").attr('class', "label label-warning");
+                                else $("#lblSPre").attr('class', "label label-gray");
+                            }
 
-                            if(e[0].PostTest_Count >= all_Count) $("#lblSPost").attr('class',"label label-success");
-                            else if ( e[0].PostTest_Count > 0) $("#lblSPost").attr('class',"label label-warning");
-                            else $("#lblSPost").attr('class',"label label-gray");
+
+                            if (e[0].PostTest_Count == 0) $("#lblSPost").attr('class', "label label-white");
+                            else {
+                                if (e[0].PostTest_Count >= all_Count) $("#lblSPost").attr('class', "label label-success");
+                                else if (e[0].PostTest_Count > 0) $("#lblSPost").attr('class', "label label-warning");
+                                else $("#lblSPost").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSPre").attr('class',"label label-inverse"); $("#lblSPost").attr('class',"label label-inverse");}
 
@@ -481,9 +659,12 @@
                         $("#hdSkill").val(e[0].IsSkill);
                         if(e[0].IsSkill == "1")
                         {
-                            if(e[0].Skill_Count >= all_Count) $("#lblSSkill").attr('class',"label label-success");
-                            else if ( e[0].Skill_Count > 0) $("#lblSSkill").attr('class',"label label-warning");
-                            else $("#lblSSkill").attr('class',"label label-gray");
+                            if (e[0].Skill_Count == 0) $("#lblSSkill").attr('class', "label label-white");
+                            else {
+                                if (e[0].Skill_Count >= all_Count) $("#lblSSkill").attr('class', "label label-success");
+                                else if (e[0].Skill_Count > 0) $("#lblSSkill").attr('class', "label label-warning");
+                                else $("#lblSSkill").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSSkill").attr('class',"label label-inverse"); }
 
@@ -492,18 +673,24 @@
                         $("#hdCoach").val(e[0].IsCoaching);
                         if(e[0].IsCoaching == "1")
                         {
-                            if(e[0].Coach_Count >= all_Count) $("#lblSCoach").attr('class',"label label-success");
-                            else if ( e[0].Coach_Count > 0) $("#lblSCoach").attr('class',"label label-warning");
-                            else $("#lblSCoach").attr('class',"label label-gray");
+                            if (e[0].Coach_Count == 0) $("#lblSCoach").attr('class', "label label-white");
+                            else {
+                                if (e[0].Coach_Count >= all_Count) $("#lblSCoach").attr('class', "label label-success");
+                                else if (e[0].Coach_Count > 0) $("#lblSCoach").attr('class', "label label-warning");
+                                else $("#lblSCoach").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSCoach").attr('class',"label label-inverse"); }
 
                         $("#hdCert").val(e[0].IsAttachCert);
                         if(e[0].IsCertificate == "1")
                         {
-                            if(e[0].Cert_Count >= all_Count) $("#lblSCert").attr('class',"label label-success");
-                            else if ( e[0].Cert_Count > 0) $("#lblSCert").attr('class',"label label-warning");
-                            else $("#lblSCert").attr('class',"label label-gray");
+                            if (e[0].Cert_Count == 0) $("#lblSCert").attr('class', "label label-white");
+                            else {
+                                if (e[0].Cert_Count >= all_Count) $("#lblSCert").attr('class', "label label-success");
+                                else if (e[0].Cert_Count > 0) $("#lblSCert").attr('class', "label label-warning");
+                                else $("#lblSCert").attr('class', "label label-gray");
+                            }
                         }
                         else{ $("#lblSCert").attr('class',"label label-inverse"); }
 
@@ -650,6 +837,22 @@
             });
         }
 
+        $("#btnExport").click(function () {
+            var request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("GET", "@Url.Content("~/CourseRegister/ExportExcel")?classID=@ViewData["class"]&courseID=@ViewData["course"]&employeeID=" +
+                $('#txtEmpID').val() + "&employeeName=" + $('#txtEmpName').val() + "&departmentName=" + $('#txtDept').val());
+            request.onload = function () {
+                var url = window.URL.createObjectURL(this.response);
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+            request.send();
+        });
+
         function CalPostTest(sender)
         {
             if(sender.value != "") $('#tdPPost'+sender.alt).html( ((sender.value * 1 / ($("#hdTest1").val() *1))*100).toFixed(2));
@@ -682,7 +885,7 @@
                             "courseID": "@ViewData["course"]",
                             "lists": lists,
                             "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() },
-                    success: function (e) {LoadClass(); SearchCR(); },
+                    success: function (e) {LoadClass();  },
                 });
 
             }
@@ -713,14 +916,266 @@
                     contentType: false,
                     url: '@Url.Action("UpdateCert", "CourseRegister")',
                     success: function (e) {
-                        
-                        LoadClass(); SearchCR(); $('#modCert').modal('toggle');
+
+                        LoadClass();  $('#modCert').modal('toggle');
                     },
                     complete: function () {
-                        LoadClass(); SearchCR(); $('#modCert').modal('toggle');
+                        LoadClass();  $('#modCert').modal('toggle');
                     }
                 });
         });
+
+
+
+
+        function LoadDepartment() {
+            var options = $('#selectDepartment');
+            options.empty();
+            $.ajax({
+                type: "GET",
+                url: "/Master/GetAllDepartments",
+                success: function (response) {
+                    options.append($("<option />").val(null).text("---All---"));
+                    $.each(response.Data, function () {
+                        options.append($("<option />").val(this.ID_Department).text('(' + this.DepartmentID + ') ' + this.DepartmentName_EN));
+                    });
+                    options.val(null).trigger('change');
+                },
+                failure: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    }
+                    else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                },
+                error: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    }
+                    else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                }
+            });
+        }
+
+        function LoadJobGrades() {
+            var options = $('#selectJobGrade');
+            var options2 = $('#selectLevel');
+            options.empty();
+            options2.empty();
+
+            $.ajax({
+                type: "GET",
+                url: "/Master/GetAllJobGrades",
+                success: function (response) {
+                    options.append($("<option />").val(null).text("---All---"));
+                    options2.append($("<option />").val(null).text("---All---"));
+                    $.each(response.Data, function () {
+                        options.append($("<option />").val(this.ID_JobGrade).text(this.JobGradeName_EN));
+                        options2.append($("<option />").val(this.ID_JobGrade).text(this.JobGradeName_EN));
+                    });
+                    options.val(null).trigger('change');
+                    options2.val(null).trigger('change');
+                },
+                failure: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                },
+                error: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                }
+            });
+        }
+
+        function LoadJobTitle() {
+            var options = $('#selectJobTitle');
+            options.empty();
+            $.ajax({
+                type: "GET",
+                url: "/Master/GetAllJobTitles",
+                success: function (response) {
+                    options.append($("<option />").val(null).text("--All--"));
+                    $.each(response.Data, function () {
+                        options.append($("<option />").val(this.ID).text(this.JobTitleName_EN));
+                    });
+                    options.val(null).trigger('change');
+                },
+                failure: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                },
+                error: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                }
+            });
+        }
+
+        $('select[name="selectDepartment"]').on('change', function () {
+            var departmentId = $(this).val();
+            LoadDepartmentSection(departmentId);
+        });
+
+        function LoadDepartmentSection(departmentId) {
+            var options = $('#selectSection');
+            options.empty();
+            $.ajax({
+                type: "GET",
+                url: '/Master/GetAllSectionsByDepartment',
+                data: {
+                    'departmentId': departmentId
+                },
+                success: function (response) {
+                    options.append($("<option />").val(null).text("---All---"));
+                    $.each(response.Data, function () {
+                        options.append($("<option />").val(this.ID_Section).text('(' + this.SectionID + ') ' + this.SectionName_EN));
+                    });
+                    options.val(null).trigger('change');
+                },
+                failure: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                },
+                error: function (response) {
+                    if (JSON.parse(response.responseText).Errors.length > 0) {
+                        MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+                    } else {
+                        MessageController.Error(response.responseText, "Error");
+                    }
+                }
+            });
+        }
+
+
+        function SearchEmployee() {
+            var searmodel = {
+                EmployeeId: $("#txtEmployeeID").val(),
+                EmployeeName: $("#txtEmployeeName").val(),
+                Departments: $("#selectDepartment").val(),
+                Sections: $("#selectSection").val(),
+                JobGrades: $("#selectJobGrade").val(),
+                JobTitles: $("#selectJobTitle").val(),
+                courseID: "@ViewData["course"]",
+                classID: "@ViewData["class"]"
+            }
+            if ($.fn.dataTable.isDataTable('#dtSelectEmployee')) {
+                var table = $('#dtSelectEmployee').DataTable();
+                table.destroy();
+            }
+            $.ajax({
+                type: "GET",
+                url: "/CourseRegister/SearchEmployee",
+                data: searmodel,
+                success: function (response) {
+                    $('#dtSelectEmployee').DataTable({
+                        'data': response.Data,
+                        'columns': [
+                            { data: 'RowIndex', title: '#' },
+                            { data: 'EmployeeId', title: 'Employee Id' },
+                            { data: 'EmployeeName', title: 'Employee Name' },
+                            { data: 'DepartmentName', title: 'Department' },
+                            { data: 'SectionName', title: 'Section' },
+                            { data: 'JobGrade', title: 'Job Grade' },
+                            { data: 'JobTitle', title: 'Job Title' },
+                            {
+                                "mData": "EmployeeId",
+                                "mRender": function (data, type, row) {
+                                    var isSelect = employees.any((item) => {
+                                        return data.trim() == item.EmployeeId.trim();
+                                    });
+                                    if (isSelect) {
+                                        tmpselection.push(data);
+                                        return "<input type = 'checkbox' checked='checked'  onchange='OnSelectEmp(this)' class='chk-select-employee' name = 'selectEmployee_" + data + "' value='" + data + "'  id='selectEmployee_" + data + "' /> <label for='selectEmployee_" + data + "'> </label>";
+                                    } else {
+                                        return "<input type = 'checkbox' onchange='OnSelectEmp(this)' class='chk-select-employee' name = 'selectEmployee_" + data + "' value='" + data + "'  id='selectEmployee_" + data + "' /> <label for='selectEmployee_" + data + "'> </label>";
+                                    }
+                                }
+                            }
+                        ],
+                        "columnDefs": [
+                            { "orderable": false, "targets": 0, "className": "text-center", "width": "4%" },
+                            { "orderable": false, "targets": 1, "className": "text-center" },
+                            { "orderable": false, "targets": 2, "className": "text-center" },
+                            { "orderable": false, "targets": 3, "className": "text-center" },
+                            { "orderable": false, "targets": 4, "className": "text-center" },
+                            { "orderable": false, "targets": 5, "className": "text-center" },
+                            { "orderable": false, "targets": 6, "className": "text-center" },
+                            { "orderable": false, "targets": 7, "className": "text-center" }
+
+                        ],
+                        'processing': true,
+                        'paging': true,
+                        "ordering": false,
+                        "searching": false,
+                        "lengthChange": false,
+                        "bAutoWidth": false,
+                        "Filter": false,
+                        "info": false,
+                        "bPaginate": false,
+                        "bLengthChange": false,
+                        "bJQueryUI": true, //Enable smooth theme
+                        "sPaginationType": "full_numbers", //Enable smooth theme
+                        "sDom": 'lfrtip',
+                        "pageLength": 5,
+                        "language": {
+                            "zeroRecords": "No Employee"
+                        }
+                    });
+                    $('.dataTables_length').addClass('bs-select');
+                    if (!($("#modEmp_Select").data('bs.modal') || {})._isShown)
+                        $('#modEmp_Select').modal("show");
+                }
+            });
+        }
+
+        var employees = [];
+        var tmpselection = [];
+
+        function OnSelectEmp(element) {
+            var employeeId = element.id.replace("selectEmployee_", "").trim();
+            if (document.getElementById('selectEmployee_' + employeeId).checked) {
+                tmpselection.push(employeeId);
+            } else {
+                tmpselection = tmpselection.where((item) => {
+                    return item != employeeId;
+                });
+            }
+        }
+
+        function OnSelectEmployee() {
+
+             $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("AddRegis", "CourseRegister")',
+                    data: { "classID": "@ViewData["class"]",
+                            "courseID": "@ViewData["course"]",
+                        "empID": tmpselection,
+                            "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() },
+                 success: function (e) {
+                     LoadClass(); $('#modEmp_Select').modal("hide");
+                 },
+                });
+
+        }
+
     </script>
 }
 

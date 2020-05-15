@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using LDMS.Core;
 using LDMS.Services;
 using LDMS.WEB.Filters;
 using LDMS.WEB.Models.Employee;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LDMS.WEB.Controllers
@@ -14,11 +18,14 @@ namespace LDMS.WEB.Controllers
     {
         private readonly MasterService MasterService;
         private readonly UserService UserService;
-
-        public OrganizationController(MasterService masterService, UserService userService)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private string _filePath;
+        public OrganizationController(MasterService masterService, UserService userService,IHostingEnvironment hostingEnvironment)
         {
             MasterService = masterService;
             UserService = userService;
+            _hostingEnvironment = hostingEnvironment;
+            _filePath = _hostingEnvironment.WebRootPath;
         }
 
         [AuthorizeRole(UserRole.All)]
@@ -44,39 +51,64 @@ namespace LDMS.WEB.Controllers
         [Route("Organization/Employees")]
         public async Task<IActionResult> Employees(int departmentId, int sectionId, string keyword)
         {
-            var grades = (await MasterService.GetAllJobGrades()).Data as List<ViewModels.LDMS_M_JobGrade>;
-            var titles = (await MasterService.GetAllJobTitles()).Data as List<ViewModels.LDMS_M_JobTitle>;
-            var sections = (await MasterService.GetAllSections(departmentId)).Data as List<ViewModels.LDMS_M_Section>;
-            var users = (await UserService.GetAllEmployeeByDepartmentId(departmentId)).Data as List<ViewModels.LDMS_M_User>;
-            var employees = users.Select(emp => new EmployeeSectionView(emp)
-            {
-                JobGrade = grades.FirstOrDefault(e => e.ID_JobGrade == emp.ID_JobGrade)?.JobGradeName_EN,
-                JobTitle = titles.FirstOrDefault(e => e.ID_JobTitle == emp.ID_JobTitle)?.JobTitleName_EN,
-                LDMS_M_Sections = sections
-            }).ToList();
-            if (sectionId > 0)
-            {
-                employees = employees.Where(e => e.ID_Section == sectionId).ToList();
-            }
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                employees = employees.Where(e =>
-                (e.Name != null && e.Name.ToLower().StartsWith(keyword.ToLower()))
-                || (e.Surname != null && e.Surname.ToLower().StartsWith(keyword.ToLower()))
-                || (e.Email != null && e.Email.ToLower().StartsWith(keyword.ToLower()))
-                || (e.EmployeeID != null && e.EmployeeID.ToLower().StartsWith(keyword.ToLower()))
-                ).ToList();
-            }
-            int index = 1;
-            employees.ForEach(item =>
-            {
-                item.RowIndex = index;
-                index++;
-            });
-            //return Json(employees);
-            return PartialView("section/_employeeList", employees);
+            var result = await UserService.SearchOrganizationEmployee(departmentId,sectionId,keyword); 
+            return PartialView("section/_employeeList", result.Data);
         }
+        [AuthorizeRole(UserRole.All)]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.None)]
+        [HttpGet]
+        [Route("Organization/ExportEmployees")]
+        public async Task<IActionResult> ExportEmployees(int departmentId, int sectionId, string keyword)
+        {
+            var result = await UserService.SearchOrganizationEmployee(departmentId, sectionId, keyword);
+            if (!result.IsOk)
+            {
+                return Response(result);
+            }
+            var list = result.Data as List<ViewModels.EmployeeSectionView>;
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Section");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Employee ID";
+                worksheet.Cell(currentRow, 2).Value = "Employee Name";
+                worksheet.Cell(currentRow, 3).Value = "Job Grade";
+                worksheet.Cell(currentRow, 4).Value = "Job Title";
+                worksheet.Cell(currentRow, 5).Value = "Section";
+                foreach (var user in list)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = user.EmployeeID;
+                    worksheet.Cell(currentRow, 2).Value = user.FullName;
+                    worksheet.Cell(currentRow, 3).Value = user.JobGrade;
+                    worksheet.Cell(currentRow, 4).Value = user.JobTitle;
+                    worksheet.Cell(currentRow, 5).Value = user.LDMS_M_Section.SectionID;
+                }
+                string fileName = System.Guid.NewGuid().ToString()+ "_Section.xlsx";
+                string filepath = Path.Combine(_filePath, fileName); 
+                using (FileStream fileStream = new FileStream(filepath, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    workbook.SaveAs(fileStream);
+                }
+                return Response(new ServiceResult(fileName)); 
+            }
+        }
+        [HttpGet]
+        [Route("Organization/Download")]
+        public ActionResult Download(string fileName)
+        {
+            string filepath = Path.Combine(_filePath, fileName);
+            byte[] fileByteArray = System.IO.File.ReadAllBytes(filepath);
+            try
+            {
+                System.IO.File.Delete(filepath);
+            }
+            catch
+            {
 
+            }
+            return File(fileByteArray, "application/vnd.ms-excel", fileName);
+        }
         [AuthorizeRole(UserRole.All)]
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.None)]
         [HttpGet]
@@ -104,7 +136,7 @@ namespace LDMS.WEB.Controllers
         }
 
         [AuthorizeRole(UserRole.AdminHR, UserRole.SuperAdmin)]
-        [HttpDelete]
+        [HttpPost]
         [Route("Organization/DeleteSection")]
         public async Task<IActionResult> DeleteSection(int sectionId)
         {
@@ -124,5 +156,16 @@ namespace LDMS.WEB.Controllers
             }).ToList();
             return Response(await UserService.UpdateUserSection(userRoles));
         }
+
+        [HttpPost, DisableRequestSizeLimit]
+        [Route("Organization/ImportSection")]
+        [AuthorizeRole(UserRole.AdminHR, UserRole.SuperAdmin)]
+        public IActionResult ImportOrganizationEmployee(IFormFile file)
+        {
+            int.TryParse(Request.Form.FirstOrDefault(x => x.Key == "divisionId").Value, out int divisionId);
+            int.TryParse(Request.Form.FirstOrDefault(x => x.Key == "departmentId").Value, out int departmentId);
+            return Response(UserService.ImportEmployeeSection(file, divisionId, departmentId).Result);
+        }
+
     }
 }

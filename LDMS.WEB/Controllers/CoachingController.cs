@@ -92,6 +92,8 @@ namespace LDMS.WEB.Controllers
             LDMS_T_CoachingSearch criteria = new LDMS_T_CoachingSearch();
             criteria.PageNum = int.Parse(Request.Form["start"]) / int.Parse(Request.Form["length"]) + 1;
             criteria.PageSize = int.Parse(Request.Form["length"]);
+            criteria.SortField = sortColumn;
+            criteria.SortOrder = sortOrder;
             criteria.ID_Plant = ID_Plant;
             criteria.ID_Center = ID_Center;
             criteria.ID_Division = ID_Division;

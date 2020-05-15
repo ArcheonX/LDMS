@@ -51,7 +51,6 @@ namespace LDMS.Services
                         item.Employees = (await GetAnalyticEmployees(analyticId));
                         item.Scores = (await GetAnalyticScores(analyticId));
                         item.Topics = (await GetAnalyticKnowledgeTopics(analyticId));
-                      //  item.Expectatoins = (await GetAnalyticExpectatoins(analyticId));
                     }
                     return new ServiceResult(item);
                 }
@@ -62,11 +61,34 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-         
+
+        public async Task<ServiceResult> Delete(int analyticId)
+        {
+            try
+            {
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@ID_CompetenceAnalytic", analyticId);
+                parameter.Add("@paramUpdateBy", CurrentUserId);
+
+                using (IDbConnection conn = Connection)
+                {
+                    var items = Connection.Query<SQLError>(_schema + ".[usp_CompetenceAnalytic_Delete]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
+                    if (items != null && items.Any())
+                    {
+                        return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
+                    } 
+                    return new ServiceResult();
+                }
+            }
+            catch (Exception x)
+            {
+                _logger.LogError(x.Message);
+                return new ServiceResult(x);
+            }
+        }
         public async Task<ServiceResult> CreateCompetence(
             ViewModels.TCompetenceAnalytic competenceAnalytic,
-            List<ViewModels.TCompetenceAnalyticEmployee> employees,
-           /* List<ViewModels.TCompetenceAnalyticExpectatoin> expectatoins,*/
+            List<ViewModels.TCompetenceAnalyticEmployee> employees, 
             List<ViewModels.TCompetenceAnalyticTopic> topics)
         {
             try
@@ -105,8 +127,7 @@ namespace LDMS.Services
 
         public async Task<ServiceResult> UpdateCompetence(
             ViewModels.TCompetenceAnalytic competenceAnalytic, 
-            List<ViewModels.TCompetenceAnalyticEmployee> employees,
-           /* List<ViewModels.TCompetenceAnalyticExpectatoin> expectatoins,*/
+            List<ViewModels.TCompetenceAnalyticEmployee> employees, 
             List<ViewModels.TCompetenceAnalyticTopic> topics)
         {
             try
@@ -220,27 +241,7 @@ namespace LDMS.Services
                 _logger.LogError(x.Message);
                 return new List<ViewModels.TCompetenceAnalyticTopic>();
             }
-        }
-
-        private async Task<List<ViewModels.TCompetenceAnalyticExpectatoin>> GetAnalyticExpectatoins(int analyticId)
-        {
-            try
-            {
-                DynamicParameters parameter = new DynamicParameters();
-                parameter.Add("@AnalyticId", analyticId);
-
-                using (IDbConnection conn = Connection)
-                {
-                    var items = Connection.Query<ViewModels.TCompetenceAnalyticExpectatoin>(_schema + ".[usp_CompetenceAnalyticExpectatoin_READ_BY_AnalyticId]", param: parameter, commandType: CommandType.StoredProcedure).ToList();
-                    return items;
-                }
-            }
-            catch (Exception x)
-            {
-                _logger.LogError(x.Message);
-                return new List<ViewModels.TCompetenceAnalyticExpectatoin>();
-            }
-        }
+        } 
 
         private async Task<List<ViewModels.TCompetenceAnalyticScore>> GetAnalyticScores(int analyticId)
         {
@@ -264,11 +265,11 @@ namespace LDMS.Services
 
         private  DataTable CreatEmployeeTable(List<ViewModels.TCompetenceAnalyticEmployee> employees)
         {
-            System.Data.DataTable dt = new System.Data.DataTable();
+            DataTable dt = new DataTable();
             dt.Columns.Add("EmployeeId", typeof(string));
             foreach (var emp in employees)
             {
-                System.Data.DataRow row = dt.NewRow();
+                DataRow row = dt.NewRow();
                 row["EmployeeId"] = emp.EmployeeID;
                 dt.Rows.Add(row);
             }

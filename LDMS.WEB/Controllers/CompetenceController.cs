@@ -34,7 +34,16 @@ namespace LDMS.WEB.Controllers
         public async Task<IActionResult> ReadCompetence(int competenceId)
         {
             return Response(await CompetenceAnalyticService.ReadById(competenceId));
-        } 
+        }
+
+        [ResponseCache(Duration = 1, Location = ResponseCacheLocation.None)]
+        [HttpDelete]
+        [AuthorizeRole(UserRole.All)]
+        [Route("Competence/Delete")]
+        public async Task<IActionResult> Delete(int competenceId)
+        {
+            return Response(await CompetenceAnalyticService.Delete(competenceId));
+        }
 
         [ResponseCache(Duration = 1, Location = ResponseCacheLocation.None)]
         [AuthorizeRole(UserRole.All)]

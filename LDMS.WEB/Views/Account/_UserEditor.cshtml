@@ -8,7 +8,7 @@
                     <input type="hidden" id="userDivisionId" value="false" />
                     <input type="hidden" id="userDepartmentId" value="false" />
                     <input type="hidden" id="userSectionId" value="false" />
-
+                    <input type="hidden" id="Id_Employee" value="false" />
                     <div class="row form-group">
                         <div class="col-sm-2 col-md-2">
                             <span class="pull-right" style="vertical-align:middle">
@@ -36,7 +36,7 @@
                                     class="form-control required"
                                     style="width: 100%">
                             </select>
-                        </div> 
+                        </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-sm-2 col-md-2">
@@ -104,9 +104,9 @@
                         <div class="col-sm-4 col-md-4">
                             <select id="selectCenter"
                                     name="selectCenter"
-                                    asp-for="CenterId" 
-                                     class="form-control required"
-                                     title="Please Enter Center"
+                                    asp-for="CenterId"
+                                    class="form-control required"
+                                    title="Please Enter Center"
                                     style="width: 100%">
                             </select>
                         </div>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="col-sm-4 col-md-4">
                             <select id="selectDivision"
-                                    name="selectDivision" 
+                                    name="selectDivision"
                                     asp-for="DivisionId"
                                     class="form-control"
                                     style="width: 100%">
@@ -159,7 +159,7 @@
                         <div class="col-sm-4 col-md-4">
                             <select id="selectDepartment"
                                     name="selectDepartment"
-                                    asp-for="DepartmentId" 
+                                    asp-for="DepartmentId"
                                     class="form-control"
                                     style="width: 100%">
                             </select>
@@ -182,7 +182,7 @@
                         </div>
                         <div class="col-sm-4 col-md-4">
                             <select id="selectSection"
-                                    name="selectSection" 
+                                    name="selectSection"
                                     asp-for="SectionId"
                                     class="form-control"
                                     style="width: 100%">
@@ -200,21 +200,21 @@
                         </div>
                         <div class="col-sm-2 col-md-2 offset-1">
                             <span class="pull-right" style="vertical-align:middle">
-                                <input type="checkbox" disabled="disabled"  asp-for="IsInstructer" name="isInstructer" id="isInstructer" /><label for="isInstructer">Instructer</label>
+                                <input type="checkbox" disabled="disabled" asp-for="IsInstructer" name="isInstructer" id="isInstructer" /><label for="isInstructer">Instructor</label>
                             </span>
                         </div>
-                        <div class="col-sm-2 col-md-2">
-                            <span class="pull-right" style="vertical-align:middle">
-                                <input type="checkbox" disabled="disabled" asp-for="IsSectionHead" name="isSectionHead" id="isSectionHead" /><label for="isSectionHead">Section Head</label>
-                            </span>
-                        </div>
+                        @*<div class="col-sm-2 col-md-2">
+                <span class="pull-right" style="vertical-align:middle">
+                    <input type="checkbox" disabled="disabled" asp-for="IsSectionHead" name="isSectionHead" id="isSectionHead" /><label for="isSectionHead">Section Head</label>
+                </span>
+            </div>*@
                     </div>
                 </form>
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2 offset-8">
                         <span class="pull-right">
                             <button id="btnResetPassword" class="btn btn-warning waves-effect waves-light" style="display:none;width:100%"> Reset Password </button>
-                        </span>                        
+                        </span>
                     </div>
                     <div class="col-sm-1 col-md-1">
                         <button id="btnSaveEmployee" class="btn btn-outline-success waves-effect waves-light" style="width:100%">
@@ -232,20 +232,18 @@
         <div class="col-sm-12 col-md-12">
             <div class="panel-heading" style="width:100%;margin-top:25px;margin-left:25px;">Role Management</div>
             <div class="panel-body" style="width:100%;margin-top:25px;">
-                <div class="table-responsive">
-                    <table class="display dataTable" id="dtUserRoleList">
-                        <thead style="background-color:#1e88e5;color:#ffffff">
-                            <tr>
-                                <th style="text-align:center;width:100px">#</th>
-                                <th style="text-align:center;">Role</th>
-                                <th style="text-align:center">Description</th>
-                                <th style="text-align:center;width:100px">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+                <table class="display dataTable" id="dtUserRoleList">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;width:100px">#</th>
+                            <th style="text-align:center;">Role</th>
+                            <th style="text-align:center">Description</th>
+                            <th style="text-align:center;width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

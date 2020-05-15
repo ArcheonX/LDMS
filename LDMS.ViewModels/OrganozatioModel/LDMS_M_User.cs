@@ -4,7 +4,7 @@ namespace LDMS.ViewModels
 {
     public class LDMS_M_User : BaseViewModel
     {
-        public long ID_User { get; set; }
+        public int ID_User { get; set; }
         public string EmployeeID { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -73,4 +73,13 @@ namespace LDMS.ViewModels
             LDMS_M_Role = new LDMS_M_Role();
         }
     }
+}
+public enum UserLevel
+{
+    PlantManager = 1,
+    CenterManager = 2,
+    DivisionManager = 3,
+    DepartmentManager = 4,
+    SectionManager = 5,
+    User = 6
 }

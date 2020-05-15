@@ -14,11 +14,15 @@
                     <div class="col-sm-1 col-md-3">
                         <h4><span class="pull-right">Class Infomation</span></h4>
                     </div>
-                    <div class="col-sm-1 col-md-1 offset-7">
-                        <a id="btnSaveClass" onclick="SaveClass();" class="btn btn-success waves-effect waves-light" style="width:90%; color:white">Save</a>
+                    <div class="col-sm-2 col-md-2 offset-5">
+                        <a id="btnSaveClass" onclick="SaveClass();" class="btn btn-outline-success waves-effect waves-light" style="width:90%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/save.svg" />&nbsp;&nbsp;Save
+                        </a>
                     </div>
-                    <div class="col-sm-1 col-md-1" style="margin-left:-25px">
-                        <a id="btnBack" onclick="BacktoCourse(@Model.ID_Course)" class="btn btn-danger inactive waves-effect waves-light" style="width:90%; color:white">Back</a>
+                    <div class="col-sm-2 col-md-2" style="margin-left:-25px">
+                        <a id="btnBack" onclick="BacktoCourse(@Model.ID_Course)" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:90%;">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/icon-l-red.svg" />&nbsp;&nbsp;Back
+                        </a>
                     </div>
                 </div>
             </div>
@@ -30,7 +34,9 @@
                 {
                     <input type="hidden" id="hID" name="hID" value=@Model.ID />
                     <input type="hidden" id="hID_Class" name="hID_Class" value=@Model.ClassID />
+                    <input type="hidden" id="hID_LMS_PACD_courseID" name="hID_LMS_PACD_courseID" value=@Model.LMS_PACD_courseID />
                     <input type="hidden" id="hID_Course" name="hID_Course" value=@Model.ID_Course />
+                    <input type="hidden" id="hID_LearnMethod" name="hID_LearnMethod" value=@Model.ID_LearnMethod />
                     <input type="hidden" id="hID_CourseName" name="hID_CourseName" value=@Model.CourseName />
                     <input type="hidden" id="hID_LearnTimeStart" name="hID_LearnTimeStart" value=@Model.LearnTimeStart />
                     <input type="hidden" id="hID_LearnTimeEnd" name="hID_LearnTimeEnd" value=@Model.LearnTimeEnd />
@@ -71,6 +77,19 @@
                                disabled="disabled"
                                style="width: 100%"
                                class="form-control input-sm" />
+                    </div>
+                    <div class="col-sm-2 col-md-2">
+                        <span class="pull-right">
+                            <label class="LabelCaption">LDMS/PACD Course ID <font color="#f60b0b">*</font></label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <input type="text"
+                               id="txtLDMSCourseID"
+                               asp-for="LMS_PACD_courseID"
+                               style="width: 100%"
+                               class="form-control input-sm"
+                               disabled />
                     </div>
                 </div>
                 <div class="row form-group">
@@ -156,12 +175,12 @@
                 <div class="row form-group">
                     <div class="col-sm-2 col-md-2">
                         <span class="pull-right">
-                            <label class="LabelCaption">Learning Date</label>
+                            <label class="LabelCaption">Learning Date <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteLearningDateFrm" asp-for="LearnDateStart_Show" type="datetime" class="form-control" style="width: 100%" />
-                    </div>
+                        <input id="dteLearningDateFrm" asp-for="LearnDateStart_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                    </div>&nbsp;&nbsp;
                     <div class="col-sm-2 col-md-2">
                         <select id="selectTimeFrom"
                                 name="selectTimeFrom"
@@ -173,11 +192,11 @@
                     </div>
                     <div class="col-sm-1 col-md-1">
                         <span class="pull-right">
-                            <label class="LabelCaption">To</label>
+                            <label class="LabelCaption">To <font color="#f60b0b">*</font></label>
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteLearningDateTo" asp-for="LearnDateEnd_Show" type="datetime" class="form-control" style="width: 100%" />
+                        <input id="dteLearningDateTo" asp-for="LearnDateEnd_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>
                     <div class="col-sm-2 col-md-2">
                         <select id="selectTimeTo"
@@ -196,11 +215,11 @@
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteRegisterDateFrm" asp-for="RegisterDateStart_Show" type="datetime" class="form-control" style="width: 100%" />
-                    </div>
+                        <input id="dteRegisterDateFrm" asp-for="RegisterDateStart_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                    </div>To
 
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteRegisterDateTo" asp-for="RegisterDateEnd_Show" type="datetime" class="form-control" style="width: 100%" />
+                        <input id="dteRegisterDateTo" asp-for="RegisterDateEnd_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>
 
                 </div>
@@ -526,8 +545,10 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-sm-1 col-md-2 offset-10" style="margin-left:25rem; margin-top:20px">
-                                <a id="btnSearch" class="btn btn-sm btn-primary waves-effect waves-light" style="width:100%; color:white" onclick="SearchInstructor();"> Search </a>
+                            <div class="col-sm-3 col-md-3" style="margin-left:25rem; margin-top:20px">
+                                <a id="btnSearch" class="btn btn-outline-secondary waves-effect waves-light" style="width:70%" onclick="SearchInstructor();">
+                                    <img style="width:25px;height:20px" src="~/assets/images/svg/icon-seach.svg" />&nbsp;&nbsp;Search
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -559,10 +580,14 @@
                 </div>
                 <div class="row form-group" style="align-items:center">
                     <div class="col-sm-1 col-md-2 offset-10" style="margin-left:20rem; margin-top:20px">
-                        <a id="btnSave" class="btn btn-sm btn-success waves-effect waves-light" style="width:100%; color:white" onclick="return SelectInstructor();"> Select </a>
+                        <a id="btnSave" class="btn btn-outline-primary waves-effect waves-light" style="width:100%" onclick="return SelectInstructor();">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/right.svg" />&nbsp;&nbsp;Select
+                        </a>
                     </div>
                     <div class="col-sm-1 col-md-2" style="margin-top:20px">
-                        <a id="btnClose" class="btn btn-sm btn-danger inactive waves-effect waves-light" style="width:90%; color:white" onclick="CloseModalInstructor()">Close</a>
+                        <a id="btnClose" class="btn btn-outline-danger inactive waves-effect waves-light" style="width:100%" onclick="CloseModalInstructor()">
+                            <img style="width:25px;height:20px" src="~/assets/images/svg/closed-red.svg" />&nbsp;&nbsp;Close
+                        </a>
                     </div>
                 </div>
             </div>
@@ -584,17 +609,46 @@
     //alert('document');
     $(document).ready(function () {
         $("input[type='datetime']").datepicker();
+
+       /*$("#dteLearningDateFrm([readonly])").datepicker()
+            .focus(function() {
+                $(this).prop("autocomplete", "off");
+                //              return false;
+            });*/
+
+        //alert($('#hID').val());
+
         LoadTime();
         loadPlant();
         LoadClass();
         validation();
-        /*$('select').select2({
-            allowClear: true,
-            closeOnSelect: true,
-            theme: "bootstrap"
-        });*/
+       
 
         GetClassRemain($('#hID').val());
+        if ($('#hID_ClassStatus').val() === '30') {
+            
+            document.getElementById("chkAttend").disabled = true;
+            document.getElementById("chkTest").disabled = true;
+            document.getElementById("chkSkill").disabled = true;
+            document.getElementById("chkCoaching").disabled = true;
+            document.getElementById("chkCert").disabled = true;
+            document.getElementById("txtAttendNum").disabled = true;
+            document.getElementById("txtTestFullScore").disabled = true;
+            document.getElementById("txtPercentTestPass").disabled = true;
+            document.getElementById("txtSkillFullScore").disabled = true;
+            document.getElementById("txtPercentSkillPass").disabled = true;
+            document.getElementById("txtCertification").disabled = true;
+            document.getElementById("chkCertification").disabled = true;
+            document.getElementById("txtAttendNum").disabled = true;
+            document.getElementById("txtReDuratioin").disabled = true;
+            
+        }
+
+        // check LMS & PACD
+        if ($('#hID_LearnMethod').val() == 3 || $('#hID_LearnMethod').val() == 4 ) {
+            document.getElementById("txtLDMSCourseID").disabled = false;
+        }
+
 
         $('#txtCapacity').keyup(function() {
             $('#txtFeePerson').val($('#txtClassFee').val() / $('#txtCapacity').val());
@@ -802,17 +856,21 @@
                  var options = $('#selectTimeFrom');
                  var options1 = $('#selectTimeTo');
 
-                 options.append($("<option />").val(null).text("Please Select"));
-                 options1.append($("<option />").val(null).text("Please Select"));
+                 //options.append($("<option />").val(null).text("Please Select"));
+                 //options1.append($("<option />").val(null).text("Please Select"));
                 $.each(items, function () {
                     options.append($("<option />").val(this.Key).text(this.value));
                     options1.append($("<option />").val(this.key).text(this.value));
                 });
 
                 //$('#selectTimeFrom').find('option:selected').text($('#hID_LearnTimeStart').val());
-                $('select[name="selectTimeFrom"]').val($('#hID_LearnTimeStart').val());
-                $('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                if ($('#hID_LearnTimeStart').val() != "") {
+                    $('select[name="selectTimeFrom"]').val($('#hID_LearnTimeStart').val());
+                }
 
+                if ($('#hID_LearnTimeEnd').val() != "") {
+                    $('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                }
        });
     }
 
@@ -979,13 +1037,34 @@
 
     function SaveClass() {
         //alert('SaveClass');
+
+        if ($('#dteLearningDateFrm').val() == '') {
+             MessageController.Error('Please Select Learning Date Start', "Error");
+             return;
+         }
+         if ($("#dteLearningDateTo").val() == '') {
+             MessageController.Error('Please Select Learning Date To', "Error");
+             return;
+        }
+
+        // LMS / PACD Required
+        if ($('#hID_LearnMethod').val() == 3 || $('#hID_LearnMethod').val() == 4) {
+
+            if ($("#txtLDMSCourseID").val() == '') {
+                MessageController.Error('Please Key Enter LDMS / PACD CourseID', "Error");
+                return;
+            }
+        }
+
+
         MessageController.BlockUI({ boxed: true, target: '#frmClassDetailEditor' });
         //debugger;
          $.ajax({
                     url: "/Courses/InsertClass",
                     type: "POST",
                     data: {
-                        ID :  $('#hID').val(),
+                        ID: $('#hID').val(),
+                        LMS_PACD_courseID : $('#txtLDMSCourseID').val(),
                         ID_Course  : $('#hID_Course').val(),
                         ID_Instructor : $('#hInstructorID').val(),
                         ClassCapacity: $('#txtCapacity').val(),
@@ -1059,7 +1138,6 @@
                 ID_Section : @HttpContextAccessor.HttpContext.Request.Cookies["SECTIONTID"]
             },
             success: function(e) {
-
                 $("#txtCapacity").val(e.Remain);
             }
         });

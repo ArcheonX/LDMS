@@ -1,5 +1,5 @@
 ﻿<script src="~/assets/app/CompetenceAnalytic/Editor.js"></script>
-<div class="panel panel-default" style="width: 100%; border-width: thin; border-style: solid;">
+<div class="panel panel-default" id="pn-Analytic" style="width: 100%; border-width: thin; border-style: solid;">
     <div class="panel-body" style="margin-right: 25px; margin-left: 25px; margin-top: 25px">
         <div class="form-horizontal">
             <div class="row form-group">
@@ -26,6 +26,89 @@
                             <input type="text"
                                    title="Please Enter Employee ID"
                                    id="txtCompetenceName"
+                                   style="width: 100%"
+                                   class="form-control required" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row form-group">
+                        <div class="col-sm-10 col-md-10">
+                            <span class="pull-left" style="vertical-align:middle">
+                                <label class="LabelCaption"><h4>Expectatoin Criteria</h4></label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
+                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                5
+                            </button>
+                        </div>
+                        <div class="col-sm-10 col-md-10">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtExpectatoin5"
+                                   value="Professional Skilled & Can train the others"
+                                   style="width: 100%"
+                                   class="form-control required" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
+                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                4
+                            </button>
+                        </div>
+                        <div class="col-sm-10 col-md-10">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtExpectatoin4"
+                                   value="Have Knowledge and skillful"
+                                   style="width: 100%"
+                                   class="form-control required" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
+                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                3
+                            </button>
+                        </div>
+                        <div class="col-sm-10 col-md-10">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtExpectatoin3"
+                                   value="Have Knowledge with skilled"
+                                   style="width: 100%"
+                                   class="form-control required" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
+                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                2
+                            </button>
+                        </div>
+                        <div class="col-sm-10 col-md-10">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtExpectatoin2"
+                                   value="Have Knowledge but lack Skill"
+                                   style="width: 100%"
+                                   class="form-control required" />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
+                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
+                                1
+                            </button>
+                        </div>
+                        <div class="col-sm-10 col-md-10">
+                            <input type="text"
+                                   title="Please Enter Employee ID"
+                                   id="txtExpectatoin1"
+                                   value="Limited Knowledge"
                                    style="width: 100%"
                                    class="form-control required" />
                         </div>
@@ -82,7 +165,7 @@
                     <div class="row form-group">
                         <div class="col-sm-10 col-md-10">
                             <div class="table-responsive" style="height:500px;">
-                                <table class="table table-striped table-hover table-fixed" id="dtTopic">
+                                <table class="display dataTable" id="dtTopic">
                                     <thead>
                                         <tr>
                                             <th style="text-align:center">#</th>
@@ -98,85 +181,6 @@
                         </div>
                     </div>
                     <br />
-                    <div class="row form-group">
-                        <div class="col-sm-10 col-md-10">
-                            <span class="pull-left" style="vertical-align:middle">
-                                <label class="LabelCaption"><h4>Expectatoin Criteria</h4></label>
-                            </span>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row form-group">
-                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
-                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                                5
-                            </button>
-                        </div>
-                        <div class="col-sm-10 col-md-10">
-                            <input type="text"
-                                   title="Please Enter Employee ID"
-                                   id="txtExpectatoin5"
-                                   style="width: 100%"
-                                   class="form-control required" />
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
-                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                                4
-                            </button>
-                        </div>
-                        <div class="col-sm-10 col-md-10">
-                            <input type="text"
-                                   title="Please Enter Employee ID"
-                                   id="txtExpectatoin4"
-                                   style="width: 100%"
-                                   class="form-control required" />
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
-                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                                3
-                            </button>
-                        </div>
-                        <div class="col-sm-10 col-md-10">
-                            <input type="text"
-                                   title="Please Enter Employee ID"
-                                   id="txtExpectatoin3"
-                                   style="width: 100%"
-                                   class="form-control required" />
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
-                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                                2
-                            </button>
-                        </div>
-                        <div class="col-sm-10 col-md-10">
-                            <input type="text"
-                                   title="Please Enter Employee ID"
-                                   id="txtExpectatoin2"
-                                   style="width: 100%"
-                                   class="form-control required" />
-                        </div>
-                    </div>
-                    <div class="row form-group"> 
-                        <div class="col-sm-1 col-md-1" style="margin-right:-25px;margin-left:10px;">
-                            <button id="btnExpectatoin1" class="btn btn-outline-secondary waves-effect waves-light" style="width:100%">
-                                1
-                            </button>
-                        </div>
-                        <div class="col-sm-10 col-md-10">
-                            <input type="text"
-                                   title="Please Enter Employee ID"
-                                   id="txtExpectatoin1"
-                                   style="width: 100%"
-                                   class="form-control required" />
-                        </div>
-                    </div>
-
                 </div>
             </div>
             <div class="col-sm-6 col-md-6">
