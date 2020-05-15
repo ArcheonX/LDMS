@@ -1,6 +1,7 @@
 ﻿var topics = [];
 var employees = [];
 var scores = []; 
+var chart = null;
 (function ($) {
     "use strict";
     $(document).ready(function () {
@@ -15,7 +16,7 @@ var scores = [];
             SaveCompetenceScore();
         });  
         $('#btnImportExcel').click(function () {
-            ExportCompetenceScore();
+            ExportCompetenceScore(analytic_id);
         });   
         LoadCompetence(parseInt(analytic_id)); 
     })
@@ -41,9 +42,9 @@ function validate(control, evt) {
 function RenderChart() {
     var AnalyticCategories = [];
     var Analyticseries = []; 
-    if (topics.length > 6 || employees.length > 6) {
-        return;
-    }
+    //if (topics.length > 6 || employees.length > 6) {
+    //    return;
+    //}
     var topicScore = []; 
     topics.forEach(tp => { 
         AnalyticCategories.push(tp.Topic);
@@ -72,7 +73,7 @@ function RenderChart() {
                 pointPlacement: 'on'
             });
     }); 
-    Highcharts.chart('container', {
+    chart =  Highcharts.chart('container', {
         chart: {
             polar: true,
             type: 'line' 
@@ -339,13 +340,45 @@ function SaveCompetenceScore() {
     });
 }
 
-function ExportCompetenceScore() {
-    var chartSelector = jThis.data("chartCompetence");
-    var chart = $(chartSelector).highcharts();
+function ExportCompetenceScore(analytic_id) {
+    MessageController.BlockUI({ boxed: true, target: '#pn-Analytic' }); 
+    chart.exportChart({ type: "image/png" });
+    $.ajax({
+        type: "GET",
+        url: '/Competence/Export',
+        data: {
+            'competenceId': analytic_id 
+        },
+        success: function (response) {
+            data = response.Data;
+            if (data != "") {
+                window.location.href = "/Competence/Download/?fileName=" + data;
+            }
+            MessageController.UnblockUI('#pn-Analytic');
+        },
+        failure: function (response) {
+            MessageController.UnblockUI('#pn-Analytic');
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        },
+        error: function (response) {
+            MessageController.UnblockUI('#pn-Analytic');
+            if (JSON.parse(response.responseText).Errors.length > 0) {
+                MessageController.Error(JSON.parse(response.responseText).Errors[0].replace("Message:", ""), "Error");
+            } else {
+                MessageController.Error(response.responseText, "Error");
+            }
+        }
+    });
+    //var chartSelector = jThis.data("chartCompetence");
+    //var chart = $(chartSelector).highcharts();
 
-    if (Highcharts.exporting.supports("image/jpeg")) {
-        chart.exportChartLocal({
-            type: "image/jpeg"
-        });
-    }
+    //if (Highcharts.exporting.supports("image/jpeg")) {
+    //    chart.exportChartLocal({
+    //        type: "image/jpeg"
+    //    });
+    //}
 }
