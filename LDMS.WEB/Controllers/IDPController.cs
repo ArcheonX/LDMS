@@ -33,7 +33,6 @@ namespace LDMS.WEB.Controllers
         public IActionResult Index()
         {
             var myIDP = _IDPService.GetMyIDP();
-
             return View("/Views/IDP/Index.cshtml", myIDP);
         }
 
