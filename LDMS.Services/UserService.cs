@@ -992,12 +992,13 @@ namespace LDMS.Services
                 var passsalt = PasswordHelper.CreateSalt();
                 var newHaspass = PasswordHelper.GenerateSaltedHash(newpassword, passsalt);
                 var oldPasshash = PasswordHelper.GenerateSaltedHash(currentPassword, (emp.Data as ViewModels.LDMS_M_User).PasswordSalt);
+
                 DynamicParameters parameter = new DynamicParameters();
                 parameter.Add("@EmployeeId", employeeId);
-                parameter.Add("@OldPassword", newHaspass);
+                parameter.Add("@OldPassword", oldPasshash);
                 parameter.Add("@Password", newHaspass);
                 parameter.Add("@PasswordSalt", passsalt);
-                parameter.Add("@UpdateBy", JwtManager.Instance.GetUserId(HttpContext.Request));
+                parameter.Add("@UpdateBy", CurrentUserId);
                 var items = Connection.Query<SQLError>(_schema + ".[usp_User_ChangePassword]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
                 if (items != null && items.Any())
                 {

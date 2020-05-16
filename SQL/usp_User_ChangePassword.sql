@@ -31,7 +31,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	IF EXISTS (SELECT * FROM [dbo].[LDMS_M_User] WHERE [EmployeeID]  = @EmployeeId AND [Password] = @OldPassword)
+	IF EXISTS (SELECT * FROM [dbo].[LDMS_M_User] WHERE [EmployeeID]  = @EmployeeId AND [Password] = @OldPassword and IsActive = 1)
 		BEGIN
 
 		-- Insert statements for procedure here
