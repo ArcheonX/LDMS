@@ -38,6 +38,8 @@
                     <input type="hidden" id="hID_Course" name="hID_Course" value=@Model.ID_Course />
                     <input type="hidden" id="hID_LearnMethod" name="hID_LearnMethod" value=@Model.ID_LearnMethod />
                     <input type="hidden" id="hID_CourseName" name="hID_CourseName" value=@Model.CourseName />
+                    <input type="hidden" id="hd_ClassCapacity" name="hd_ClassCapacity" value=@Model.ClassCapacity />
+                    <input type="hidden" id="hd_ClassFee" name="hd_ClassFee" value=@Model.ClassFee />
                     <input type="hidden" id="hID_LearnTimeStart" name="hID_LearnTimeStart" value=@Model.LearnTimeStart />
                     <input type="hidden" id="hID_LearnTimeEnd" name="hID_LearnTimeEnd" value=@Model.LearnTimeEnd />
                     <input type="hidden" id="hID_PlantVenue" name="hID_PlantVenue" value=@Model.ID_PlantVenue />
@@ -135,7 +137,6 @@
                     <div class="col-sm-4 col-md-4">
                         <input type="number"
                                id="txtCapacity"
-                               asp-for="ClassCapacity"
                                style="width: 100%"
                                class="form-control input-sm" />
                     </div>
@@ -179,7 +180,7 @@
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteLearningDateFrm" asp-for="LearnDateStart_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                        <input id="dteLearningDateFrm" asp-for="LearnDateStart" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>&nbsp;&nbsp;
                     <div class="col-sm-2 col-md-2">
                         <select id="selectTimeFrom"
@@ -196,7 +197,7 @@
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteLearningDateTo" asp-for="LearnDateEnd_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                        <input id="dteLearningDateTo" asp-for="LearnDateEnd" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>
                     <div class="col-sm-2 col-md-2">
                         <select id="selectTimeTo"
@@ -215,11 +216,11 @@
                         </span>
                     </div>
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteRegisterDateFrm" asp-for="RegisterDateStart_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                        <input id="dteRegisterDateFrm" asp-for="RegisterDateStart" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>To
 
                     <div class="col-sm-2 col-md-2">
-                        <input id="dteRegisterDateTo" asp-for="RegisterDateEnd_Show" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
+                        <input id="dteRegisterDateTo" asp-for="RegisterDateEnd" type="datetime" autocomplete="off" class="form-control" style="width: 100%" />
                     </div>
 
                 </div>
@@ -783,7 +784,7 @@
     function LoadClass() {
         if ($('#hID').val() != '0') {
             $('#txtCourseName').val($('#hID_CourseName').val());
-            $('#txtFeePerson').val($('#txtClassFee').val() / $('#txtCapacity').val());
+            $('#txtFeePerson').val($('#hd_ClassFee').val() / $('#hd_ClassCapacity').val());
 
             if ($('#txtFeePerson').val() == 'Infinity' || $('#txtFeePerson').val() == 'NaN') {
                 $('#txtFeePerson').val(0);
@@ -826,6 +827,10 @@
         $('#txtAttendNum').val($('#hID_AttendNum').val());
         $('#txtCourseName').val($('#hID_CourseName').val());
         $('#txtClassID').val($('#hID_Class').val());
+
+
+        //alert('hd_ClassCapacity ' + $('#hd_ClassCapacity').val());
+        $('#txtCapacity').val($('#hd_ClassCapacity').val());
     }
 
     function changePlant(sel) {
@@ -864,12 +869,17 @@
                 });
 
                 //$('#selectTimeFrom').find('option:selected').text($('#hID_LearnTimeStart').val());
+
+                //alert('hID_LearnTimeStart ' + $('#hID_LearnTimeStart').val());
+                //alert('hID_LearnTimeEnd ' + $('#hID_LearnTimeEnd').val());
+
                 if ($('#hID_LearnTimeStart').val() != "") {
-                    $('select[name="selectTimeFrom"]').val($('#hID_LearnTimeStart').val());
+                    $('select[name="selectTimeFrom"]').find('option:selected').text($('#hID_LearnTimeStart').val());
                 }
 
                 if ($('#hID_LearnTimeEnd').val() != "") {
-                    $('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                    //$('select[name="selectTimeTo"]').val($('#hID_LearnTimeEnd').val());
+                    $('select[name="selectTimeTo"]').find('option:selected').text($('#hID_LearnTimeEnd').val());
                 }
        });
     }
@@ -1137,8 +1147,10 @@
                 ID_Department: @HttpContextAccessor.HttpContext.Request.Cookies["DEPARTMENTID"],
                 ID_Section : @HttpContextAccessor.HttpContext.Request.Cookies["SECTIONTID"]
             },
-            success: function(e) {
-                $("#txtCapacity").val(e.Remain);
+            success: function (e) {
+                if (e.Remain != null) {
+                    $("#txtCapacity").val(e.Remain);
+                }
             }
         });
     }
