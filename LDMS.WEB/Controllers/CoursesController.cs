@@ -1,6 +1,7 @@
 ﻿using LDMS.Core;
 using LDMS.Services;
 using LDMS.ViewModels;
+using LDMS.ViewModels.SearchModel;
 using LDMS.WEB.Filters;
 using LDMS.WEB.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -170,6 +171,31 @@ namespace LDMS.WEB.Controllers
             return Json(courses);
         }
 
+        private bool ValidateList(List<vEmployeeResult> list,  ref string message )
+        {
+            List<vEmployeeResult> listTemp = list;
+
+            bool isCheck = false;
+            for (int k = 0; k < list.Count; k++)
+            {
+                int x = 0;
+                for (int m = 0; m < listTemp.Count; m++)
+                {
+                    if (list[k].EmployeeId == listTemp[m].EmployeeId)
+                    {
+                        if (x > 0)
+                        {
+                            message += listTemp[m].EmployeeId + ",";
+                            isCheck = true;
+                        }
+                        x++;
+                    }
+                }
+            }
+
+            return isCheck;
+        }
+
         [AuthorizeRole(UserRole.All)]
         [HttpPost]
         [Route("Courses/InsertCourse")]
@@ -181,7 +207,53 @@ namespace LDMS.WEB.Controllers
                                             string ID_DivisionTarget, string ID_DepartmentTarget, string ID_SectionTarget,
                                             string JobGradeTargetID, string JobTitleTargetID, string IsActive)
         {
-           
+
+            ResultMessage res = new ResultMessage();
+
+            if(TargetEmployeeID != null)
+            {
+                List<vEmployeeResult> list = _CourseService.CheckEmployee(TargetEmployeeID);
+                List<vEmployeeResult> listTemp = list;
+                string alert = "มีรหัสพนักงานซ้ำกัน : ";
+
+                /// Validate รหัสพนักงาน ซ้ำ
+                if (ValidateList(list, ref alert))
+                {
+                    res.message = alert;
+                    res.result = false;
+                    return Json(res);
+                }
+
+                res.message = " รหัสพนักงาน ";
+                //string[] emps = TargetEmployeeID.Split(',');
+                int index = 0;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].Result == "0")
+                    {
+                        res.message += list[i].EmployeeId + ",";
+                        index++;
+                    }
+                }
+
+                if (index > 0)
+                {
+                    res.message += " ไม่มีอยู่ในระบบ";
+                    res.result = false;
+                    res.data = null;
+                    return Json(res);
+                }
+            }
+
+            /*string targetEmp = TargetEmployeeID;
+            if (TargetEmployeeID == null) targetEmp = "";
+
+            string jobgrade = JobGradeTargetID;
+            if (JobGradeTargetID == null) jobgrade = "";
+
+            string jobtitle = JobTitleTargetID;
+            if (JobTitleTargetID == null) jobtitle = "";*/
+
             LDMS_M_Course course = new LDMS_M_Course();
             if (ID_Course == "null")
             {
@@ -201,8 +273,11 @@ namespace LDMS.WEB.Controllers
                 
             }
 
+            res.data = course;
+            res.result = true;
+            res.message = "Save Course Complete";
 
-            return Json(course);
+            return Json(res);
         }
 
         [AuthorizeRole(UserRole.All)]
@@ -404,6 +479,5 @@ namespace LDMS.WEB.Controllers
 
             return Json(_CourseService.DeleteClass(ID_Class));
         }
-
     }
 }

@@ -923,7 +923,9 @@
                     $.each(response.Data, function () {
                         options.append($("<option />").val(this.ID_Plant).text(this.PlantName_EN));
                     });
-                    $('select[name="selectPlant"]').val($('#hID_PlantTarget').val()).trigger('change');
+
+                    if($('#hID_PlantTarget').val() != "0")
+                        $('select[name="selectPlant"]').val($('#hID_PlantTarget').val()).trigger('change');
                 },
                 failure: function (response) {
                     MessageController.Error(response.responseText, "Error");
@@ -1077,8 +1079,13 @@
                                options.append($("<option />").val(this.ID_Center).text(this.CenterName_EN));
                             //}
                         });
-                        $('select[name="selectCenter"]').val($('#hID_CenterTarget').val()).trigger('change');
-                        document.getElementById("selectCenter").disabled = false;
+
+                        if ($('#hID_CenterTarget').val() != "0") {
+                             $('select[name="selectCenter"]').val($('#hID_CenterTarget').val()).trigger('change');
+                        }
+
+                         document.getElementById("selectCenter").disabled = false;
+                           
                          // ReloadDivision($, $('#hID_CenterTarget').val(), null);
                         if (callback) {
                             //callback($("#userDivisionId").val());
@@ -1116,8 +1123,12 @@
                                 options.append($("<option />").val(this.ID_Division).text('(' + this.DivisionID + ') ' + this.DivisionName_EN));
                             //}
                         });
-                        $('select[name="selectDivision"]').val($('#hID_DivisionTarget').val()).trigger('change');
+
+                        if ($('#hID_DivisionTarget').val() != "0") {
+                            $('select[name="selectDivision"]').val($('#hID_DivisionTarget').val()).trigger('change');
+                        }
                         document.getElementById("selectDivision").disabled = false;
+                        
                         //ReloadDepartment($, $('#hID_DivisionTarget').val(), null);
 
                         if (callback) {
@@ -1153,8 +1164,12 @@
                             //}
                         });
 
-                        $('select[name="selectDepartment"]').val($('#hID_DepartmentTarget').val()).trigger('change');
+                        if ($('#hID_DepartmentTarget').val() != "0") {
+                             $('select[name="selectDepartment"]').val($('#hID_DepartmentTarget').val()).trigger('change');
+                            
+                        }
                         document.getElementById("selectDepartment").disabled = false;
+                       
                          //ReloadSection($, $('#hID_DepartmentTarget').val(), null);
 
                         if (callback) {
@@ -1189,8 +1204,10 @@
                             //}
                         });
 
-                        $('select[name="selectSection"]').val($('#hID_SectionTarget').val()).trigger('change');
-                        document.getElementById("selectSection").disabled = false;
+                        if ($('#hID_SectionTarget').val() != "0") {
+                            $('select[name="selectSection"]').val($('#hID_SectionTarget').val()).trigger('change');
+                        }
+                         document.getElementById("selectSection").disabled = false;
                         if (callback) {
                             //callback($("#userSectionId").val());
                         }
@@ -1371,7 +1388,7 @@
             }
             $('#dtEmployee').DataTable({
                 'processing': true,
-                'paging': true,
+                'paging': false,
                 "ordering": false,
                 "searching": false,
                 "lengthChange": false,
@@ -1403,6 +1420,13 @@
 
             //alert(employeelist);
             //employeelist = employeelist.remove(employeelist.length);
+            /*alert('employeelist : ' + employeelist);
+            alert('txtEmployeeID : ' + $('#txtEmployeeID').val());
+            if ($('#txtEmployeeID').val().indexOf(employeelist) > 0) {
+
+                alert('xxxxxxxxxxx');
+            }//*/
+
 
             $('#txtEmployeeID').val( $('#txtEmployeeID').val() + employeelist);
 
@@ -1447,7 +1471,7 @@
             });
             $('#dtJobGrade').DataTable({
                 'processing': true,
-                'paging': true,
+                'paging': false,
                 "ordering": false,
                 "searching": false,
                 "lengthChange": false,
@@ -1479,7 +1503,7 @@
             //alert(jobGradelist);
             //employeelist = employeelist.remove(employeelist.length);
 
-            $('#txtJobgrade').val( $('#txtJobgrade').val() + jobGradelist);
+            $('#txtJobgrade').val( /*$('#txtJobgrade').val() +*/ jobGradelist);
 
             CloseModalJobGrade();
         }
@@ -1523,7 +1547,7 @@
 
             $('#dtJobTitle').DataTable({
                 'processing': true,
-                'paging': true,
+                'paging': false,
                 "ordering": false,
                 "searching": false,
                 "lengthChange": false,
@@ -1557,7 +1581,7 @@
             //lert(jobTitlelist);
             //employeelist = employeelist.remove(employeelist.length);
 
-            $('#txtJobTitle').val( $('#txtJobTitle').val() + jobTitlelist);
+            $('#txtJobTitle').val( /*$('#txtJobTitle').val() +*/ jobTitlelist);
 
             CloseModalJobTitle();
         }
@@ -1611,13 +1635,19 @@
                         IsActive : $('#selectCourseStatus').val()
                 },
                 success: function (e) {
-                        //debugger;
-                        //alert('ID : ' + $('#hID').val());
-                        $('#hID').val(e.ID);
-                        $('#txtCourseID').val(e.CourseID);
-                        $('#divClass').attr("style", "display:block");
-                        MessageController.UnblockUI('#frmCourseDetailEditor');
-                        alert('Save Complete');
+
+                    if (e.result == true) {
+                        //$('#hID').val(e.data.ID);
+                        //$('#txtCourseID').val(e.data.CourseID);
+                        //$('#divClass').attr("style", "display:block");
+
+                         window.location.href = '@Url.Content("~/Courses/Detail/")' + e.data.ID;
+                    }
+                    
+                       
+                     MessageController.UnblockUI('#frmCourseDetailEditor');
+                     alert(e.message);
+                        //alert('Save Complete');
                 },
                 }
             )
