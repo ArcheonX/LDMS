@@ -301,12 +301,17 @@
             }
             i++;
           }
-          alert(JSON.stringify(model));
+          //alert(JSON.stringify(model));
           if (count > 0) {
               alert('กรุณาเลือกรายการ course ที่ไม่ซ้ำกัน !!!!');
           }
           else {
-               //alert('Have ID : ' + $('#hID').val());
+
+              if (model == '') {
+                  alert('กรุณาเลือกรายการ');
+              }
+              else {
+                  //alert('Have ID : ' + $('#hID').val());
                 $.ajax({
                     url: "/Schedule/ClassRegisterInsert",
                     type: "POST",
@@ -319,10 +324,9 @@
                     },
 
                 });
+              }
+               
           }
-         
-       
-
         return false;
     }
 
