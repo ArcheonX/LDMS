@@ -209,37 +209,50 @@ namespace LDMS.WEB.Controllers
         {
 
             ResultMessage res = new ResultMessage();
-            List<vEmployeeResult> list = _CourseService.CheckEmployee(TargetEmployeeID);
-            List<vEmployeeResult> listTemp = list;
-            string alert = "มีรหัสพนักงานซ้ำกัน : ";
-            
-            /// Validate รหัสพนักงาน ซ้ำ
-            if (ValidateList(list, ref alert)) {
-                res.message = alert;
-                res.result = false;
-                return Json(res);
-            }
-            
-            res.message = " รหัสพนักงาน ";
-            //string[] emps = TargetEmployeeID.Split(',');
-            int index = 0;
-            for( int i = 0; i<list.Count; i++)
+
+            if(TargetEmployeeID != null)
             {
-                if(list[i].Result == "0")
+                List<vEmployeeResult> list = _CourseService.CheckEmployee(TargetEmployeeID);
+                List<vEmployeeResult> listTemp = list;
+                string alert = "มีรหัสพนักงานซ้ำกัน : ";
+
+                /// Validate รหัสพนักงาน ซ้ำ
+                if (ValidateList(list, ref alert))
                 {
-                    res.message += list[i].EmployeeId + ",";
-                    index++;
+                    res.message = alert;
+                    res.result = false;
+                    return Json(res);
+                }
+
+                res.message = " รหัสพนักงาน ";
+                //string[] emps = TargetEmployeeID.Split(',');
+                int index = 0;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].Result == "0")
+                    {
+                        res.message += list[i].EmployeeId + ",";
+                        index++;
+                    }
+                }
+
+                if (index > 0)
+                {
+                    res.message += " ไม่มีอยู่ในระบบ";
+                    res.result = false;
+                    res.data = null;
+                    return Json(res);
                 }
             }
 
-            if(index > 0)
-            {
-                res.message += " ไม่มีอยู่ในระบบ";
-                res.result = false;
-                res.data = null;
-                return Json(res);
-            }
-            
+            /*string targetEmp = TargetEmployeeID;
+            if (TargetEmployeeID == null) targetEmp = "";
+
+            string jobgrade = JobGradeTargetID;
+            if (JobGradeTargetID == null) jobgrade = "";
+
+            string jobtitle = JobTitleTargetID;
+            if (JobTitleTargetID == null) jobtitle = "";*/
 
             LDMS_M_Course course = new LDMS_M_Course();
             if (ID_Course == "null")

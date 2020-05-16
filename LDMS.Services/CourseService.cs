@@ -145,17 +145,26 @@ namespace LDMS.Services
 
         private DataTable CreateData(string value, string column)
         {
-            if (value == null) return null;
-
-            List<String> element = value.Split(',').ToList();
-            element.Remove("");
             DataTable dt = new DataTable();
-            dt.Columns.Add(column, typeof(string));
-            foreach (string str in element)
+            if (value == null)
             {
+                dt.Columns.Add(column, typeof(string));
                 DataRow row = dt.NewRow();
-                row[column] = str;
-                dt.Rows.Add(row);
+                row[column] = "-1";
+                dt.Rows.Add(row); 
+            }
+            else
+            {
+                List<String> element = value.Split(',').ToList();
+                element.Remove("");
+               
+                dt.Columns.Add(column, typeof(string));
+                foreach (string str in element)
+                {
+                    DataRow row = dt.NewRow();
+                    row[column] = str;
+                    dt.Rows.Add(row);
+                }
             }
 
             return dt;
@@ -207,14 +216,27 @@ namespace LDMS.Services
                 p.Add("@paramRefreshmentPeriod", RefreshmentPeriod);
                 p.Add("@paramRefreshmentUnit", RefreshmentUnit);
                 p.Add("@paramTargetEmployeeID", CreateData(TargetEmployeeID, "EmployeeID"), DbType.Object);
+                
+                if(TargetEmployeeID != null)
+                    p.Add("@paramTargetEmployeeIDCheck", TargetEmployeeID);
+
                 p.Add("@paramID_PlantTarget", ID_PlantTarget);
                 p.Add("@paramID_CenterTarget", ID_CenterTarget);
                 p.Add("@paramID_DivisionTarget", ID_DivisionTarget);
                 p.Add("@paramID_DepartmentTarget", ID_DepartmentTarget);
                 p.Add("@paramID_SectionTarget", ID_SectionTarget);
                 p.Add("@paramJobGradeTargetID", CreateData(JobGradeTargetID, "ID_JobGrade"), DbType.Object);
+
+                if(JobGradeTargetID != null)
+                     p.Add("@paramJobGradeTargetIDCheck", JobGradeTargetID);
+                
                 p.Add("@paramJobTitleTargetID", CreateData(JobTitleTargetID, "ID_JobTitle"), DbType.Object);
+                
+                if(JobTitleTargetID !=null )
+                    p.Add("@paramJobTitleTargetIDCheck", JobTitleTargetID);
+
                 p.Add("@paramID_DepartmentCreate", JwtManager.Instance.GetFromToken(HttpContext.Request, "DEPARTMENTID")); // JwtManager.Instance.GetDepartmentId(HttpContext.Request) //Example
+                
                 p.Add("@paramCreateBy", CurrentUserId); //// JwtManager.Instance.GetUserId(HttpContext.Request) //Example
                 p.Add("@@paramIsActive", IsActive);
 
