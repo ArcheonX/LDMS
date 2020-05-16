@@ -205,23 +205,57 @@
                 <div id="divCostSpend"></div>
             </div>
             <div class="card card-block" style="margin-left:9px;margin-bottom:5px;width:37%;">
-                <h5 class="text-center" style="padding-top:5px;color: #333333;font-size: 18px;">Learning Progress</h5>
+                <h5 style="padding-top:5px;color: #333333;font-size: 18px;padding-left:20px;">Learning Progress</h5>
                 <div id="divLearningProgress"></div>
             </div>
         </div>
 
         <div class="form-group row" style="margin-top:0px; ">
-            <div class="card card-block" style="width:32%">
+            <div class="card card-block" style="width:49%">
+                <div class="form-group row" style="margin-top:2px;margin-bottom:0px;">
+                    <div class="col-6"><h5 style="padding-top:5px;color: #333333;font-size: 18px;padding-left:20px;">Top 5 by Platform</h5></div>
+                    <div class="col-6 text-right" style="padding-top:2px;padding-right:20px;">
+                        <div class="btn-group" data-toggle="buttons" role="group">
+                            <label class="btn btn-outline btn-info btn-sm active" aria-pressed="true" style="color:white !important;font-size:9pt;">
+                                <input id="rdbPlatform1" type="radio" name="platform" autocomplete="off" value="1" checked="">
+                                <i class="ti-check text-active" aria-hidden="true"></i> Completed
+                            </label>
+                            <label class="btn btn-outline btn-danger btn-sm" aria-pressed="true" style="color:white !important;font-size:9pt;">
+                                <input id="rdbPlatform2" type="radio" name="platform" autocomplete="off" value="0">
+                                <i class="ti-check text-active" aria-hidden="true"></i> Over Due
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="divPlatform"></div>
             </div>
-            <div class="card card-block" style="margin-left:9px;width:32%">
+            <div class="card card-block" style="margin-left:9px;width:49%;padding-right:10px;">
+                <div class="form-group row" style="margin-top:2px;margin-bottom:0px;">
+                    <div class="col-6"><h5 style="padding-top:5px;color: #333333;font-size: 18px;padding-left:20px;">Top 5 by Area</h5></div>
+                    <div class="col-6 text-right" style="padding-top:2px;padding-right:10px;">
+                        <div class="btn-group" data-toggle="buttons" role="group">
+                            <label class="btn btn-outline btn-info btn-sm active" aria-pressed="true" style="color:white !important;font-size:9pt;">
+                                <input id="rdbArea1" type="radio" name="area" autocomplete="off" value="1" checked="">
+                                <i class="ti-check text-active" aria-hidden="true"></i> Completed
+                            </label>
+                            <label class="btn btn-outline btn-danger btn-sm" aria-pressed="true" style="color:white !important;font-size:9pt;">
+                                <input id="rdbArea2" type="radio" name="area" autocomplete="off" value="0">
+                                <i class="ti-check text-active" aria-hidden="true"></i> Over Due
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="divArea"></div>
-            </div>
-            <div class="card card-block" style="margin-left:9px;width:32%">
-                <div id="divJobLevel"></div>
             </div>
         </div>
 
+        <div class="form-group row" style="margin-top:0px; ">
+            <div class="card card-block" style="width:98%">
+                <div id="divJobLevel"></div>
+            </div>
+        </div>
 
     </div>
 </form>
@@ -298,11 +332,6 @@
 
         function SearchData() {
             LoadTotal();
-            LoadCostSpend();
-            LoadLearningProgress();
-            LoadGPlatform();
-            LoadGArea();
-            LoadGJobLevel();
         }
 
         function LoadTotal() {
@@ -324,6 +353,12 @@
                     $('#lblTotalCourse').html(e[0].TotalCourse);
                     $('#lblTargetGroup').html(e[0].TargetGroup);
                     $('#lblAvg').html(e[0].AvgScore.toFixed(2));
+
+                    LoadCostSpend();
+                    LoadLearningProgress();
+                    LoadGPlatform();
+                    LoadGArea();
+                    LoadGJobLevel();
                 },
                 error: function (xhr, status, error) {
                     var err = eval("(" + xhr.responseText + ")");
@@ -334,25 +369,26 @@
 
         function LoadCostSpend()
         {
-            $.getScript("@Url.Content("~/ILearningPerform/GetCostSpend")?platformID=" + $("#ddlPlatForm").val() + "&courseID=" + $("#ddlCourse").val() +
-                "&Year=" + ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()) + "&q1=" + ($('#chkQ1').is(":checked") ? "1" : "0") +
-                "&q2=" + ($('#chkQ2').is(":checked") ? "1" : "0") + "&q3=" + ($('#chkQ3').is(":checked") ? "1" : "0") +
-                "&q4="+ ($('#chkQ4').is(":checked") ? "1" : "0") );
+            $.getScript("@Url.Content("~/ILearningPerform/GetCostSpend")" );
         }
 
         function LoadLearningProgress() {
-             $.getScript("@Url.Content("~/ILearningPerform/GetLearningProgress")?platformID=" + $("#ddlPlatForm").val() + "&courseID=" + $("#ddlCourse").val() +
-                "&Year=" + ($('#chkCur').is(":checked") ? $('#lblCur').html() : $('#lblPre').html()) + "&q1=" + ($('#chkQ1').is(":checked") ? "1" : "0") +
-                "&q2=" + ($('#chkQ2').is(":checked") ? "1" : "0") + "&q3=" + ($('#chkQ3').is(":checked") ? "1" : "0") +
-                "&q4="+ ($('#chkQ4').is(":checked") ? "1" : "0") );
+             $.getScript("@Url.Content("~/ILearningPerform/GetLearningProgress")" );
         }
 
+        $("input[name='platform']").change(function () {
+            LoadGPlatform();
+        });
+        $("input[name='area']").change(function () {
+            LoadGArea();
+        });
+
         function LoadGPlatform() {
-             $.getScript("@Url.Content("~/ILearningPerform/GetGPlatform")" );
+            $.getScript("@Url.Content("~/ILearningPerform/GetGPlatform")?sort=" + $('input[name="platform"]:checked').val() );
         }
 
         function LoadGArea() {
-             $.getScript("@Url.Content("~/ILearningPerform/GetGArea")" );
+            $.getScript("@Url.Content("~/ILearningPerform/GetGArea")?sort=" + $('input[name="area"]:checked').val()  );
         }
 
         function LoadGJobLevel() {

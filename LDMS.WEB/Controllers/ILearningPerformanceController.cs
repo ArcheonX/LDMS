@@ -1,4 +1,5 @@
-﻿using LDMS.Core;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using LDMS.Core;
 using LDMS.Identity;
 using LDMS.Services;
 //using LDMS.WEB.Models;
@@ -10,10 +11,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -62,16 +65,19 @@ namespace LDMS.WEB.Controllers
             if (platformID == "null") platformID = ""; if (courseID == "null") courseID = "";
             var ret = _lService.GetTotal(platformID, courseID, year, q1, q2, q3, q4, JwtManager.Instance.GetUserId(HttpContext.Request));
 
-            return Json(ret);
+            HttpContext.Session.SetString("ILR_CostSp", JsonConvert.SerializeObject((object)ret[1]));
+            HttpContext.Session.SetString("ILR_Progress", JsonConvert.SerializeObject((object)ret[2]));
+            
+
+            return Json(ret[0]);
         }
 
         [AuthorizeRole(UserRole.All)]
         [HttpGet]
         [Route("ILearningPerform/GetCostSpend")]
-        public IActionResult GetCostSpend(string platformID, string courseID, string year, string q1, string q2, string q3, string q4)
+        public IActionResult GetCostSpend()
         {
-            if (platformID == "null") platformID = ""; if (courseID == "null") courseID = "";
-            List<dynamic> ret = _lService.GetCostSpend(platformID, courseID, year, q1, q2, q3, q4, JwtManager.Instance.GetUserId(HttpContext.Request));
+            dynamic ret = JsonConvert.DeserializeObject<dynamic>( HttpContext.Session.GetString("ILR_CostSp"));
 
             StringBuilder sb = new StringBuilder();
             StringBuilder sbCate = new StringBuilder();
@@ -96,7 +102,9 @@ namespace LDMS.WEB.Controllers
                     type: 'line'
                 },
                 title: {
-                    text: 'Total Learning Cost Spending'
+                    text: 'Total Learning Cost Spending',
+                    align: 'left',
+                    x: 20
                 },
                 subtitle: {
                     text: ''
@@ -108,7 +116,7 @@ namespace LDMS.WEB.Controllers
                     enabled: false
                 },
                 xAxis: {
-                    categories: ["+ sbCate.ToString()+ @"]
+                    categories: [" + sbCate.ToString()+ @"]
                 },
                 yAxis: {
                     title: {
@@ -144,17 +152,29 @@ namespace LDMS.WEB.Controllers
         }
 
 
-
         [AuthorizeRole(UserRole.All)]
         [HttpGet]
         [Route("ILearningPerform/GetLearningProgress")]
-        public IActionResult GetLearningProgress(string platformID, string courseID, string year, string q1, string q2, string q3, string q4)
+        public IActionResult GetLearningProgress()
         {
+            dynamic ret = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString("ILR_Progress"));
+            int iOverDue = 0;
+            int iNotStart = 0;
+            int iOnProgress = 0;
+            int iCompleted = 0;
+
+            for(int i = 0; i < ret.Count; i++)
+            {
+                switch(ret[i].CourseStatus.ToString())
+                {
+                    case "COMPLETED": iCompleted += 1;  break;
+                    case "Not Start": iNotStart += 1; break;
+                    case "ON Progress": iOnProgress += 1; break;
+                    case "OverDue": iOverDue += 1; break;
+                }
+            }
+
             StringBuilder sb = new StringBuilder();
-            StringBuilder sbCate = new StringBuilder();
-            StringBuilder sbInvest = new StringBuilder();
-            StringBuilder sbQ = new StringBuilder();
-            StringBuilder sbL = new StringBuilder();
 
             sb.Append(@"Highcharts.chart('divLearningProgress', {
                 chart: {
@@ -170,13 +190,13 @@ namespace LDMS.WEB.Controllers
                     enabled: false
                 },
                 title: {
-                    text: '10%',
+                    text: '"+ iCompleted + @"%',
                     align: 'center',
                     verticalAlign: 'middle',
                     y: 60
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}</b>'
+                    pointFormat: '{series.name}: <b>{point.percentage:.0f}</b>'
                 },
                 accessibility: {
                     point: {
@@ -207,10 +227,10 @@ namespace LDMS.WEB.Controllers
                     innerSize: '50%',
                     colorByPoint: true,
                     data: [
-                        { name: 'OverDue', y: 30, color: '#ff0000', index : 1 },
-                        { name: 'Not Start', y: 20, color: '#d0cece', index: 2 },
-                        { name: 'On Progress', y: 40, color: '#ffff00', index: 3 },
-                        { name: 'Completed', y: 10, color: '#00b050', index: 4}
+                        { name: 'OverDue', y: "+ iOverDue + @", color: '#ff0000', index : 1 },
+                        { name: 'Not Start', y: " + iNotStart + @", color: '#d0cece', index: 2 },
+                        { name: 'On Progress', y: " + iOnProgress + @", color: '#ffff00', index: 3 },
+                        { name: 'Completed', y: " + iCompleted + @", color: '#00b050', index: 4}
                     ]
                 }]
             });");
@@ -223,6 +243,15 @@ namespace LDMS.WEB.Controllers
         [Route("ILearningPerform/GetGPlatform")]
         public IActionResult GetGPlatform(string sort)
         {
+            dynamic ret = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString("ILR_Progress"));
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("Platform");
+            dt.Columns.Add("CourseStatus");
+            for(int i = 0; i < ret.Count; i++)
+            {
+                dt.Rows.Add(new object[] { ret[i].PlatformName.ToString(), ret[i].CourseStatus.ToString() });
+            }
+
             StringBuilder sb = new StringBuilder();
             StringBuilder sbCate = new StringBuilder();
             StringBuilder sbNotStart = new StringBuilder();
@@ -230,12 +259,68 @@ namespace LDMS.WEB.Controllers
             StringBuilder sbComplete = new StringBuilder();
             StringBuilder sbOverDue = new StringBuilder();
 
-            sbCate.Append("'Effective Meeting', 'Human Relation', 'Problem Solving', 'TWI-JI', 'Analytical'");
-            sbNotStart.Append("10, 10, 5, 20, 0");
-            sbOnProgress.Append("15, 5, 0, 0, 0");
-            sbComplete.Append("5, 5, 0, 0, 0");
-            sbOverDue.Append("70, 80, 90, 80, 100");
+            DataView dv = dt.DefaultView;
+            dv.Sort = "Platform";
+            string platform = "";
+            int iNotStart = 0, iOnProgress = 0, iComplete = 0, iOverDue = 0;
+            System.Data.DataTable dtResult = new System.Data.DataTable();
+            dtResult.Columns.Add("Platform");
+            dtResult.Columns.Add("iNotStart",typeof(int));
+            dtResult.Columns.Add("iOnProgress", typeof(int));
+            dtResult.Columns.Add("iComplete", typeof(int));
+            dtResult.Columns.Add("iOverDue", typeof(int));
+            int rowIndex = -1;
+            for(int i =0; i < dv.Count; i++)
+            {
+                if(platform != dv[i]["Platform"].ToString())
+                {
+                    if (platform != "")
+                    {
+                        dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+                        dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+                        dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+                        dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
 
+                        iNotStart = 0; iOnProgress = 0; iComplete = 0; iOverDue = 0;
+                    }
+
+                    dtResult.Rows.Add( dtResult.NewRow() );
+                    rowIndex++;
+
+                    platform = dv[i]["Platform"].ToString();
+                    dtResult.Rows[rowIndex]["Platform"] = platform;
+                }
+
+                switch (dt.Rows[i]["CourseStatus"].ToString())
+                {
+                    case "COMPLETED": iComplete += 1; break;
+                    case "Not Start": iNotStart += 1; break;
+                    case "ON Progress": iOnProgress += 1; break;
+                    case "OverDue": iOverDue += 1; break;
+                }
+            }
+
+            dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+            dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+            dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+            dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
+
+            DataView dvResult = dtResult.DefaultView;
+            if(sort == "1")
+                dvResult.Sort = "iComplete DESC";
+            else
+                dvResult.Sort = "iOverDue DESC";
+
+            int count = dvResult.Count > 5? 5 : dvResult.Count;
+            for (int i = 0; i < count; i++)
+            {
+                sbCate.Append("'"+ dvResult[i]["Platform"].ToString() + "',");
+                sbNotStart.Append(dvResult[i]["iNotStart"].ToString() + ", ");
+                sbOnProgress.Append(dvResult[i]["iOnProgress"].ToString() + ", ");
+                sbComplete.Append(dvResult[i]["iComplete"].ToString() + ", ");
+                sbOverDue.Append(dvResult[i]["iOverDue"].ToString() + ", ");
+            }
+        
             sb.Append(@"Highcharts.chart('divPlatform', {
                   chart: {
                     height: 320,
@@ -276,19 +361,19 @@ namespace LDMS.WEB.Controllers
                 },
                   series: [{
                     name: 'Not Start',
-                    color: '#d0cece', index: 1,
+                    color: '#d0cece', index: 41,
                     data: [" + sbNotStart.ToString() + @"]
                   }, {
                     name: 'On Progress',
-                    color: '#ffff00', index: 2,
+                    color: '#ffff00', index: 3,
                     data: [" + sbOnProgress.ToString() + @"]
                   }, {
                     name: 'Completed',
-                    color: '#00b050', index: 3,
+                    color: '#00b050', index: 2,
                     data: [" + sbComplete.ToString() + @"]
                   }, {
                     name: 'Over Due',
-                    color: '#ff0000', index : 4,
+                    color: '#ff0000', index : 1,
                     data: [" + sbOverDue.ToString() + @"]
                   }]
                 });");
@@ -301,6 +386,15 @@ namespace LDMS.WEB.Controllers
         [Route("ILearningPerform/GetGArea")]
         public IActionResult GetGArea(string sort)
         {
+            dynamic ret = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString("ILR_Progress"));
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("JobTitleName_TH");
+            dt.Columns.Add("CourseStatus");
+            for (int i = 0; i < ret.Count; i++)
+            {
+                dt.Rows.Add(new object[] { ret[i].JobTitleName_TH.ToString(), ret[i].CourseStatus.ToString() });
+            }
+
             StringBuilder sb = new StringBuilder();
             StringBuilder sbCate = new StringBuilder();
             StringBuilder sbNotStart = new StringBuilder();
@@ -308,11 +402,67 @@ namespace LDMS.WEB.Controllers
             StringBuilder sbComplete = new StringBuilder();
             StringBuilder sbOverDue = new StringBuilder();
 
-            sbCate.Append("'DI Engineer', 'ATM Engineer', 'HROD'");
-            sbNotStart.Append("0, 35, 30");
-            sbOnProgress.Append("0, 20, 42");
-            sbComplete.Append("100, 35, 28");
-            sbOverDue.Append("0, 10, 0");
+            DataView dv = dt.DefaultView;
+            dv.Sort = "JobTitleName_TH";
+            string JobTitleName_TH = "";
+            int iNotStart = 0, iOnProgress = 0, iComplete = 0, iOverDue = 0;
+            System.Data.DataTable dtResult = new System.Data.DataTable();
+            dtResult.Columns.Add("JobTitleName_TH");
+            dtResult.Columns.Add("iNotStart", typeof(int));
+            dtResult.Columns.Add("iOnProgress", typeof(int));
+            dtResult.Columns.Add("iComplete", typeof(int));
+            dtResult.Columns.Add("iOverDue", typeof(int));
+            int rowIndex = -1;
+            for (int i = 0; i < dv.Count; i++)
+            {
+                if (JobTitleName_TH != dv[i]["JobTitleName_TH"].ToString())
+                {
+                    if (JobTitleName_TH != "")
+                    {
+                        dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+                        dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+                        dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+                        dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
+
+                        iNotStart = 0; iOnProgress = 0; iComplete = 0; iOverDue = 0;
+                    }
+
+                    dtResult.Rows.Add(dtResult.NewRow());
+                    rowIndex++;
+
+                    JobTitleName_TH = dv[i]["JobTitleName_TH"].ToString();
+                    dtResult.Rows[rowIndex]["JobTitleName_TH"] = JobTitleName_TH;
+                }
+
+                switch (dt.Rows[i]["CourseStatus"].ToString())
+                {
+                    case "COMPLETED": iComplete += 1; break;
+                    case "Not Start": iNotStart += 1; break;
+                    case "ON Progress": iOnProgress += 1; break;
+                    case "OverDue": iOverDue += 1; break;
+                }
+            }
+
+            dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+            dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+            dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+            dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
+
+            DataView dvResult = dtResult.DefaultView;
+            if (sort == "1")
+                dvResult.Sort = "iComplete DESC";
+            else
+                dvResult.Sort = "iOverDue DESC";
+
+            int count = dvResult.Count > 5 ? 5 : dvResult.Count;
+            for (int i = 0; i < count; i++)
+            {
+                sbCate.Append("'" + dvResult[i]["JobTitleName_TH"].ToString() + "',");
+                sbNotStart.Append(dvResult[i]["iNotStart"].ToString() + ", ");
+                sbOnProgress.Append(dvResult[i]["iOnProgress"].ToString() + ", ");
+                sbComplete.Append(dvResult[i]["iComplete"].ToString() + ", ");
+                sbOverDue.Append(dvResult[i]["iOverDue"].ToString() + ", ");
+            }
 
             sb.Append(@"Highcharts.chart('divArea', {
                   chart: {
@@ -354,19 +504,19 @@ namespace LDMS.WEB.Controllers
                 },
                   series: [{
                     name: 'Not Start',
-                    color: '#d0cece', index: 1,
+                    color: '#d0cece', index: 4,
                     data: [" + sbNotStart.ToString() + @"]
                   }, {
                     name: 'On Progress',
-                    color: '#ffff00', index: 2,
+                    color: '#ffff00', index: 3,
                     data: [" + sbOnProgress.ToString() + @"]
                   }, {
                     name: 'Completed',
-                    color: '#00b050', index: 3,
+                    color: '#00b050', index: 2,
                     data: [" + sbComplete.ToString() + @"]
                   }, {
                     name: 'Over Due',
-                    color: '#ff0000', index : 4,
+                    color: '#ff0000', index : 1,
                     data: [" + sbOverDue.ToString() + @"]
                   }]
                 });");
@@ -379,6 +529,15 @@ namespace LDMS.WEB.Controllers
         [Route("ILearningPerform/GetGJobLevel")]
         public IActionResult GetGJobLevel()
         {
+            dynamic ret = JsonConvert.DeserializeObject<dynamic>(HttpContext.Session.GetString("ILR_Progress"));
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("JobGradeName_TH");
+            dt.Columns.Add("CourseStatus");
+            for (int i = 0; i < ret.Count; i++)
+            {
+                dt.Rows.Add(new object[] { ret[i].JobGradeName_TH.ToString(), ret[i].CourseStatus.ToString() });
+            }
+
             StringBuilder sb = new StringBuilder();
             StringBuilder sbCate = new StringBuilder();
             StringBuilder sbNotStart = new StringBuilder();
@@ -386,11 +545,64 @@ namespace LDMS.WEB.Controllers
             StringBuilder sbComplete = new StringBuilder();
             StringBuilder sbOverDue = new StringBuilder();
 
-            sbCate.Append("'I2', 'I3', 'I3A', 'I4'");
-            sbNotStart.Append("100, 10, 30, 50");
-            sbOnProgress.Append("0, 30, 30, 10");
-            sbComplete.Append("0, 30, 30, 10");
-            sbOverDue.Append("0, 30, 10, 30");
+            DataView dv = dt.DefaultView;
+            dv.Sort = "JobGradeName_TH";
+            string JobGradeName_TH = "";
+            int iNotStart = 0, iOnProgress = 0, iComplete = 0, iOverDue = 0;
+            System.Data.DataTable dtResult = new System.Data.DataTable();
+            dtResult.Columns.Add("JobGradeName_TH");
+            dtResult.Columns.Add("iNotStart", typeof(int));
+            dtResult.Columns.Add("iOnProgress", typeof(int));
+            dtResult.Columns.Add("iComplete", typeof(int));
+            dtResult.Columns.Add("iOverDue", typeof(int));
+            int rowIndex = -1;
+            for (int i = 0; i < dv.Count; i++)
+            {
+                if (JobGradeName_TH != dv[i]["JobGradeName_TH"].ToString())
+                {
+                    if (JobGradeName_TH != "")
+                    {
+                        dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+                        dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+                        dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+                        dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
+
+                        iNotStart = 0; iOnProgress = 0; iComplete = 0; iOverDue = 0;
+                    }
+
+                    dtResult.Rows.Add(dtResult.NewRow());
+                    rowIndex++;
+
+                    JobGradeName_TH = dv[i]["JobGradeName_TH"].ToString();
+                    dtResult.Rows[rowIndex]["JobGradeName_TH"] = JobGradeName_TH;
+                }
+
+                switch (dt.Rows[i]["CourseStatus"].ToString())
+                {
+                    case "COMPLETED": iComplete += 1; break;
+                    case "Not Start": iNotStart += 1; break;
+                    case "ON Progress": iOnProgress += 1; break;
+                    case "OverDue": iOverDue += 1; break;
+                }
+            }
+
+            dtResult.Rows[rowIndex]["iNotStart"] = iNotStart;
+            dtResult.Rows[rowIndex]["iOnProgress"] = iOnProgress;
+            dtResult.Rows[rowIndex]["iComplete"] = iComplete;
+            dtResult.Rows[rowIndex]["iOverDue"] = iOverDue;
+
+            DataView dvResult = dtResult.DefaultView;
+            dvResult.Sort = "JobGradeName_TH ASC";
+
+            int count = dvResult.Count > 5 ? 5 : dvResult.Count;
+            for (int i = 0; i < count; i++)
+            {
+                sbCate.Append("'" + dvResult[i]["JobGradeName_TH"].ToString() + "',");
+                sbNotStart.Append(dvResult[i]["iNotStart"].ToString() + ", ");
+                sbOnProgress.Append(dvResult[i]["iOnProgress"].ToString() + ", ");
+                sbComplete.Append(dvResult[i]["iComplete"].ToString() + ", ");
+                sbOverDue.Append(dvResult[i]["iOverDue"].ToString() + ", ");
+            }
 
             sb.Append(@"Highcharts.chart('divJobLevel', {
                   chart: {
@@ -398,7 +610,9 @@ namespace LDMS.WEB.Controllers
                     type: 'column'
                   },
                   title: {
-                    text: 'By Job Level'
+                    text: 'By Job Level',
+                    align: 'left',
+                    x: 20
                   },
                  exporting: {
                     enabled: false
@@ -432,19 +646,19 @@ namespace LDMS.WEB.Controllers
                 },
                   series: [{
                     name: 'Not Start',
-                    color: '#d0cece', index: 1,
+                    color: '#d0cece', index: 4,
                     data: [" + sbNotStart.ToString() + @"]
                   }, {
                     name: 'On Progress',
-                    color: '#ffff00', index: 2,
+                    color: '#ffff00', index: 3,
                     data: [" + sbOnProgress.ToString() + @"]
                   }, {
                     name: 'Completed',
-                    color: '#00b050', index: 3,
+                    color: '#00b050', index: 2,
                     data: [" + sbComplete.ToString() + @"]
                   }, {
                     name: 'Over Due',
-                    color: '#ff0000', index : 4,
+                    color: '#ff0000', index : 1,
                     data: [" + sbOverDue.ToString() + @"]
                   }]
                 });");

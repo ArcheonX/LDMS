@@ -48,7 +48,13 @@ namespace LDMS.Services
                 p.Add("@IS_Q4", q4);
                 p.Add("@EmployeeID", employeeID);
 
-                List<dynamic> ret = conn.Query<dynamic>("[dbo].[sp_Report_LearningPerformance_SelectOverAll]", p, commandType: System.Data.CommandType.StoredProcedure).ToList();
+                List<dynamic> ret = new List<dynamic>();
+
+                var result = conn.QueryMultiple("[dbo].[sp_Report_LearningPerformance_SelectOverAll]", p, commandType: System.Data.CommandType.StoredProcedure);
+
+                ret.Add(result.Read());
+                ret.Add(result.Read());
+                ret.Add(result.Read());
 
                 return ret;
             }
