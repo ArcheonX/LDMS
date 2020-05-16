@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LDMS.Services
@@ -26,13 +27,13 @@ namespace LDMS.Services
         private readonly LDAPAuthenticationService _ldAPAuthenticationService;
         private readonly LocalAuthenticationService _localAuthenticationService;
         private readonly MasterService MasterService;
-        public UserService(ILogger<UserService> logger, 
-            LDAPAuthenticationService ldAPAuthenticationService, 
+        public UserService(ILogger<UserService> logger,
+            LDAPAuthenticationService ldAPAuthenticationService,
             LocalAuthenticationService localAuthenticationService,
             MasterService masterService,
             ILDMSConnection iLDMSConnection, IHttpContextAccessor httpContextAccessor) : base(iLDMSConnection, httpContextAccessor)
         {
-            HttpContextAccessor = httpContextAccessor; 
+            HttpContextAccessor = httpContextAccessor;
             _logger = logger;
             _ldAPAuthenticationService = ldAPAuthenticationService;
             _localAuthenticationService = localAuthenticationService;
@@ -165,7 +166,7 @@ namespace LDMS.Services
         //}
 
 
-        public async Task<ServiceResult> GetAll( string employeeId = null, string employeeName = null,
+        public async Task<ServiceResult> GetAll(string employeeId = null, string employeeName = null,
             List<int> departments = null,
             List<int> sectionIds = null,
             List<int> jobgrades = null,
@@ -182,7 +183,7 @@ namespace LDMS.Services
             }
         }
 
-        private async Task<List<ViewModels.LDMS_M_User>> ReadAllEmployee( string employeeId = null, string employeeName = null,
+        private async Task<List<ViewModels.LDMS_M_User>> ReadAllEmployee(string employeeId = null, string employeeName = null,
             List<int> departments = null,
             List<int> sectionIds = null,
             List<int> jobgrades = null,
@@ -192,7 +193,7 @@ namespace LDMS.Services
             var jobGrades = await All<ViewModels.LDMS_M_JobGrade>("JobGrade");
             var jobTitles = await All<ViewModels.LDMS_M_JobTitle>("JobTitle");
 
-            var parameters = new DynamicParameters(); 
+            var parameters = new DynamicParameters();
             parameters.Add("@paramEmployeeId", employeeId);
             parameters.Add("@paramEmployeeName", employeeName);
             parameters.Add("@paramdepartments", departments != null ? string.Join(",", departments) : "");
@@ -232,30 +233,30 @@ namespace LDMS.Services
                       return user;
                   },
                   splitOn: "ID_Plant,ID_Center,ID_Division,ID_Department,ID_Section",
-                  param:  parameters,
+                  param: parameters,
                   commandType: CommandType.StoredProcedure,
-                  commandTimeout:0);
-                var users = items.ToList();
-                users.ForEach(user =>
-                {
-                    user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == user.ID_Role);
-                    user.LDMS_M_JobGrade = jobGrades.FirstOrDefault(e => e.ID_JobGrade == user.ID_JobGrade);
-                    user.LDMS_M_JobTitle = jobTitles.FirstOrDefault(e => e.ID_JobTitle == user.ID_JobTitle);
+                  commandTimeout: 0);
+            var users = items.ToList();
+            users.ForEach(user =>
+            {
+                user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == user.ID_Role);
+                user.LDMS_M_JobGrade = jobGrades.FirstOrDefault(e => e.ID_JobGrade == user.ID_JobGrade);
+                user.LDMS_M_JobTitle = jobTitles.FirstOrDefault(e => e.ID_JobTitle == user.ID_JobTitle);
 
-                    if (user.LDMS_M_Role == null || user.LDMS_M_Role.ID_Role == 0)
+                if (user.LDMS_M_Role == null || user.LDMS_M_Role.ID_Role == 0)
+                {
+                    if (user.LDMS_M_JobTitle.ID_JobTitle == 13)
                     {
-                        if (user.LDMS_M_JobTitle.ID_JobTitle == 13)
-                        {
-                            user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == 3);
-                        }
-                        else if ((user.LDMS_M_JobTitle.ID_JobTitle == 17 || user.LDMS_M_JobTitle.ID_JobTitle == 24) &&
-                            (user.LDMS_M_JobGrade.ID_JobGrade == 7 || user.LDMS_M_JobGrade.ID_JobGrade == 8))
-                        {
-                            user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == 4);
-                        }
+                        user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == 3);
                     }
-                });
-                return users; 
+                    else if ((user.LDMS_M_JobTitle.ID_JobTitle == 17 || user.LDMS_M_JobTitle.ID_JobTitle == 24) &&
+                        (user.LDMS_M_JobGrade.ID_JobGrade == 7 || user.LDMS_M_JobGrade.ID_JobGrade == 8))
+                    {
+                        user.LDMS_M_Role = roles.FirstOrDefault(e => e.ID_Role == 4);
+                    }
+                }
+            });
+            return users;
         }
 
         public async Task<ServiceResult> ImportEmployeeSection(IFormFile fileUpload, int divisionId, int departmentId)
@@ -382,7 +383,7 @@ namespace LDMS.Services
                 serviceResult.AddException(ex);
             }
             return serviceResult;
-        } 
+        }
         public async Task<ServiceResult> GetUserByEmployeeId(string employeeId)
         {
             try
@@ -481,16 +482,16 @@ namespace LDMS.Services
                     row["ID_Section"] = role.ID_Section;
                     row["Is_Header"] = role.ID_Section > 0 ? role.IsSectionHead : false;
                     dt.Rows.Add(row);
-                } 
-                    var parameters = new DynamicParameters();
-                    parameters.Add("@UserSectionTable", dt, DbType.Object);
-                    parameters.Add("@updateBy", updateBy);
-                    var items = Connection.Query<SQLError>(_schema + ".[usp_LDMS_M_User_UpdateSection]", param: parameters, commandType: CommandType.StoredProcedure);
-                    if (items != null && items.Any())
-                    {
-                        return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
-                    }
-                    return new ServiceResult(); 
+                }
+                var parameters = new DynamicParameters();
+                parameters.Add("@UserSectionTable", dt, DbType.Object);
+                parameters.Add("@updateBy", updateBy);
+                var items = Connection.Query<SQLError>(_schema + ".[usp_LDMS_M_User_UpdateSection]", param: parameters, commandType: CommandType.StoredProcedure);
+                if (items != null && items.Any())
+                {
+                    return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
+                }
+                return new ServiceResult();
             }
             catch (Exception x)
             {
@@ -814,36 +815,36 @@ namespace LDMS.Services
                   commandTimeout: 0);
 
             var groupMenu = items.OrderBy(e => e.LDMS_M_Module.Module_Sequence).GroupBy(e => e.LDMS_M_Module.ID_Module);
-                bool isFirst = true;
-                foreach (var item in groupMenu)
+            bool isFirst = true;
+            foreach (var item in groupMenu)
+            {
+                var module = items.Where(e => e.LDMS_M_Module.ID_Module == item.Key).Select(e => e.LDMS_M_Module).FirstOrDefault();
+                var menu = new NavigationMenu()
                 {
-                    var module = items.Where(e => e.LDMS_M_Module.ID_Module == item.Key).Select(e => e.LDMS_M_Module).FirstOrDefault();
-                    var menu = new NavigationMenu()
+                    ActionName = "",
+                    CadWrite = true,
+                    CanRead = true,
+                    ControllerName = "",
+                    MenuIco = "",
+                    MenuID = module.ModuleID,
+                    MenuName = module.ModuleName_EN,
+                    MenuUrl = module.Module_URL,
+                    FirstMenu = isFirst,
+                    SubMenus = item.OrderBy(e => e.Sequence).Select(e => new SubNavigationMenu()
                     {
-                        ActionName = "",
+                        MenuUrl = e.SubModule_URL,
+                        ActionName = e.SubModule_URL.Split('/').Length > 1 ? e.SubModule_URL.Split('/')[1] : "",
                         CadWrite = true,
                         CanRead = true,
-                        ControllerName = "",
+                        ControllerName = e.SubModule_URL.Split('/').Length > 0 ? e.SubModule_URL.Split('/')[0] : "",
                         MenuIco = "",
-                        MenuID = module.ModuleID,
-                        MenuName = module.ModuleName_EN,
-                        MenuUrl = module.Module_URL,
-                        FirstMenu = isFirst,
-                        SubMenus = item.OrderBy(e => e.Sequence).Select(e => new SubNavigationMenu()
-                        {
-                            MenuUrl = e.SubModule_URL,
-                            ActionName = e.SubModule_URL.Split('/').Length > 1 ? e.SubModule_URL.Split('/')[1] : "",
-                            CadWrite = true,
-                            CanRead = true,
-                            ControllerName = e.SubModule_URL.Split('/').Length > 0 ? e.SubModule_URL.Split('/')[0] : "",
-                            MenuIco = "",
-                            MenuID = e.SubModuleID,
-                            MenuName = e.SubModuleName_EN
-                        }).ToList()
-                    };
-                    isFirst = false;
-                    yield return menu;
-                } 
+                        MenuID = e.SubModuleID,
+                        MenuName = e.SubModuleName_EN
+                    }).ToList()
+                };
+                isFirst = false;
+                yield return menu;
+            }
         }
 
         public async Task<ServiceResult> DeleteUser(string employeeId)
@@ -874,64 +875,64 @@ namespace LDMS.Services
             {
                 var passsalt = PasswordHelper.CreateSalt();
                 var newHaspass = PasswordHelper.GenerateSaltedHash(employeeId, passsalt);
-               
-                    DynamicParameters parameter = new DynamicParameters();
-                    parameter.Add("@EmployeeId", employeeId);
-                    parameter.Add("@Password", newHaspass);
-                    parameter.Add("@PasswordSalt", passsalt);
-                    parameter.Add("@UpdateBy", JwtManager.Instance.GetUserId(HttpContext.Request));
-                    var items = Connection.Query<SQLError>(_schema + ".[usp_User_ResetPassword]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
-                    if (items != null && items.Any())
-                    {
-                        return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
-                    }
-                    CreateDataLog(DataLogType.ResetPassword, employeeId, "Reset password."); 
-                return new ServiceResult(); 
+
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@EmployeeId", employeeId);
+                parameter.Add("@Password", newHaspass);
+                parameter.Add("@PasswordSalt", passsalt);
+                parameter.Add("@UpdateBy", JwtManager.Instance.GetUserId(HttpContext.Request));
+                var items = Connection.Query<SQLError>(_schema + ".[usp_User_ResetPassword]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
+                if (items != null && items.Any())
+                {
+                    return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
+                }
+                CreateDataLog(DataLogType.ResetPassword, employeeId, "Reset password.");
+                return new ServiceResult();
             }
             catch (Exception x)
             {
                 _logger.LogError(x.Message);
                 return new ServiceResult(x);
-            } 
+            }
         }
 
         public async Task<ServiceResult> CreateUser(ViewModels.LDMS_M_User user)
         {
             try
-            { 
-                    var passsalt = PasswordHelper.CreateSalt();
-                    DynamicParameters parameter = new DynamicParameters();
-                    parameter.Add("@EmployeeId", user.EmployeeID);
-                    parameter.Add("@EmployeeName", user.Name);
-                    parameter.Add("@EmployeeSurName", user.Surname);
-                    parameter.Add("@JobGradeId", user.ID_JobGrade);
-                    parameter.Add("@JobTitleId", user.ID_JobTitle);
-                    parameter.Add("@CenterId", user.ID_Center);
-                    parameter.Add("@DivisionId", user.ID_Division);
-                    parameter.Add("@DepartmentId", user.ID_Department);
-                    parameter.Add("@SectionId", user.ID_Section);
-                    parameter.Add("@RoleId", user.ID_Role > 0 ? user.ID_Role : 1);
-                    parameter.Add("@IsInstructer", user.IsInstructor);
-                    parameter.Add("@IsSectionHead", user.IsSectionHead);
-                    parameter.Add("@Nationality", user.Nationality);
-                    parameter.Add("@Gender", user.Gender);
-                    parameter.Add("@Password", PasswordHelper.GenerateSaltedHash(user.EmployeeID, passsalt));
-                    parameter.Add("@PasswordSalt", passsalt);
-                    parameter.Add("@Remark", user.Remark, DbType.AnsiString);
-                    parameter.Add("@PhoneNumber", user.PhoneNumber);
-                    parameter.Add("@Email", user.Email, DbType.AnsiString);
-                    parameter.Add("@CreateBy", JwtManager.Instance.GetUserId(HttpContext.Request));
-                    parameter.Add("@IDCardNumber", user.IDCardNumber);
-                    parameter.Add("@JoinDate", user.JoinDate);
-                    parameter.Add("@OutDate", user.OutDate);
-                    parameter.Add("@DateOfBirth", user.DateOfBirth);
-                    parameter.Add("@ProfilePath", user.ProfilePath);
-                    var items = Connection.Query<SQLError>(_schema + ".[usp_User_Create]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
-                    if (items != null && items.Any())
-                    {
-                        return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
-                    }
-                    return await GetUserByEmployeeId(user.EmployeeID); 
+            {
+                var passsalt = PasswordHelper.CreateSalt();
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@EmployeeId", user.EmployeeID);
+                parameter.Add("@EmployeeName", user.Name);
+                parameter.Add("@EmployeeSurName", user.Surname);
+                parameter.Add("@JobGradeId", user.ID_JobGrade);
+                parameter.Add("@JobTitleId", user.ID_JobTitle);
+                parameter.Add("@CenterId", user.ID_Center);
+                parameter.Add("@DivisionId", user.ID_Division);
+                parameter.Add("@DepartmentId", user.ID_Department);
+                parameter.Add("@SectionId", user.ID_Section);
+                parameter.Add("@RoleId", user.ID_Role > 0 ? user.ID_Role : 1);
+                parameter.Add("@IsInstructer", user.IsInstructor);
+                parameter.Add("@IsSectionHead", user.IsSectionHead);
+                parameter.Add("@Nationality", user.Nationality);
+                parameter.Add("@Gender", user.Gender);
+                parameter.Add("@Password", PasswordHelper.GenerateSaltedHash(user.EmployeeID, passsalt));
+                parameter.Add("@PasswordSalt", passsalt);
+                parameter.Add("@Remark", user.Remark, DbType.AnsiString);
+                parameter.Add("@PhoneNumber", user.PhoneNumber);
+                parameter.Add("@Email", user.Email, DbType.AnsiString);
+                parameter.Add("@CreateBy", JwtManager.Instance.GetUserId(HttpContext.Request));
+                parameter.Add("@IDCardNumber", user.IDCardNumber);
+                parameter.Add("@JoinDate", user.JoinDate);
+                parameter.Add("@OutDate", user.OutDate);
+                parameter.Add("@DateOfBirth", user.DateOfBirth);
+                parameter.Add("@ProfilePath", user.ProfilePath);
+                var items = Connection.Query<SQLError>(_schema + ".[usp_User_Create]", param: parameter, commandType: CommandType.StoredProcedure, commandTimeout: 0);
+                if (items != null && items.Any())
+                {
+                    return new ServiceResult(new Exception(items.FirstOrDefault().ErrorMessage));
+                }
+                return await GetUserByEmployeeId(user.EmployeeID);
             }
             catch (Exception x)
             {
@@ -988,6 +989,10 @@ namespace LDMS.Services
         {
             try
             {
+                if (!PasswordPolicy.IsValid(newpassword))
+                {
+                    return new ServiceResult(new Exception("Invalid Password Pattern"));
+                }
                 var emp = await GetUserByEmployeeId(employeeId);
                 var passsalt = PasswordHelper.CreateSalt();
                 var newHaspass = PasswordHelper.GenerateSaltedHash(newpassword, passsalt);
@@ -1048,6 +1053,79 @@ namespace LDMS.Services
                 return new ServiceResult(x);
             }
         }
-         
+
     }
+    public class PasswordPolicy
+    {
+        private static int Minimum_Length = 7;
+        private static int Upper_Case_length = 1;
+        private static int Lower_Case_length = 1;
+        private static int NonAlpha_length = 1;
+        private static int Numeric_length = 1;
+
+        public static bool IsValid(string Password)
+        {
+            if (Password.Length < Minimum_Length)
+                return false;
+            if (UpperCaseCount(Password) < Upper_Case_length)
+                return false;
+            if (LowerCaseCount(Password) < Lower_Case_length)
+                return false;
+            if (NumericCount(Password) < 1)
+                return false;
+            if (NonAlphaCount(Password) < NonAlpha_length)
+                return false;
+            return true;
+        }
+
+        private static int UpperCaseCount(string Password)
+        {
+            return Regex.Matches(Password, "[A-Z]").Count;
+        }
+
+        private static int LowerCaseCount(string Password)
+        {
+            return Regex.Matches(Password, "[a-z]").Count;
+        }
+        private static int NumericCount(string Password)
+        {
+            return Regex.Matches(Password, "[0-9]").Count;
+        }
+        private static int NonAlphaCount(string Password)
+        {
+            return Regex.Matches(Password, @"[^0-9a-zA-Z\._]").Count;
+        }
+    }
+    //public enum PasswordScore
+    //{
+    //    Blank = 0,
+    //    VeryWeak = 1,
+    //    Weak = 2,
+    //    Medium = 3,
+    //    Strong = 4,
+    //    VeryStrong = 5
+    //}
+
+    //public class PasswordAdvisor
+    //{
+    //    public static PasswordScore CheckStrength(string password)
+    //    {
+    //        int score = 0; 
+    //        if (password.Length < 1)
+    //            return PasswordScore.Blank;
+    //        if (password.Length < 4)
+    //            return PasswordScore.VeryWeak; 
+    //        if (password.Length >= 6)
+    //            score++;
+    //        if (password.Length >= 8)
+    //            score++;
+    //        if (Regex.Match(password, @"/\d+/", RegexOptions.ECMAScript).Success)
+    //            score++;
+    //        if (Regex.Match(password, @"/[a-z]/", RegexOptions.ECMAScript).Success && Regex.Match(password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
+    //            score++;
+    //        if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
+    //            score++;
+    //        return (PasswordScore)score;
+    //    }
+    //}
 }
