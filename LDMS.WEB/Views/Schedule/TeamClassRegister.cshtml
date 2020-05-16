@@ -244,6 +244,12 @@
         }
 
         function RenderTeamClassList(e) {
+
+            if ($.fn.dataTable.isDataTable('#dtClass')) {
+                    var table = $('#dtClass').DataTable();
+                    table.destroy();
+             }
+
             var html = '';
             //alert('RenderClassList ' + e.length);
             $("#dtClass tbody > tr").remove();
@@ -271,12 +277,6 @@
 
             }
 
-           
-
-               /*if ($.fn.dataTable.isDataTable('#dtClass')) {
-                    var table = $('#dtClass').DataTable();
-                    table.destroy();
-                }*/
                 $('#dtClass').DataTable({
                     'processing': true,
                     'paging': false,
@@ -349,13 +349,17 @@
             }
             i++;
           }
-          alert(JSON.stringify(model));
+          //alert(JSON.stringify(model));
           if (count > 0) {
               alert('กรุณาเลือกรายการ course ที่ไม่ซ้ำกัน !!!!');
           }
           else {
-               
-                $.ajax({
+              //alert('model : ' + model);
+              if (model == '' ) {
+                  alert('กรุณาเลือกรายการ');
+              }
+              else {
+                  $.ajax({
                     url: "/Schedule/UpdateRegisStatusA",
                     type: "POST",
                     data: {
@@ -367,6 +371,8 @@
                     },
 
                 });
+              }
+                
           }
 
 
@@ -401,13 +407,17 @@
             }
             i++;
           }
-          alert(JSON.stringify(model));
+          //alert(JSON.stringify(model));
           if (count > 0) {
               alert('กรุณาเลือกรายการ course ที่ไม่ซ้ำกัน !!!!');
           }
           else {
-               
-                $.ajax({
+
+              if (model == '') {
+                  alert('กรุณาเลือกรายการ');
+              }
+              else {
+                   $.ajax({
                     url: "/Schedule/UpdateRegisStatusR",
                     type: "POST",
                     data: {
@@ -420,10 +430,8 @@
                     },
 
                 });
+              }
           }
-
-
-
         return false;
     }
 
