@@ -52,7 +52,7 @@ namespace LDMS.Services
                     var p = new DynamicParameters();
                     //if (ID_Employee != null) p.Add("@ID_Employee", ID_Employee);
                     
-                    p.Add("@ID_Employee", "5088888887"); //CurrentUserId
+                    p.Add("@ID_Employee", CurrentUserId); //CurrentUserId
 
                     var myIDP = conn.Query<ViewModels.LDMS_T_IDP>(_schema + ".[sp_T_IDP_Select_Employee_ID]", p, commandType: CommandType.StoredProcedure).FirstOrDefault();
 

@@ -7,8 +7,8 @@ namespace LDMS.ViewModels
         public int ID { get; set; }
         public int ID_Employee { get; set; }
         public int ID_Manager { get; set; }
-        public DateTime IDP_StartDate { get; set; }
-        public DateTime IDP_EndDate { get; set; }
+        public string IDP_StartDate { get; set; }
+        public string IDP_EndDate { get; set; }
         public string IDP_Objective { get; set; }
         public int IDP_Status { get; set; }
         public string CreateBy { get; set; }
@@ -21,5 +21,7 @@ namespace LDMS.ViewModels
         public string Position { get; set; }
         public string ID_SubTopic { get; set; }
         public int Total_Review { get; set; }
+        public string Service_Timeline { get; set; }
+        public string IDP_TimeLine { get; set; }
     }
 }
