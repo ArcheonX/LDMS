@@ -251,7 +251,7 @@ function CreateChartDonut(data) {
         notstart = data.Progress.NotStart;
         onprogress = data.Progress.OnProgress;
         completed = data.Progress.Completed;
-        completedPct = (completed / data.List.length) * 100;
+        completedPct = (completed / (data.List.length>0?data.List.length:1)) * 100;
     }
    
     Highcharts.chart('container', {
