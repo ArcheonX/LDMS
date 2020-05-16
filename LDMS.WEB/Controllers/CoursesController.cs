@@ -76,11 +76,11 @@ namespace LDMS.WEB.Controllers
             else ViewData["ID"] = ID;
 
             LDMS_T_Class p = _CourseService.GetClassByID(ID);
-            p.LearnDateStart_Show = p.LearnDateStart.ToString("MM/dd/yyyy");
-            p.LearnDateEnd_Show = p.LearnDateEnd.ToString("MM/dd/yyyy");
+            //.LearnDateStart_Show = p.LearnDateStart.ToString("MM/dd/yyyy");
+            //p.LearnDateEnd_Show = p.LearnDateEnd.ToString("MM/dd/yyyy");
 
-            p.RegisterDateStart_Show = p.RegisterDateStart.ToString("MM/dd/yyyy");
-            p.RegisterDateEnd_Show = p.RegisterDateEnd.ToString("MM/dd/yyyy");
+            //p.RegisterDateStart_Show = p.RegisterDateStart.ToString("MM/dd/yyyy");
+            //p.RegisterDateEnd_Show = p.RegisterDateEnd.ToString("MM/dd/yyyy");
 
             return View("/Views/Courses/ClassDetail.cshtml", p);
         }
@@ -389,6 +389,12 @@ namespace LDMS.WEB.Controllers
             if(LearnDateStart != "" && RegisterDateStart != "" && RegisterDateEnd != "")
             {
                 statusClass = "10"; // Not Start 
+
+                DateTime oDate = Convert.ToDateTime(RegisterDateStart);
+                if (oDate.Date == DateTime.Now.Date)
+                {
+                    statusClass = "20"; // Register
+                }
             }
      
             LDMS_T_Class t_class = new LDMS_T_Class();

@@ -13,12 +13,12 @@ namespace LDMS.ViewModels
         public string InstructorName { get; set; }
         public int ClassCapacity { get; set; }
         public decimal ClassFee { get; set; }
-        public DateTime LearnDateStart { get; set; }
+        public string LearnDateStart { get; set; }
         public string LearnTimeStart { get; set; }
-        public DateTime LearnDateEnd { get; set; }
+        public string LearnDateEnd { get; set; }
         public string LearnTimeEnd { get; set; }
-        public DateTime RegisterDateStart { get; set; }
-        public DateTime RegisterDateEnd { get; set; }
+        public string RegisterDateStart { get; set; }
+        public string RegisterDateEnd { get; set; }
         public int ID_PlantVenue { get; set; }
         public int ID_VenueRoom { get; set; }
         public string PlaceAndLocation { get; set; }
