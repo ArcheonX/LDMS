@@ -78,7 +78,9 @@ namespace LDMS.WEB.Controllers
         [Route("Account/ChangePassword")]
         public async Task<IActionResult> SubmitChangePassword(string employeeId, string currentPassword,string newpassword)
         {
-            var user = (await UserService.ChangePassword(employeeId, currentPassword, newpassword)).Data as LDMS_M_User;
+            var result = (await UserService.ChangePassword(employeeId, currentPassword, newpassword));
+            if (!result.IsOk) return Response(result);
+            var user = result.Data as LDMS_M_User;
             if (user != null)
             {
                 var page = HttpContext.Request.Get("REDIRECTPAGE");
